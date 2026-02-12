@@ -23,10 +23,11 @@
 13. [Configuration Reference](#13-configuration-reference)
 14. [Tech Stack & Licensing](#14-tech-stack--licensing)
 15. [Hardware & Performance](#15-hardware--performance)
-16. [Setup & Deployment Guide](#16-setup--deployment-guide)
-17. [Troubleshooting](#17-troubleshooting)
-18. [Design Decisions & Trade-offs](#18-design-decisions--trade-offs)
-19. [Future Enhancements](#19-future-enhancements)
+16. [Manual Installation Guide](#16-manual-installation-guide)
+17. [Adding More Data to the Chatbot](#17-adding-more-data-to-the-chatbot)
+18. [Troubleshooting](#18-troubleshooting)
+19. [Design Decisions & Trade-offs](#19-design-decisions--trade-offs)
+20. [Future Enhancements](#20-future-enhancements)
 
 ---
 
@@ -773,85 +774,606 @@ All tunable parameters are centralized in `config.py`:
 
 ---
 
-## 16. Setup & Deployment Guide
+## 16. Manual Installation Guide
 
-### Prerequisites
+This section provides a complete, step-by-step guide to install and run the SOP Chatbot from scratch on a fresh machine.
 
-- Python 3.10+
-- NVIDIA GPU with CUDA support (optional, CPU works)
-- Ollama (optional, for answer rewriting)
+### 16.1 Prerequisites
 
-### Step 1: Create Virtual Environment
+| Requirement | Minimum | Recommended | Required? |
+|-------------|---------|-------------|----------|
+| **Python** | 3.10 | 3.11 or 3.12 | ✅ Yes |
+| **pip** | 22.0+ | Latest | ✅ Yes |
+| **Git** | 2.30+ | Latest | ✅ Yes |
+| **NVIDIA GPU** | Any CUDA-capable | RTX 3060+ | ❌ Optional (CPU works) |
+| **CUDA Toolkit** | 11.8 | 12.x | ❌ Optional (for GPU acceleration) |
+| **Ollama** | Latest | Latest | ❌ Optional (for answer rewriting) |
+| **RAM** | 8 GB | 16 GB+ | ✅ Yes |
+| **Disk Space** | ~2 GB | ~5 GB | ✅ Yes (for model weights + dependencies) |
+
+### 16.2 Step-by-Step Installation (Windows)
+
+#### Step 1: Verify Python Installation
+
+Open PowerShell and verify Python is installed:
 
 ```powershell
-cd d:\2026_testing\chatbot2
+python --version
+# Expected output: Python 3.10.x or higher
+
+pip --version
+# Expected output: pip 22.x or higher
+```
+
+If Python is not installed:
+1. Download from [python.org/downloads](https://www.python.org/downloads/)
+2. During installation, **check "Add Python to PATH"**
+3. Restart PowerShell after installation
+
+#### Step 2: Clone the Repository
+
+```powershell
+# Navigate to your projects folder
+cd D:\projects
+
+# Clone the repository
+git clone https://github.com/benoy-beN/ben-chat.git
+cd ben-chat
+```
+
+Or, if you have the project files already:
+
+```powershell
+cd D:\2026_testing\chatbot2
+```
+
+#### Step 3: Create a Virtual Environment
+
+A virtual environment keeps this project's dependencies isolated from your system Python:
+
+```powershell
+# Create the virtual environment
 python -m venv venv
+
+# Activate it (you'll see (venv) in your prompt)
 .\venv\Scripts\activate
 ```
 
-### Step 2: Install Dependencies
+> **Note**: You must activate the virtual environment every time you open a new terminal session. If you see `(venv)` or `(base)` in your prompt, you're good.
+
+#### Step 4: Install Python Dependencies
 
 ```powershell
+# Upgrade pip first (recommended)
+python -m pip install --upgrade pip
+
+# Install all required packages
 pip install -r requirements.txt
 ```
 
-### Step 3: Prepare SOP Data
+**What gets installed:**
 
-Edit `data/data.txt` with your Q&A pairs:
+| Package | Size | Purpose |
+|---------|------|---------|
+| `torch` | ~800 MB | PyTorch deep learning framework |
+| `sentence-transformers` | ~50 MB | Embedding model wrapper |
+| `faiss-cpu` | ~30 MB | FAISS vector search library |
+| `gradio` | ~50 MB | Web UI framework |
+| `requests` | ~1 MB | HTTP client (for Ollama) |
+| `numpy` | ~30 MB | Numerical arrays |
 
+> **Estimated install time**: 3-10 minutes depending on internet speed.
+
+#### Step 5: Verify Installation
+
+```powershell
+# Verify all critical imports work
+python -c "import torch; print(f'PyTorch: {torch.__version__}')"
+python -c "import faiss; print(f'FAISS: OK')"
+python -c "import gradio; print(f'Gradio: {gradio.__version__}')"
+python -c "from sentence_transformers import SentenceTransformer; print('sentence-transformers: OK')"
 ```
-Q: Your question here?
-A: Your answer here.
 
-Q: Another question?
-A: Another answer.
+All four commands should print version info without errors.
+
+#### Step 6: Download the Embedding Model (First Run Only)
+
+The embedding model (`BAAI/bge-base-en-v1.5`, ~420 MB) is downloaded automatically on first use. To trigger the download explicitly:
+
+```powershell
+python -c "from sentence_transformers import SentenceTransformer; m = SentenceTransformer('BAAI/bge-base-en-v1.5'); print('Model downloaded!')"
 ```
 
-### Step 4: Build Index
+> **Note**: The model is cached in `~/.cache/huggingface/` and won't be re-downloaded on subsequent runs.
+
+#### Step 7: Build the FAISS Index
+
+This step parses your SOP data, generates paraphrase variants, embeds all questions, and builds the search index:
 
 ```powershell
 python build.py
 ```
 
-This single command:
-1. Parses `data.txt` → `sop_data.json`
-2. Generates paraphrases → `sop_data_augmented.json`
-3. Embeds all questions with bge-base-en-v1.5
-4. Builds and saves FAISS index → `sop_index.faiss` + `id_map.json`
+**Expected output:**
 
-### Step 5: Run Evaluation
+```
+============================================================
+  SOP Chatbot — Full Build
+============================================================
+
+📋 STEP 1: Parse & augment SOP data
+📂 Reading: data/data.txt
+✅ Parsed 50 Q&A pairs
+💾 Saved base dataset
+💾 Saved augmented dataset (165 total)
+
+📋 STEP 2: Build FAISS index
+🔄 Loading embedding model: BAAI/bge-base-en-v1.5
+✅ Model loaded on device: cuda (or cpu)
+🔄 Embedding 165 questions...
+✅ Embedded in 2.45s
+💻 FAISS index on CPU
+✅ Built FAISS index: 165 vectors, 768 dimensions
+💾 Index saved
+
+============================================================
+  ✅ BUILD COMPLETE
+============================================================
+```
+
+#### Step 8: Run the Evaluation Suite
 
 ```powershell
 python evaluate.py
 ```
 
-Verify all three test suites pass before deploying.
+This runs 3 test suites (exact match, paraphrase, out-of-scope rejection). All tests should pass with 100% accuracy. If any test fails, see [Troubleshooting](#18-troubleshooting).
 
-### Step 6: Launch Web UI
+#### Step 9: Launch the Web Interface
 
 ```powershell
 python app.py
 ```
 
-Access at: `http://localhost:7860`
+**Expected output:**
 
-### Optional: Enable LLM Rewriting
+```
+============================================================
+  SOP Chatbot — Starting Web Interface
+============================================================
+🔄 Loading SOP Pipeline...
+✅ Pipeline loaded!
+* Running on local URL:  http://0.0.0.0:7860
+```
+
+Open your browser and navigate to: **http://localhost:7860**
+
+> **To stop the server**: Press `Ctrl+C` in the terminal.
+
+### 16.3 Step-by-Step Installation (Linux / macOS)
+
+```bash
+# Step 1: Clone repository
+git clone https://github.com/benoy-beN/ben-chat.git
+cd ben-chat
+
+# Step 2: Create virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Step 3: Install dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Step 4: Build index
+python build.py
+
+# Step 5: Run evaluation
+python evaluate.py
+
+# Step 6: Launch web UI
+python app.py
+# Open http://localhost:7860
+```
+
+### 16.4 GPU Setup (Optional — Recommended for Larger Datasets)
+
+GPU acceleration is **optional** but speeds up embedding and index building.
+
+#### Check if CUDA is Available
 
 ```powershell
-# Install Ollama from https://ollama.ai
-ollama pull mistral    # or phi3
-ollama serve
+python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'Device: {torch.cuda.get_device_name(0)}') if torch.cuda.is_available() else print('Running on CPU')"
 ```
 
+#### If CUDA is NOT Available
+
+1. **Install NVIDIA drivers**: Download from [nvidia.com/drivers](https://www.nvidia.com/Download/index.aspx)
+2. **Install CUDA Toolkit**: Download from [developer.nvidia.com/cuda-downloads](https://developer.nvidia.com/cuda-downloads)
+3. **Reinstall PyTorch with CUDA support**:
+
+```powershell
+# Uninstall existing PyTorch
+pip uninstall torch torchvision torchaudio -y
+
+# Install PyTorch with CUDA 12.x support
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+```
+
+4. **Install FAISS GPU** (optional — replaces faiss-cpu):
+
+```powershell
+pip uninstall faiss-cpu -y
+pip install faiss-gpu
+```
+
+5. **Verify GPU setup**:
+
+```powershell
+python -c "import torch; print(f'CUDA: {torch.cuda.is_available()}, GPU: {torch.cuda.get_device_name(0)}')"
+# Expected: CUDA: True, GPU: NVIDIA GeForce RTX 5090
+```
+
+### 16.5 Ollama Setup (Optional — For Answer Rewriting)
+
+Ollama provides a local LLM to rewrite retrieved answers for better readability. It is entirely optional — without it, verbatim SOP answers are returned.
+
+#### Install Ollama
+
+**Windows:**
+1. Download from [ollama.ai](https://ollama.ai)
+2. Run the installer
+3. Ollama runs as a background service automatically
+
+**Linux:**
+```bash
+curl -fsSL https://ollama.ai/install.sh | sh
+```
+
+**macOS:**
+```bash
+brew install ollama
+```
+
+#### Pull a Model
+
+```powershell
+# Recommended models (choose one):
+ollama pull mistral          # 4.1 GB — Best quality rewriting
+ollama pull phi3              # 2.2 GB — Lighter, good quality
+ollama pull llama3.2          # 2.0 GB — Lightweight alternative
+```
+
+#### Verify Ollama is Running
+
+```powershell
+ollama list
+# Should show your installed models
+
+# Test a quick prompt
+ollama run mistral "Say hello in one word"
+```
+
+#### Enable Rewriting in Config
+
 Edit `config.py`:
+
 ```python
 USE_LLM_REWRITE = True
-OLLAMA_MODEL = "mistral"  # or "phi3"
+OLLAMA_MODEL = "mistral"    # Must match one of your installed models
 ```
+
+Restart the chatbot (`python app.py`) and toggle the "✨ LLM Rewrite" checkbox in the web UI.
+
+### 16.6 Complete Verification Checklist
+
+After installation, run through this checklist to confirm everything works:
+
+| # | Check | Command | Expected Result |
+|---|-------|---------|----------------|
+| 1 | Python version | `python --version` | 3.10+ |
+| 2 | Virtual env active | Check prompt for `(venv)` | `(venv)` visible |
+| 3 | PyTorch installed | `python -c "import torch; print(torch.__version__)"` | Version number |
+| 4 | FAISS installed | `python -c "import faiss; print('OK')"` | `OK` |
+| 5 | Gradio installed | `python -c "import gradio; print(gradio.__version__)"` | Version number |
+| 6 | Model downloaded | Check `~/.cache/huggingface/` folder | `BAAI/bge-base-en-v1.5` folder exists |
+| 7 | Index built | Check `data/sop_index.faiss` exists | File exists (~500 KB) |
+| 8 | Quick test passes | `python test_quick.py` | `ALL TESTS PASSED!` |
+| 9 | Evaluation passes | `python evaluate.py` | `🎉 PERFECT SCORE` |
+| 10 | Web UI launches | `python app.py` | `Running on local URL: http://0.0.0.0:7860` |
+| 11 | Browser loads | Open `http://localhost:7860` | SOP Chatbot UI visible |
+| 12 | Query works | Type a question and click Search | Answer returned with score |
 
 ---
 
-## 17. Troubleshooting
+## 17. Adding More Data to the Chatbot
+
+This section explains how to expand the chatbot's knowledge base by adding new Q&A pairs, updating existing ones, or bulk-importing data.
+
+### 17.1 Quick Guide — Add a Single Q&A Pair
+
+The fastest way to add new knowledge is to edit `data/data.txt` directly:
+
+#### Step 1: Open the Data File
+
+```powershell
+# Open in your preferred editor
+notepad data\data.txt
+# Or use VS Code:
+code data\data.txt
+```
+
+#### Step 2: Add Your Q&A Pair
+
+Append your new question and answer at the end of the file, following the exact format:
+
+```
+Q: What is the maximum file size for uploads?
+A: The maximum file size for uploads is 25 MB.
+```
+
+**Format rules (important!):**
+
+| Rule | ✅ Correct | ❌ Wrong |
+|------|-----------|----------|
+| Start question with `Q: ` | `Q: How do I reset?` | `Question: How do I reset?` |
+| Start answer with `A: ` | `A: Click the reset button.` | `Answer: Click the reset button.` |
+| One blank line between pairs | `(blank line)` | No separator or multiple blank lines |
+| Single-line questions | `Q: What is X?` | Multi-line questions |
+| Single-line answers | `A: X is Y.` | Multi-line answers |
+| Include `Q:` and `A:` prefix with space | `Q: Text` | `Q:Text` (no space) |
+
+#### Step 3: Rebuild the Index
+
+**This is the most important step!** After editing `data.txt`, you must rebuild the index for changes to take effect:
+
+```powershell
+# Stop the running chatbot first (Ctrl+C)
+
+# Rebuild everything
+python build.py
+
+# Verify with evaluation
+python evaluate.py
+
+# Restart the chatbot
+python app.py
+```
+
+> ⚠️ **If you skip `python build.py`, the chatbot will NOT know about your new questions.** The FAISS index must be rebuilt whenever `data.txt` changes.
+
+#### Step 4: Test Your New Entry
+
+Open `http://localhost:7860` and ask your new question. Verify:
+- The correct answer is returned
+- The similarity score is above 0.75
+- Paraphrased versions also work
+
+### 17.2 Adding Multiple Q&A Pairs (Batch)
+
+To add many questions at once, simply append them all to `data/data.txt`:
+
+```
+Q: What is the refund policy?
+A: Refunds are processed within 5-7 business days.
+
+Q: How do I contact support?
+A: Email support@company.com or call 1-800-SUPPORT.
+
+Q: What are the office hours?
+A: Office hours are Monday to Friday, 9 AM to 6 PM.
+
+Q: Is there a dress code?
+A: Business casual attire is required on all working days.
+
+Q: How do I book a meeting room?
+A: Use the Outlook calendar to reserve meeting rooms.
+```
+
+Then rebuild:
+
+```powershell
+python build.py
+python evaluate.py
+python app.py
+```
+
+### 17.3 Editing or Removing Existing Entries
+
+#### To Edit an Answer
+
+Find the question in `data/data.txt` and update the `A:` line:
+
+```
+# Before:
+Q: What is the minimum font size for positive sans-serif text?
+A: Minimum size is 8 pt.
+
+# After:
+Q: What is the minimum font size for positive sans-serif text?
+A: Minimum size is 7 pt for digital and 8 pt for print.
+```
+
+#### To Remove a Q&A Pair
+
+Delete both the `Q:` and `A:` lines (and the blank line separator).
+
+#### After Any Edit
+
+**Always rebuild the index:**
+
+```powershell
+python build.py
+python evaluate.py   # Optional but recommended
+python app.py
+```
+
+### 17.4 Writing Effective Q&A Pairs
+
+The quality of your Q&A pairs directly impacts chatbot accuracy. Follow these guidelines:
+
+#### ✅ Good Practices
+
+| Practice | Example |
+|----------|---------|
+| **Be specific** | `Q: What is the minimum font size for positive sans-serif text?` |
+| **Use natural phrasing** | `Q: Should text be converted to outlines?` |
+| **Keep answers concise** | `A: Yes, text should be converted to outlines.` |
+| **Use standard terminology** | `Q: What is the PMS value of silver standard?` |
+| **One concept per pair** | Separate "what" and "how" into two pairs |
+
+#### ❌ Bad Practices
+
+| Anti-Pattern | Why It's Bad | Fix |
+|-------------|-------------|-----|
+| Vague questions: `Q: How?` | Too short — will match everything | Be specific: `Q: How do I submit artwork?` |
+| Compound questions: `Q: What is X and how do I do Y?` | Two topics in one — confusing retrieval | Split into two separate Q&A pairs |
+| Very long answers (5+ sentences) | Harder for LLM rewrite, harder for users | Keep to 1-2 sentences |
+| Duplicate questions | Wastes index space, may cause confusion | Check for duplicates before adding |
+| Questions without `?` | Parser still works, but looks inconsistent | Always end questions with `?` |
+
+### 17.5 Adding Custom Paraphrase Patterns
+
+If your new questions use phrasing patterns not covered by the built-in paraphrase generator, you can add new patterns in `scripts/parse_data.py`.
+
+#### Current Patterns Handled Automatically
+
+The system auto-generates paraphrases for questions starting with:
+`"What is"`, `"What should"`, `"Should"`, `"How do I"`, `"How to"`, `"Which"`, `"When should"`, `"Who is"`, `"Can"`, `"Where are"`, `"How many"`
+
+#### Adding a New Pattern
+
+Open `scripts/parse_data.py` and add a new block inside the `generate_paraphrases()` function:
+
+```python
+def generate_paraphrases(question: str) -> list[str]:
+    paraphrases = []
+    q = question.lower().strip().rstrip("?").strip()
+
+    # ... existing patterns ...
+
+    # NEW: Pattern for "Is it mandatory to X"
+    if q.startswith("is it mandatory to "):
+        rest = q[19:]
+        paraphrases.append(f"Must I {rest}")
+        paraphrases.append(f"Do I have to {rest}")
+        paraphrases.append(f"Is {rest} required")
+
+    # NEW: Pattern for "What happens if X"
+    if q.startswith("what happens if "):
+        rest = q[16:]
+        paraphrases.append(f"Consequences of {rest}")
+        paraphrases.append(f"Result of {rest}")
+
+    return paraphrases
+```
+
+After adding new patterns, rebuild:
+
+```powershell
+python build.py    # Re-parses data and regenerates paraphrases
+python evaluate.py  # Verify nothing broke
+```
+
+### 17.6 Importing from Spreadsheets (CSV / Excel)
+
+If you have Q&A data in a spreadsheet, convert it to the `data.txt` format:
+
+#### Option A: Manual Copy-Paste
+
+1. Open your spreadsheet with columns: `Question`, `Answer`
+2. Format each row as:
+   ```
+   Q: [question text]
+   A: [answer text]
+   ```
+3. Paste into `data/data.txt` with blank lines between pairs
+
+#### Option B: Python Conversion Script
+
+Create a quick script to convert CSV to `data.txt` format:
+
+```python
+import csv
+
+with open("your_data.csv", "r", encoding="utf-8") as infile:
+    reader = csv.DictReader(infile)  # Expects columns: question, answer
+    with open("data/data.txt", "a", encoding="utf-8") as outfile:  # 'a' = append
+        for row in reader:
+            outfile.write(f"Q: {row['question']}\n")
+            outfile.write(f"A: {row['answer']}\n\n")
+
+print("Done! Now run: python build.py")
+```
+
+> **Important**: Use `"a"` (append) mode to add to existing data, or `"w"` (write) mode to replace all data.
+
+### 17.7 Updating Evaluation Tests for New Data
+
+When you add new Q&A pairs, consider updating the evaluation suite:
+
+#### Add Out-of-Scope Questions (Optional)
+
+If your new topic area could introduce confusing queries, add relevant out-of-scope tests in `evaluate.py`:
+
+```python
+OUT_OF_SCOPE_QUESTIONS = [
+    # ... existing questions ...
+    "What is the best laptop to buy?",      # New: Tech shopping (not SOP)
+    "How do I file my taxes?",              # New: Finance (not SOP)
+]
+```
+
+### 17.8 Data Maintenance Workflow
+
+For ongoing data management, follow this workflow:
+
+```
+┌───────────────────────────────────────────────────────────┐
+│                DATA MAINTENANCE WORKFLOW                   │
+├───────────────────────────────────────────────────────────┤
+│                                                           │
+│  1. EDIT                                                  │
+│     └─▶ Open data/data.txt                                │
+│     └─▶ Add / Edit / Remove Q&A pairs                     │
+│     └─▶ Save the file                                     │
+│                                                           │
+│  2. BUILD                                                 │
+│     └─▶ Run: python build.py                              │
+│     └─▶ Verify: "✅ BUILD COMPLETE" message                │
+│     └─▶ Check: augmented count increased                  │
+│                                                           │
+│  3. TEST                                                  │
+│     └─▶ Run: python evaluate.py                           │
+│     └─▶ Verify: All tests pass                            │
+│     └─▶ If failures: check threshold or paraphrase rules  │
+│                                                           │
+│  4. DEPLOY                                                │
+│     └─▶ Restart: python app.py                            │
+│     └─▶ Test in browser: http://localhost:7860             │
+│     └─▶ Try your new questions + paraphrases              │
+│                                                           │
+│  5. COMMIT (if using Git)                                 │
+│     └─▶ git add data/data.txt                             │
+│     └─▶ git commit -m "Added X new SOP entries"           │
+│     └─▶ git push                                          │
+│                                                           │
+└───────────────────────────────────────────────────────────┘
+```
+
+### 17.9 How Many Q&A Pairs Can I Add?
+
+| Scale | Q&A Pairs | Augmented Total (est.) | Build Time | Query Time | Notes |
+|-------|-----------|------------------------|------------|------------|-------|
+| Small | 50 (current) | ~165 | ~3s | ~10ms | Current setup |
+| Medium | 200 | ~660 | ~10s | ~10ms | No changes needed |
+| Large | 1,000 | ~3,300 | ~30s | ~15ms | Still works perfectly |
+| Very Large | 5,000 | ~16,500 | ~2min | ~30ms | Consider `IndexIVFFlat` |
+| Enterprise | 50,000+ | ~165,000 | ~20min | ~50ms | Use `IndexIVFFlat` + GPU FAISS |
+
+---
+
+## 18. Troubleshooting
 
 ### Common Issues
 
@@ -880,7 +1402,7 @@ Runs 3 rapid tests:
 
 ---
 
-## 18. Design Decisions & Trade-offs
+## 19. Design Decisions & Trade-offs
 
 ### Why bge-base-en-v1.5?
 
@@ -928,7 +1450,7 @@ Rule-based paraphrases are sufficient for achieving 100% accuracy and keep the s
 
 ---
 
-## 19. Future Enhancements
+## 20. Future Enhancements
 
 | Priority | Enhancement | Description |
 |----------|-------------|-------------|
