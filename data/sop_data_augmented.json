@@ -6202,5 +6202,65 @@
     "question": "Explain the maximum font size allowed",
     "answer": "This question is not covered in the SOP. Please contact HR.",
     "source_id": 273
+  },
+  {
+    "id": 1035,
+    "question": "Silver code?",
+    "answer": "Please use Pantone 877.",
+    "source_id": 274
+  },
+  {
+    "id": 1036,
+    "question": "Gold code?",
+    "answer": "Please use Pantone 871.",
+    "source_id": 275
+  },
+  {
+    "id": 1037,
+    "question": "Color mode?",
+    "answer": "CMYK color mode is recommended.",
+    "source_id": 276
+  },
+  {
+    "id": 1038,
+    "question": "Use RGB?",
+    "answer": "No, RGB artwork must be converted to CMYK.",
+    "source_id": 277
+  },
+  {
+    "id": 1039,
+    "question": "Incorrect size?",
+    "answer": "Artwork must be resized according to vendor specifications.",
+    "source_id": 278
+  },
+  {
+    "id": 1040,
+    "question": "Check alignment?",
+    "answer": "Yes, stroke alignment must be checked.",
+    "source_id": 279
+  },
+  {
+    "id": 1041,
+    "question": "Color mismatch?",
+    "answer": "The mismatch must be corrected before proofing.",
+    "source_id": 280
+  },
+  {
+    "id": 1042,
+    "question": "Verify specs?",
+    "answer": "Yes, vendor specifications must be reviewed.",
+    "source_id": 281
+  },
+  {
+    "id": 1043,
+    "question": "Exceeds imprint?",
+    "answer": "Artwork must be adjusted to fit imprint area.",
+    "source_id": 282
+  },
+  {
+    "id": 1044,
+    "question": "Consistent lines?",
+    "answer": "Yes, line weights must be consistent.",
+    "source_id": 283
   }
 ]

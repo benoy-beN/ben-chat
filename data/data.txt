@@ -818,3 +818,34 @@ A: This question is not covered in the SOP. Please contact HR.
 Q: What is the maximum font size allowed?
 A: This question is not covered in the SOP. Please contact HR.
 
+
+Q: Silver code?
+A: Please use Pantone 877.
+
+Q: Gold code?
+A: Please use Pantone 871.
+
+Q: Color mode?
+A: CMYK color mode is recommended.
+
+Q: Use RGB?
+A: No, RGB artwork must be converted to CMYK.
+
+Q: Incorrect size?
+A: Artwork must be resized according to vendor specifications.
+
+Q: Check alignment?
+A: Yes, stroke alignment must be checked.
+
+Q: Color mismatch?
+A: The mismatch must be corrected before proofing.
+
+Q: Verify specs?
+A: Yes, vendor specifications must be reviewed.
+
+Q: Exceeds imprint?
+A: Artwork must be adjusted to fit imprint area.
+
+Q: Consistent lines?
+A: Yes, line weights must be consistent.
+

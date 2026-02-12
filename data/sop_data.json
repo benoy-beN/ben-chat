@@ -1363,5 +1363,55 @@
     "id": 273,
     "question": "What is the maximum font size allowed?",
     "answer": "This question is not covered in the SOP. Please contact HR."
+  },
+  {
+    "id": 274,
+    "question": "Silver code?",
+    "answer": "Please use Pantone 877."
+  },
+  {
+    "id": 275,
+    "question": "Gold code?",
+    "answer": "Please use Pantone 871."
+  },
+  {
+    "id": 276,
+    "question": "Color mode?",
+    "answer": "CMYK color mode is recommended."
+  },
+  {
+    "id": 277,
+    "question": "Use RGB?",
+    "answer": "No, RGB artwork must be converted to CMYK."
+  },
+  {
+    "id": 278,
+    "question": "Incorrect size?",
+    "answer": "Artwork must be resized according to vendor specifications."
+  },
+  {
+    "id": 279,
+    "question": "Check alignment?",
+    "answer": "Yes, stroke alignment must be checked."
+  },
+  {
+    "id": 280,
+    "question": "Color mismatch?",
+    "answer": "The mismatch must be corrected before proofing."
+  },
+  {
+    "id": 281,
+    "question": "Verify specs?",
+    "answer": "Yes, vendor specifications must be reviewed."
+  },
+  {
+    "id": 282,
+    "question": "Exceeds imprint?",
+    "answer": "Artwork must be adjusted to fit imprint area."
+  },
+  {
+    "id": 283,
+    "question": "Consistent lines?",
+    "answer": "Yes, line weights must be consistent."
   }
 ]
