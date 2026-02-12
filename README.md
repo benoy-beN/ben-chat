@@ -30,29 +30,29 @@ Version 4.0 introduces a production-grade **Hybrid Search + Reranking Architectu
 
 ```mermaid
 graph TD
-    User[User Question] --> Norm[Normalize Input]
+    User["User Question"] --> Norm["Normalize Input"]
     
     subgraph "Hybrid Retrieval (Recall)"
-    Norm --> EmbedA[Embedder A (BGE-Base)]
-    Norm --> EmbedB[Embedder B (MiniLM)]
-    EmbedA --> IndexA[FAISS Index A]
-    EmbedB --> IndexB[FAISS Index B]
-    IndexA --> TopA[Top-5 Candidates]
-    IndexB --> TopB[Top-5 Candidates]
-    TopA & TopB --> Fusion[Weighted Fusion]
+    Norm --> EmbedA["Embedder A (BGE-Base)"]
+    Norm --> EmbedB["Embedder B (MiniLM)"]
+    EmbedA --> IndexA["FAISS Index A"]
+    EmbedB --> IndexB["FAISS Index B"]
+    IndexA --> TopA["Top-5 Candidates"]
+    IndexB --> TopB["Top-5 Candidates"]
+    TopA & TopB --> Fusion["Weighted Fusion"]
     end
     
     subgraph "Precision Refinement"
-    Fusion --> Candidates[Selected Top-5]
-    Candidates --> Rerank[Cross-Encoder Reranker]
-    Rerank --> Ensemble[Ensemble Score Calculation]
+    Fusion --> Candidates["Selected Top-5"]
+    Candidates --> Rerank["Cross-Encoder Reranker"]
+    Rerank --> Ensemble["Ensemble Score Calculation"]
     end
     
-    Ensemble --> Threshold{Score > 0.40?}
-    Threshold -- No --> Reject[Reject: 'Not in SOP']
-    Threshold -- Yes --> Answer[Retrieve Verified Answer]
-    Answer --> Rewrite[LLM Rewrite (Optional)]
-    Rewrite --> Final[Final Response]
+    Ensemble --> Threshold{"Score > 0.40?"}
+    Threshold -- No --> Reject["Reject: 'Not in SOP'"]
+    Threshold -- Yes --> Answer["Retrieve Verified Answer"]
+    Answer --> Rewrite["LLM Rewrite (Optional)"]
+    Rewrite --> Final["Final Response"]
 ```
 
 ---
