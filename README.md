@@ -1,4 +1,4 @@
-# 🛡️ SOP Chatbot v3.0 — High Accuracy Certified
+# 🛡️ SOP Chatbot v3.0 - High Accuracy Certified
 
 A **deterministic, high-accuracy** SOP chatbot engineered for zero hallucination. Version 3.0 represents a significant leap in robustness, achieving **100% accuracy** across an expanded adversarial test suite of **103 complex queries**.
 
