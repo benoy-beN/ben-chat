@@ -43,6 +43,11 @@ def run_evaluation():
 
     # Load pipeline
     pipeline = SOPPipeline()
+
+    # Disable LLM rewrite during evaluation — we're testing retrieval accuracy, not rewriting
+    original_rewrite = config.USE_LLM_REWRITE
+    config.USE_LLM_REWRITE = False
+
     pipeline.load()
 
     # Load base SOP data (ground truth)
@@ -215,6 +220,9 @@ def run_evaluation():
         print("  ✅ EXCELLENT — Production ready!")
     else:
         print("  ⚠️  NEEDS IMPROVEMENT — Review failures above")
+
+    # Restore original LLM rewrite setting
+    config.USE_LLM_REWRITE = original_rewrite
 
     return {
         "exact_accuracy": exact_accuracy,

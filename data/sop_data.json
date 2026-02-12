@@ -11,242 +11,1357 @@
   },
   {
     "id": 3,
-    "question": "Which PMS should be used for metallic silver?",
-    "answer": "Pantone 877 should be used."
-  },
-  {
-    "id": 4,
-    "question": "Which PMS should be used for metallic gold?",
-    "answer": "Pantone 871 should be used."
-  },
-  {
-    "id": 5,
     "question": "What is the minimum stroke thickness for positive space?",
     "answer": "Minimum stroke thickness is 1 pt."
   },
   {
-    "id": 6,
+    "id": 4,
     "question": "What is the minimum stroke thickness for negative space?",
     "answer": "Minimum stroke thickness is 1.5 pt."
   },
   {
-    "id": 7,
+    "id": 5,
     "question": "What is the minimum font size for positive sans-serif text?",
     "answer": "Minimum size is 8 pt."
   },
   {
-    "id": 8,
+    "id": 6,
     "question": "What is the minimum font size for negative sans-serif text?",
     "answer": "Minimum size is 12 pt."
   },
   {
-    "id": 9,
+    "id": 7,
     "question": "What is the minimum font size for positive serif text?",
     "answer": "Minimum size is 10 pt."
   },
   {
-    "id": 10,
+    "id": 8,
     "question": "What is the minimum font size for negative serif text?",
     "answer": "Minimum size is 14 pt."
   },
   {
-    "id": 11,
-    "question": "Should gradients be used in one-color screen print?",
-    "answer": "No, gradients must be removed."
-  },
-  {
-    "id": 12,
-    "question": "Should transparency be used in vector art?",
-    "answer": "No, transparency must be flattened."
-  },
-  {
-    "id": 13,
-    "question": "What color format should one-color artwork be in?",
-    "answer": "Solid black or a single PMS color."
-  },
-  {
-    "id": 14,
-    "question": "What file formats are preferred for final vector artwork?",
-    "answer": "EPS or PDF formats are preferred."
-  },
-  {
-    "id": 15,
-    "question": "What does width 0.0000 indicate?",
-    "answer": "It indicates a circular imprint area."
-  },
-  {
-    "id": 16,
-    "question": "What is the diameter when width shows 0.0000?",
-    "answer": "The diameter is 1.5 inches."
-  },
-  {
-    "id": 17,
-    "question": "What should be followed if artwork and label colors differ?",
-    "answer": "Always follow the imprint color mentioned on the label."
-  },
-  {
-    "id": 18,
-    "question": "What should be done if the imprint color is unclear?",
-    "answer": "Clarify with CSR or check order details."
-  },
-  {
-    "id": 19,
-    "question": "What details must be checked on proof labels?",
-    "answer": "Order ID, date, CSR name, and imprint color."
-  },
-  {
-    "id": 20,
-    "question": "Should spelling be checked even if text is in customer artwork?",
-    "answer": "Yes, spelling must always be verified."
-  },
-  {
-    "id": 21,
-    "question": "What should be done if text looks incorrect?",
-    "answer": "Flag it and inform the team leader."
-  },
-  {
-    "id": 22,
-    "question": "When should a premockup be created?",
-    "answer": "When customer artwork does not meet vendor specifications."
-  },
-  {
-    "id": 23,
-    "question": "How many premockup options should be shown?",
-    "answer": "At least two options should be shown."
-  },
-  {
-    "id": 24,
-    "question": "Which premockup option should be recommended?",
-    "answer": "The best compliant option should be highlighted."
-  },
-  {
-    "id": 25,
-    "question": "What does empty Art on File mean?",
-    "answer": "Artwork must be created from scratch."
-  },
-  {
-    "id": 26,
-    "question": "Should stray points be removed from vector artwork?",
-    "answer": "Yes, all stray points must be removed."
-  },
-  {
-    "id": 27,
-    "question": "Should overlapping paths be cleaned?",
-    "answer": "Yes, overlapping paths should be corrected."
-  },
-  {
-    "id": 28,
-    "question": "Should artwork be centered automatically?",
-    "answer": "Yes, unless otherwise specified."
-  },
-  {
-    "id": 29,
-    "question": "Should artwork exceed the imprint area?",
-    "answer": "No, artwork must fit within the imprint area."
-  },
-  {
-    "id": 30,
-    "question": "Where are vendor specifications usually found?",
-    "answer": "In the blank mockup template."
-  },
-  {
-    "id": 31,
-    "question": "Should vendor line weight rules be followed strictly?",
-    "answer": "Yes, they must be followed exactly."
-  },
-  {
-    "id": 32,
-    "question": "Should proof notes be read before finalizing artwork?",
-    "answer": "Yes, proof notes must be reviewed."
-  },
-  {
-    "id": 33,
-    "question": "Should the JPG proof match the vector file exactly?",
-    "answer": "Yes, both must match perfectly."
-  },
-  {
-    "id": 34,
-    "question": "Can grayscale be used for one-color print?",
-    "answer": "No, use solid black or a single PMS color."
-  },
-  {
-    "id": 35,
-    "question": "Should multiple black shades be used in one-color artwork?",
-    "answer": "No, use only one black value."
-  },
-  {
-    "id": 36,
+    "id": 9,
     "question": "Should text be converted to outlines?",
     "answer": "Yes, text should be converted to outlines."
   },
   {
-    "id": 37,
-    "question": "Should live fonts remain in final files?",
+    "id": 10,
+    "question": "Should gradients be used in one-color screen print?",
+    "answer": "No, gradients should not be used in one-color screen print."
+  },
+  {
+    "id": 11,
+    "question": "Should raster images be submitted for screen printing?",
+    "answer": "No, raster images should be converted to vector format."
+  },
+  {
+    "id": 12,
+    "question": "What file formats are acceptable for vector artwork?",
+    "answer": "Acceptable formats are AI, EPS, and PDF."
+  },
+  {
+    "id": 13,
+    "question": "Should stray points be removed from artwork?",
+    "answer": "Yes, stray points must be removed."
+  },
+  {
+    "id": 14,
+    "question": "Should transparency be flattened before submission?",
+    "answer": "Yes, transparency must be flattened."
+  },
+  {
+    "id": 15,
+    "question": "Should fonts be embedded in final PDF?",
     "answer": "No, fonts must be converted to outlines."
   },
   {
+    "id": 16,
+    "question": "What should be done if artwork is blurry?",
+    "answer": "Artwork must be recreated in vector format."
+  },
+  {
+    "id": 17,
+    "question": "What should be done if artwork contains low resolution images?",
+    "answer": "Low resolution images must be replaced with high resolution versions."
+  },
+  {
+    "id": 18,
+    "question": "What is the recommended color mode for print artwork?",
+    "answer": "CMYK color mode is recommended."
+  },
+  {
+    "id": 19,
+    "question": "Should RGB artwork be used for print?",
+    "answer": "No, RGB artwork must be converted to CMYK."
+  },
+  {
+    "id": 20,
+    "question": "Should Pantone colors be specified clearly?",
+    "answer": "Yes, Pantone colors must be clearly mentioned."
+  },
+  {
+    "id": 21,
+    "question": "What should be done if Pantone code is missing?",
+    "answer": "Contact CSR for clarification."
+  },
+  {
+    "id": 22,
+    "question": "Should overlapping objects be merged?",
+    "answer": "Yes, overlapping objects should be merged."
+  },
+  {
+    "id": 23,
+    "question": "Should clipping masks be expanded?",
+    "answer": "Yes, clipping masks must be expanded."
+  },
+  {
+    "id": 24,
+    "question": "Should linked images be embedded?",
+    "answer": "Yes, linked images must be embedded."
+  },
+  {
+    "id": 25,
+    "question": "What should be done if artwork size is incorrect?",
+    "answer": "Artwork must be resized according to vendor specifications."
+  },
+  {
+    "id": 26,
+    "question": "Should stroke alignment be checked?",
+    "answer": "Yes, stroke alignment must be checked."
+  },
+  {
+    "id": 27,
+    "question": "Should negative space text follow minimum thickness rules?",
+    "answer": "Yes, negative space text must follow minimum thickness rules."
+  },
+  {
+    "id": 28,
+    "question": "Should artwork follow imprint area guidelines?",
+    "answer": "Yes, artwork must stay within imprint area."
+  },
+  {
+    "id": 29,
+    "question": "What should be done if imprint color mismatches label?",
+    "answer": "The mismatch must be corrected before proofing."
+  },
+  {
+    "id": 30,
+    "question": "Should spelling be verified before proof?",
+    "answer": "Yes, spelling must be verified."
+  },
+  {
+    "id": 31,
+    "question": "Should vendor specs be reviewed before approval?",
+    "answer": "Yes, vendor specifications must be reviewed."
+  },
+  {
+    "id": 32,
+    "question": "What should be done if artwork exceeds imprint area?",
+    "answer": "Artwork must be adjusted to fit imprint area."
+  },
+  {
+    "id": 33,
+    "question": "Should line weights be consistent?",
+    "answer": "Yes, line weights must be consistent."
+  },
+  {
+    "id": 34,
+    "question": "Should artwork be centered when required?",
+    "answer": "Yes, artwork must be centered if specified."
+  },
+  {
+    "id": 35,
+    "question": "What should be done if fonts are missing?",
+    "answer": "Replace with correct font and convert to outlines."
+  },
+  {
+    "id": 36,
+    "question": "Should black be set to 100 percent K for single color print?",
+    "answer": "Yes, black should be set to 100 percent K."
+  },
+  {
+    "id": 37,
+    "question": "Should bleed be added if required?",
+    "answer": "Yes, bleed must be added when specified."
+  },
+  {
     "id": 38,
-    "question": "Should fine details be simplified for screen printing?",
-    "answer": "Yes, fine details should be simplified."
+    "question": "Should artwork resolution be checked?",
+    "answer": "Yes, resolution must be verified."
   },
   {
     "id": 39,
-    "question": "Should thin strokes be thickened if below minimum size?",
-    "answer": "Yes, adjust to meet minimum stroke requirements."
+    "question": "What should be done if artwork contains extra hidden layers?",
+    "answer": "Hidden layers must be removed."
   },
   {
     "id": 40,
-    "question": "Should imprint size be mentioned on mockups?",
-    "answer": "Yes, imprint size must be shown."
+    "question": "Should white objects be checked on white background items?",
+    "answer": "Yes, white objects must be clearly visible in proof."
   },
   {
     "id": 41,
-    "question": "Should imprint location be clearly marked?",
-    "answer": "Yes, imprint location must be clearly shown."
+    "question": "Should preview PDF be checked before sending?",
+    "answer": "Yes, preview must be verified."
   },
   {
     "id": 42,
-    "question": "Should previous revisions be reviewed before making changes?",
-    "answer": "Yes, always review revision history."
+    "question": "Should outline strokes be expanded if required?",
+    "answer": "Yes, strokes must be expanded if necessary."
   },
   {
     "id": 43,
-    "question": "Should old errors be repeated in revisions?",
-    "answer": "No, errors must be corrected."
+    "question": "What should be done if proof date is missing?",
+    "answer": "Add the correct proof date."
   },
   {
     "id": 44,
-    "question": "What is the main goal of vector cleanup?",
-    "answer": "To create clear, printable, and error-free artwork."
+    "question": "Should CSR name be included in proof?",
+    "answer": "Yes, CSR name must be included."
   },
   {
     "id": 45,
-    "question": "Should artwork be checked at 100 percent zoom?",
-    "answer": "Yes, final checks should be done at 100 percent zoom."
+    "question": "Should order ID be verified?",
+    "answer": "Yes, order ID must be verified."
   },
   {
     "id": 46,
-    "question": "Should RGB colors be used for print vectors?",
-    "answer": "No, use PMS or solid black only."
+    "question": "Should art be enlarged proportionally?",
+    "answer": "Yes, art must be enlarged proportionally."
   },
   {
     "id": 47,
-    "question": "Should extra artboards be removed before exporting?",
-    "answer": "Yes, remove unused artboards."
+    "question": "What should be done if there is a typo in artwork?",
+    "answer": "The typo must be corrected before proof."
   },
   {
     "id": 48,
-    "question": "Should final files be reopened and verified?",
-    "answer": "Yes, always reopen and verify final files."
+    "question": "Should all elements be aligned properly?",
+    "answer": "Yes, elements must be aligned properly."
   },
   {
     "id": 49,
-    "question": "Who is responsible for final artwork accuracy?",
-    "answer": "The assigned designer is responsible."
+    "question": "Should unnecessary anchor points be removed?",
+    "answer": "Yes, unnecessary anchor points must be removed."
   },
   {
     "id": 50,
-    "question": "What should be done if unsure about artwork changes?",
-    "answer": "Escalate to the team leader or QA."
+    "question": "Should artwork be saved in compatible version?",
+    "answer": "Yes, artwork must be saved in compatible version."
+  },
+  {
+    "id": 51,
+    "question": "Should artwork be checked at 100 percent zoom?",
+    "answer": "Yes, artwork must be checked at 100 percent zoom."
+  },
+  {
+    "id": 52,
+    "question": "Should spot colors be separated correctly?",
+    "answer": "Yes, spot colors must be separated correctly."
+  },
+  {
+    "id": 53,
+    "question": "Should overprint settings be verified?",
+    "answer": "Yes, overprint settings must be verified."
+  },
+  {
+    "id": 54,
+    "question": "What should be done if overprint is enabled incorrectly?",
+    "answer": "Overprint must be disabled unless required."
+  },
+  {
+    "id": 55,
+    "question": "Should artwork layers be organized properly?",
+    "answer": "Yes, artwork layers must be organized properly."
+  },
+  {
+    "id": 56,
+    "question": "Should template guidelines be removed before final export?",
+    "answer": "Yes, template guidelines must be removed."
+  },
+  {
+    "id": 57,
+    "question": "Should dielines be clearly marked?",
+    "answer": "Yes, dielines must be clearly marked."
+  },
+  {
+    "id": 58,
+    "question": "Should dielines be set to non-printing color?",
+    "answer": "Yes, dielines must be set to non-printing color."
+  },
+  {
+    "id": 59,
+    "question": "What should be done if artwork is pixelated after scaling?",
+    "answer": "Artwork must be recreated in vector format."
+  },
+  {
+    "id": 60,
+    "question": "Should fonts be verified against customer artwork?",
+    "answer": "Yes, fonts must match customer artwork."
+  },
+  {
+    "id": 61,
+    "question": "Should logo proportions be maintained?",
+    "answer": "Yes, logo proportions must be maintained."
+  },
+  {
+    "id": 62,
+    "question": "Should minimum spacing between elements be maintained?",
+    "answer": "Yes, minimum spacing must be maintained."
+  },
+  {
+    "id": 63,
+    "question": "Should artwork be mirrored if required by imprint method?",
+    "answer": "Yes, artwork must be mirrored when required."
+  },
+  {
+    "id": 64,
+    "question": "Should embroidery files follow thread chart?",
+    "answer": "Yes, embroidery files must follow approved thread chart."
+  },
+  {
+    "id": 65,
+    "question": "What should be done if thread code is missing?",
+    "answer": "Confirm thread code with digitizing team."
+  },
+  {
+    "id": 66,
+    "question": "Should embroidery text follow minimum stitch height?",
+    "answer": "Yes, text must follow minimum stitch height."
+  },
+  {
+    "id": 67,
+    "question": "Should thin lines be avoided in embroidery?",
+    "answer": "Yes, thin lines should be avoided."
+  },
+  {
+    "id": 68,
+    "question": "Should small details be simplified for embroidery?",
+    "answer": "Yes, small details must be simplified."
+  },
+  {
+    "id": 69,
+    "question": "Should metallic ink be specified clearly?",
+    "answer": "Yes, metallic ink must be clearly specified."
+  },
+  {
+    "id": 70,
+    "question": "Should artwork include safety margin?",
+    "answer": "Yes, safety margin must be included."
+  },
+  {
+    "id": 71,
+    "question": "Should proof background match product color?",
+    "answer": "Yes, proof background must match product color."
+  },
+  {
+    "id": 72,
+    "question": "Should artboard size match imprint area?",
+    "answer": "Yes, artboard size must match imprint area."
+  },
+  {
+    "id": 73,
+    "question": "Should duplicate objects be removed?",
+    "answer": "Yes, duplicate objects must be removed."
+  },
+  {
+    "id": 74,
+    "question": "Should outlines be checked for breaks?",
+    "answer": "Yes, outlines must be checked for breaks."
+  },
+  {
+    "id": 75,
+    "question": "Should compound paths be properly created?",
+    "answer": "Yes, compound paths must be properly created."
+  },
+  {
+    "id": 76,
+    "question": "Should white ink be clearly indicated?",
+    "answer": "Yes, white ink must be clearly indicated."
+  },
+  {
+    "id": 77,
+    "question": "Should knockouts be verified?",
+    "answer": "Yes, knockouts must be verified."
+  },
+  {
+    "id": 78,
+    "question": "Should negative text be checked for fill?",
+    "answer": "Yes, negative text must be checked for proper fill."
+  },
+  {
+    "id": 79,
+    "question": "Should artwork follow supplier template?",
+    "answer": "Yes, artwork must follow supplier template."
+  },
+  {
+    "id": 80,
+    "question": "Should scale be verified before export?",
+    "answer": "Yes, scale must be verified."
+  },
+  {
+    "id": 81,
+    "question": "Should proof include imprint method?",
+    "answer": "Yes, imprint method must be included."
+  },
+  {
+    "id": 82,
+    "question": "Should color count be verified?",
+    "answer": "Yes, color count must be verified."
+  },
+  {
+    "id": 83,
+    "question": "Should stroke caps and joins be checked?",
+    "answer": "Yes, stroke caps and joins must be checked."
+  },
+  {
+    "id": 84,
+    "question": "Should vector paths be closed?",
+    "answer": "Yes, vector paths must be closed."
+  },
+  {
+    "id": 85,
+    "question": "Should raster effects be removed from vector art?",
+    "answer": "Yes, raster effects must be removed."
+  },
+  {
+    "id": 86,
+    "question": "Should artwork include registration marks when required?",
+    "answer": "Yes, registration marks must be included when required."
+  },
+  {
+    "id": 87,
+    "question": "Should final file be checked in outline mode?",
+    "answer": "Yes, final file must be checked in outline mode."
+  },
+  {
+    "id": 88,
+    "question": "Should final proof be approved before production?",
+    "answer": "Yes, final proof must be approved before production."
+  },
+  {
+    "id": 89,
+    "question": "Should special characters be verified in text?",
+    "answer": "Yes, special characters must be verified."
+  },
+  {
+    "id": 90,
+    "question": "Should barcodes be tested for readability?",
+    "answer": "Yes, barcodes must be tested for readability."
+  },
+  {
+    "id": 91,
+    "question": "Should QR codes be verified before approval?",
+    "answer": "Yes, QR codes must be verified."
+  },
+  {
+    "id": 92,
+    "question": "Should multi-color designs be separated by layers?",
+    "answer": "Yes, multi-color designs must be separated by layers."
+  },
+  {
+    "id": 93,
+    "question": "Should artwork follow one-color restrictions when applicable?",
+    "answer": "Yes, artwork must follow one-color restrictions."
+  },
+  {
+    "id": 94,
+    "question": "Should gradients be replaced with solid fills in one-color print?",
+    "answer": "Yes, gradients must be replaced with solid fills."
+  },
+  {
+    "id": 95,
+    "question": "Should artwork be saved with linked fonts removed?",
+    "answer": "Yes, linked fonts must be removed."
+  },
+  {
+    "id": 96,
+    "question": "Should dimension lines be removed before final export?",
+    "answer": "Yes, dimension lines must be removed."
+  },
+  {
+    "id": 97,
+    "question": "Should artwork margins match vendor spec?",
+    "answer": "Yes, margins must match vendor specification."
+  },
+  {
+    "id": 98,
+    "question": "Should EPS files be saved without preview transparency?",
+    "answer": "Yes, EPS files must be saved without transparency."
+  },
+  {
+    "id": 99,
+    "question": "Should PDF compatibility be set correctly?",
+    "answer": "Yes, PDF compatibility must be set correctly."
+  },
+  {
+    "id": 100,
+    "question": "Should artwork be checked for reversed text?",
+    "answer": "Yes, reversed text must be checked."
+  },
+  {
+    "id": 101,
+    "question": "Should duplicate layers be deleted?",
+    "answer": "Yes, duplicate layers must be deleted."
+  },
+  {
+    "id": 102,
+    "question": "Should artwork be aligned to center when required?",
+    "answer": "Yes, artwork must be aligned to center when required."
+  },
+  {
+    "id": 103,
+    "question": "Should art be flattened before sending to vendor?",
+    "answer": "Yes, art must be flattened when required."
+  },
+  {
+    "id": 104,
+    "question": "Should grayscale artwork be converted to black?",
+    "answer": "Yes, grayscale must be converted to solid black."
+  },
+  {
+    "id": 105,
+    "question": "Should multi-line text be evenly spaced?",
+    "answer": "Yes, multi-line text must be evenly spaced."
+  },
+  {
+    "id": 106,
+    "question": "Should artwork follow PMS conversion chart?",
+    "answer": "Yes, artwork must follow PMS conversion chart."
+  },
+  {
+    "id": 107,
+    "question": "Should image links be updated before export?",
+    "answer": "Yes, image links must be updated."
+  },
+  {
+    "id": 108,
+    "question": "Should unused swatches be removed?",
+    "answer": "Yes, unused swatches must be removed."
+  },
+  {
+    "id": 109,
+    "question": "Should document color mode be verified?",
+    "answer": "Yes, document color mode must be verified."
+  },
+  {
+    "id": 110,
+    "question": "Should art be rotated correctly as per imprint?",
+    "answer": "Yes, art must be rotated correctly."
+  },
+  {
+    "id": 111,
+    "question": "Should emboss designs avoid fine detail?",
+    "answer": "Yes, fine detail must be avoided in emboss."
+  },
+  {
+    "id": 112,
+    "question": "Should deboss designs avoid thin lines?",
+    "answer": "Yes, thin lines must be avoided in deboss."
+  },
+  {
+    "id": 113,
+    "question": "Should artwork be previewed in print simulation mode?",
+    "answer": "Yes, artwork must be previewed in print simulation mode."
+  },
+  {
+    "id": 114,
+    "question": "Should linked transparency effects be rasterized?",
+    "answer": "Yes, transparency effects must be rasterized."
+  },
+  {
+    "id": 115,
+    "question": "Should artboard units match specification?",
+    "answer": "Yes, artboard units must match specification."
+  },
+  {
+    "id": 116,
+    "question": "Should artwork include crop marks when required?",
+    "answer": "Yes, crop marks must be included when required."
+  },
+  {
+    "id": 117,
+    "question": "Should art be locked before final export?",
+    "answer": "Yes, art must be locked before final export."
+  },
+  {
+    "id": 118,
+    "question": "Should artwork file name include order ID?",
+    "answer": "Yes, file name must include order ID."
+  },
+  {
+    "id": 119,
+    "question": "Should vendor instructions be reviewed carefully?",
+    "answer": "Yes, vendor instructions must be reviewed."
+  },
+  {
+    "id": 120,
+    "question": "Should white background objects be outlined if needed?",
+    "answer": "Yes, white objects must be outlined if needed."
+  },
+  {
+    "id": 121,
+    "question": "Should small text be bolded if too thin?",
+    "answer": "Yes, small text should be bolded if too thin."
+  },
+  {
+    "id": 122,
+    "question": "Should proof show actual imprint size?",
+    "answer": "Yes, proof must show actual imprint size."
+  },
+  {
+    "id": 123,
+    "question": "Should artwork alignment be double checked?",
+    "answer": "Yes, alignment must be double checked."
+  },
+  {
+    "id": 124,
+    "question": "Should vector art avoid unnecessary effects?",
+    "answer": "Yes, unnecessary effects must be avoided."
+  },
+  {
+    "id": 125,
+    "question": "Should transparency layers be merged?",
+    "answer": "Yes, transparency layers must be merged."
+  },
+  {
+    "id": 126,
+    "question": "Should art be simplified for pad printing?",
+    "answer": "Yes, art must be simplified for pad printing."
+  },
+  {
+    "id": 127,
+    "question": "Should artwork follow minimum gap rules?",
+    "answer": "Yes, artwork must follow minimum gap rules."
+  },
+  {
+    "id": 128,
+    "question": "Should outline thickness be uniform?",
+    "answer": "Yes, outline thickness must be uniform."
+  },
+  {
+    "id": 129,
+    "question": "Should final export be reviewed in PDF?",
+    "answer": "Yes, final export must be reviewed in PDF."
+  },
+  {
+    "id": 130,
+    "question": "Should print preview be checked for color shifts?",
+    "answer": "Yes, print preview must be checked for color shifts."
+  },
+  {
+    "id": 131,
+    "question": "Should art scale remain proportional?",
+    "answer": "Yes, art scale must remain proportional."
+  },
+  {
+    "id": 132,
+    "question": "Should curved text follow path correctly?",
+    "answer": "Yes, curved text must follow path correctly."
+  },
+  {
+    "id": 133,
+    "question": "Should art include bleed when required by vendor?",
+    "answer": "Yes, bleed must be included when required."
+  },
+  {
+    "id": 134,
+    "question": "Should artwork follow screen print separation rules?",
+    "answer": "Yes, artwork must follow screen print separation rules."
+  },
+  {
+    "id": 135,
+    "question": "Should art be approved internally before sending to CSR?",
+    "answer": "Yes, art must be approved internally."
+  },
+  {
+    "id": 136,
+    "question": "Should artwork follow laser engraving thickness rules?",
+    "answer": "Yes, artwork must follow engraving thickness rules."
+  },
+  {
+    "id": 137,
+    "question": "Should design be simplified for small imprint areas?",
+    "answer": "Yes, design must be simplified for small imprint areas."
+  },
+  {
+    "id": 138,
+    "question": "Should color references match thread chart for embroidery?",
+    "answer": "Yes, color references must match thread chart."
+  },
+  {
+    "id": 139,
+    "question": "Should artwork background be removed if not required?",
+    "answer": "Yes, background must be removed if not required."
+  },
+  {
+    "id": 140,
+    "question": "Should art layers be renamed clearly?",
+    "answer": "Yes, layers must be renamed clearly."
+  },
+  {
+    "id": 141,
+    "question": "Should master file be archived after approval?",
+    "answer": "Yes, master file must be archived."
+  },
+  {
+    "id": 142,
+    "question": "Should artwork follow minimum font height in embroidery?",
+    "answer": "Yes, artwork must follow minimum font height in embroidery."
+  },
+  {
+    "id": 143,
+    "question": "Should outline view be used to detect hidden objects?",
+    "answer": "Yes, outline view must be used."
+  },
+  {
+    "id": 144,
+    "question": "Should customer instructions be read fully before editing?",
+    "answer": "Yes, customer instructions must be read fully."
+  },
+  {
+    "id": 145,
+    "question": "Should proof label match imprint color exactly?",
+    "answer": "Yes, proof label must match imprint color exactly."
+  },
+  {
+    "id": 146,
+    "question": "Should artwork reflect correct orientation of product?",
+    "answer": "Yes, artwork must reflect correct orientation."
+  },
+  {
+    "id": 147,
+    "question": "Should final file be saved without locked template layers?",
+    "answer": "Yes, locked template layers must be removed."
+  },
+  {
+    "id": 148,
+    "question": "Should design follow maximum imprint size?",
+    "answer": "Yes, design must follow maximum imprint size."
+  },
+  {
+    "id": 149,
+    "question": "Should art be tested in grayscale for visibility?",
+    "answer": "Yes, art must be tested in grayscale."
+  },
+  {
+    "id": 150,
+    "question": "Should fine script fonts be avoided in small print?",
+    "answer": "Yes, fine script fonts must be avoided."
+  },
+  {
+    "id": 151,
+    "question": "Should customer logo spacing be preserved?",
+    "answer": "Yes, customer logo spacing must be preserved."
+  },
+  {
+    "id": 152,
+    "question": "Should artwork be reviewed before marking as complete?",
+    "answer": "Yes, artwork must be reviewed before completion."
+  },
+  {
+    "id": 153,
+    "question": "Should artwork follow minimum line thickness for engraving?",
+    "answer": "Yes, artwork must follow minimum line thickness for engraving."
+  },
+  {
+    "id": 154,
+    "question": "Should artwork be checked for overlapping strokes?",
+    "answer": "Yes, overlapping strokes must be checked."
+  },
+  {
+    "id": 155,
+    "question": "Should Pantone black be avoided in one-color black print?",
+    "answer": "Yes, Pantone black should be avoided unless specified."
+  },
+  {
+    "id": 156,
+    "question": "Should rich black be avoided in single-color print?",
+    "answer": "Yes, rich black must be avoided in single-color print."
+  },
+  {
+    "id": 157,
+    "question": "Should art be converted to vector before resizing?",
+    "answer": "Yes, art must be converted to vector before resizing."
+  },
+  {
+    "id": 158,
+    "question": "Should artwork file be free of password protection?",
+    "answer": "Yes, artwork file must not be password protected."
+  },
+  {
+    "id": 159,
+    "question": "Should artwork include correct bleed size?",
+    "answer": "Yes, artwork must include correct bleed size."
+  },
+  {
+    "id": 160,
+    "question": "Should art follow vendor minimum spacing between colors?",
+    "answer": "Yes, art must follow minimum spacing between colors."
+  },
+  {
+    "id": 161,
+    "question": "Should multi-color art avoid color overlaps without trapping?",
+    "answer": "Yes, overlaps must include proper trapping."
+  },
+  {
+    "id": 162,
+    "question": "Should trapping be applied when required by print method?",
+    "answer": "Yes, trapping must be applied when required."
+  },
+  {
+    "id": 163,
+    "question": "Should art be proofed against original customer file?",
+    "answer": "Yes, art must be proofed against original file."
+  },
+  {
+    "id": 164,
+    "question": "Should artboard background be removed before export?",
+    "answer": "Yes, artboard background must be removed."
+  },
+  {
+    "id": 165,
+    "question": "Should objects outside artboard be deleted?",
+    "answer": "Yes, objects outside artboard must be deleted."
+  },
+  {
+    "id": 166,
+    "question": "Should white stroke on white object be avoided?",
+    "answer": "Yes, white stroke on white object must be avoided."
+  },
+  {
+    "id": 167,
+    "question": "Should vector curves be smooth and clean?",
+    "answer": "Yes, vector curves must be smooth and clean."
+  },
+  {
+    "id": 168,
+    "question": "Should art avoid excessive anchor points?",
+    "answer": "Yes, excessive anchor points must be avoided."
+  },
+  {
+    "id": 169,
+    "question": "Should art follow minimum negative space gap?",
+    "answer": "Yes, art must follow minimum negative space gap."
+  },
+  {
+    "id": 170,
+    "question": "Should artwork follow foil stamping thickness rules?",
+    "answer": "Yes, artwork must follow foil stamping thickness rules."
+  },
+  {
+    "id": 171,
+    "question": "Should proof indicate front or back imprint clearly?",
+    "answer": "Yes, proof must indicate imprint location clearly."
+  },
+  {
+    "id": 172,
+    "question": "Should artwork match customer color reference image?",
+    "answer": "Yes, artwork must match customer color reference."
+  },
+  {
+    "id": 173,
+    "question": "Should PMS conversion to CMYK be verified carefully?",
+    "answer": "Yes, PMS to CMYK conversion must be verified."
+  },
+  {
+    "id": 174,
+    "question": "Should art avoid gradient mesh in print files?",
+    "answer": "Yes, gradient mesh must be avoided."
+  },
+  {
+    "id": 175,
+    "question": "Should artwork avoid transparency blending modes?",
+    "answer": "Yes, transparency blending modes must be avoided."
+  },
+  {
+    "id": 176,
+    "question": "Should stroke weights be expanded when required?",
+    "answer": "Yes, stroke weights must be expanded when required."
+  },
+  {
+    "id": 177,
+    "question": "Should fonts with effects be expanded before export?",
+    "answer": "Yes, fonts with effects must be expanded."
+  },
+  {
+    "id": 178,
+    "question": "Should text kerning be reviewed manually?",
+    "answer": "Yes, text kerning must be reviewed."
+  },
+  {
+    "id": 179,
+    "question": "Should text tracking be adjusted for readability?",
+    "answer": "Yes, text tracking must be adjusted."
+  },
+  {
+    "id": 180,
+    "question": "Should artwork margins be equal on all sides?",
+    "answer": "Yes, margins must be equal when required."
+  },
+  {
+    "id": 181,
+    "question": "Should file version compatibility be checked before sending?",
+    "answer": "Yes, file version compatibility must be checked."
+  },
+  {
+    "id": 182,
+    "question": "Should artwork follow UV print color limitations?",
+    "answer": "Yes, artwork must follow UV print color limitations."
+  },
+  {
+    "id": 183,
+    "question": "Should art be simplified for heat transfer print?",
+    "answer": "Yes, art must be simplified for heat transfer."
+  },
+  {
+    "id": 184,
+    "question": "Should artwork follow sublimation print rules?",
+    "answer": "Yes, artwork must follow sublimation print rules."
+  },
+  {
+    "id": 185,
+    "question": "Should art avoid ultra-thin script fonts in embroidery?",
+    "answer": "Yes, ultra-thin script fonts must be avoided."
+  },
+  {
+    "id": 186,
+    "question": "Should art include safe zone margins?",
+    "answer": "Yes, safe zone margins must be included."
+  },
+  {
+    "id": 187,
+    "question": "Should art avoid placing text too close to edges?",
+    "answer": "Yes, text must not be placed too close to edges."
+  },
+  {
+    "id": 188,
+    "question": "Should art be tested on dark and light backgrounds?",
+    "answer": "Yes, art must be tested on dark and light backgrounds."
+  },
+  {
+    "id": 189,
+    "question": "Should proof show actual color swatch references?",
+    "answer": "Yes, proof must show actual color swatches."
+  },
+  {
+    "id": 190,
+    "question": "Should art maintain consistent stroke style?",
+    "answer": "Yes, stroke style must remain consistent."
+  },
+  {
+    "id": 191,
+    "question": "Should final file be scanned for hidden images?",
+    "answer": "Yes, hidden images must be removed."
+  },
+  {
+    "id": 192,
+    "question": "Should art include correct scale ratio for mockup?",
+    "answer": "Yes, art must include correct scale ratio."
+  },
+  {
+    "id": 193,
+    "question": "Should artwork reflect correct bleed trimming lines?",
+    "answer": "Yes, artwork must reflect correct bleed trimming lines."
+  },
+  {
+    "id": 194,
+    "question": "Should artwork follow minimum dot size for halftone?",
+    "answer": "Yes, artwork must follow minimum dot size for halftone."
+  },
+  {
+    "id": 195,
+    "question": "Should halftone patterns be avoided in one-color print?",
+    "answer": "Yes, halftone patterns must be avoided."
+  },
+  {
+    "id": 196,
+    "question": "Should artwork include correct orientation arrow if required?",
+    "answer": "Yes, orientation arrow must be included when required."
+  },
+  {
+    "id": 197,
+    "question": "Should art be flattened before exporting EPS?",
+    "answer": "Yes, art must be flattened before exporting EPS."
+  },
+  {
+    "id": 198,
+    "question": "Should artwork avoid linked cloud files?",
+    "answer": "Yes, linked cloud files must be embedded."
+  },
+  {
+    "id": 199,
+    "question": "Should final file be reviewed in Acrobat preview?",
+    "answer": "Yes, final file must be reviewed in Acrobat preview."
+  },
+  {
+    "id": 200,
+    "question": "Should art avoid unnecessary clipping paths?",
+    "answer": "Yes, unnecessary clipping paths must be removed."
+  },
+  {
+    "id": 201,
+    "question": "Should artwork follow minimum height for small caps text?",
+    "answer": "Yes, artwork must follow minimum height for small caps text."
+  },
+  {
+    "id": 202,
+    "question": "Should art avoid over-complex vector patterns?",
+    "answer": "Yes, over-complex vector patterns must be avoided."
+  },
+  {
+    "id": 203,
+    "question": "Should artwork include correct product mockup placement?",
+    "answer": "Yes, artwork must include correct product mockup placement."
+  },
+  {
+    "id": 204,
+    "question": "Should art match approved brand guidelines?",
+    "answer": "Yes, art must match approved brand guidelines."
+  },
+  {
+    "id": 205,
+    "question": "Should artwork avoid mixing RGB and CMYK colors?",
+    "answer": "Yes, RGB and CMYK must not be mixed."
+  },
+  {
+    "id": 206,
+    "question": "Should art be reviewed after conversion to outlines?",
+    "answer": "Yes, art must be reviewed after conversion."
+  },
+  {
+    "id": 207,
+    "question": "Should artwork follow minimum corner radius rules?",
+    "answer": "Yes, artwork must follow minimum corner radius rules."
+  },
+  {
+    "id": 208,
+    "question": "Should art avoid extreme scaling distortions?",
+    "answer": "Yes, extreme scaling distortions must be avoided."
+  },
+  {
+    "id": 209,
+    "question": "Should artwork follow minimum contrast requirements?",
+    "answer": "Yes, artwork must follow minimum contrast requirements."
+  },
+  {
+    "id": 210,
+    "question": "Should proof show color separation preview if needed?",
+    "answer": "Yes, proof must show color separation preview."
+  },
+  {
+    "id": 211,
+    "question": "Should artwork avoid jagged vector edges?",
+    "answer": "Yes, jagged vector edges must be corrected."
+  },
+  {
+    "id": 212,
+    "question": "Should art include correct font weight as specified?",
+    "answer": "Yes, correct font weight must be used."
+  },
+  {
+    "id": 213,
+    "question": "Should artwork maintain consistent alignment grid?",
+    "answer": "Yes, artwork must maintain consistent alignment grid."
+  },
+  {
+    "id": 214,
+    "question": "Should art avoid unnecessary raster overlays?",
+    "answer": "Yes, unnecessary raster overlays must be removed."
+  },
+  {
+    "id": 215,
+    "question": "Should artwork follow minimum emboss depth rules?",
+    "answer": "Yes, artwork must follow minimum emboss depth rules."
+  },
+  {
+    "id": 216,
+    "question": "Should art avoid placing small details near stitching area?",
+    "answer": "Yes, small details must be avoided near stitching area."
+  },
+  {
+    "id": 217,
+    "question": "Should artwork follow minimum stitch density?",
+    "answer": "Yes, artwork must follow minimum stitch density."
+  },
+  {
+    "id": 218,
+    "question": "Should proof indicate actual scale percentage?",
+    "answer": "Yes, proof must indicate actual scale percentage."
+  },
+  {
+    "id": 219,
+    "question": "Should art avoid mirrored text errors?",
+    "answer": "Yes, mirrored text errors must be avoided."
+  },
+  {
+    "id": 220,
+    "question": "Should artwork be tested for readability at small size?",
+    "answer": "Yes, artwork must be tested for readability at small size."
+  },
+  {
+    "id": 221,
+    "question": "Should art include correct color legend if required?",
+    "answer": "Yes, correct color legend must be included."
+  },
+  {
+    "id": 222,
+    "question": "Should artwork avoid transparent white fills?",
+    "answer": "Yes, transparent white fills must be avoided."
+  },
+  {
+    "id": 223,
+    "question": "Should art be exported using correct preset settings?",
+    "answer": "Yes, correct preset settings must be used."
+  },
+  {
+    "id": 224,
+    "question": "Should artwork follow minimum foil line width?",
+    "answer": "Yes, artwork must follow minimum foil line width."
+  },
+  {
+    "id": 225,
+    "question": "Should art avoid overlapping white objects on transparent background?",
+    "answer": "Yes, overlapping white objects must be avoided."
+  },
+  {
+    "id": 226,
+    "question": "Should artwork maintain correct aspect ratio?",
+    "answer": "Yes, correct aspect ratio must be maintained."
+  },
+  {
+    "id": 227,
+    "question": "Should art follow supplier laser marking guidelines?",
+    "answer": "Yes, art must follow supplier laser marking guidelines."
+  },
+  {
+    "id": 228,
+    "question": "Should artwork avoid using opacity below 100 percent?",
+    "answer": "Yes, opacity below 100 percent must be avoided."
+  },
+  {
+    "id": 229,
+    "question": "Should art be checked for color accuracy in preview?",
+    "answer": "Yes, color accuracy must be checked."
+  },
+  {
+    "id": 230,
+    "question": "Should artwork include correct PMS notation format?",
+    "answer": "Yes, correct PMS notation format must be used."
+  },
+  {
+    "id": 231,
+    "question": "Should art avoid raster drop shadows in vector files?",
+    "answer": "Yes, raster drop shadows must be removed."
+  },
+  {
+    "id": 232,
+    "question": "Should artwork include correct bleed outline color?",
+    "answer": "Yes, correct bleed outline color must be used."
+  },
+  {
+    "id": 233,
+    "question": "Should art be verified for text alignment on curves?",
+    "answer": "Yes, text alignment on curves must be verified."
+  },
+  {
+    "id": 234,
+    "question": "Should artwork follow vendor padding requirements?",
+    "answer": "Yes, artwork must follow vendor padding requirements."
+  },
+  {
+    "id": 235,
+    "question": "Should art avoid ultra-light font weights in print?",
+    "answer": "Yes, ultra-light font weights must be avoided."
+  },
+  {
+    "id": 236,
+    "question": "Should artwork maintain consistent margin spacing?",
+    "answer": "Yes, consistent margin spacing must be maintained."
+  },
+  {
+    "id": 237,
+    "question": "Should art include correct reference image if required?",
+    "answer": "Yes, correct reference image must be included."
+  },
+  {
+    "id": 238,
+    "question": "Should artwork avoid extra artboards in final file?",
+    "answer": "Yes, extra artboards must be removed."
+  },
+  {
+    "id": 239,
+    "question": "Should art be validated against QA checklist?",
+    "answer": "Yes, art must be validated against QA checklist."
+  },
+  {
+    "id": 240,
+    "question": "Should artwork follow minimum text spacing for legibility?",
+    "answer": "Yes, artwork must follow minimum text spacing."
+  },
+  {
+    "id": 241,
+    "question": "Should art avoid printing registration marks in final output?",
+    "answer": "Yes, registration marks must not be printed in final output."
+  },
+  {
+    "id": 242,
+    "question": "Should artwork follow minimum cut path thickness?",
+    "answer": "Yes, artwork must follow minimum cut path thickness."
+  },
+  {
+    "id": 243,
+    "question": "Should art include correct orientation for heat press?",
+    "answer": "Yes, correct orientation must be included for heat press."
+  },
+  {
+    "id": 244,
+    "question": "Should artwork avoid gradient transparency masks?",
+    "answer": "Yes, gradient transparency masks must be avoided."
+  },
+  {
+    "id": 245,
+    "question": "Should art include clear indication of special finishes?",
+    "answer": "Yes, special finishes must be clearly indicated."
+  },
+  {
+    "id": 246,
+    "question": "Should artwork follow minimum dot gain compensation?",
+    "answer": "Yes, artwork must follow dot gain compensation guidelines."
+  },
+  {
+    "id": 247,
+    "question": "Should art avoid mixing spot and process colors improperly?",
+    "answer": "Yes, spot and process colors must not be mixed improperly."
+  },
+  {
+    "id": 248,
+    "question": "Should artwork include proper labeling of color layers?",
+    "answer": "Yes, color layers must be properly labeled."
+  },
+  {
+    "id": 249,
+    "question": "Should art be double checked before marking complete?",
+    "answer": "Yes, art must be double checked before completion."
+  },
+  {
+    "id": 250,
+    "question": "Can I use Pantone 877 for gold standard?",
+    "answer": "Please use Pantone 871."
+  },
+  {
+    "id": 251,
+    "question": "Should stray gradients be removed?",
+    "answer": "No, gradients should not be used in one-color screen print."
+  },
+  {
+    "id": 252,
+    "question": "Can we use raster format like AI?",
+    "answer": "Acceptable formats are AI, EPS, and PDF."
+  },
+  {
+    "id": 253,
+    "question": "Imprint limit?",
+    "answer": "Yes, artwork must stay within imprint area."
+  },
+  {
+    "id": 254,
+    "question": "Can I use RGB and keep gradients in one-color print?",
+    "answer": "No, RGB artwork must be converted to CMYK."
+  },
+  {
+    "id": 255,
+    "question": "Can I use Pantone 877 and 871 together for silver?",
+    "answer": "Please use Pantone 877."
+  },
+  {
+    "id": 256,
+    "question": "Can raster images stay if gradients are removed?",
+    "answer": "No, raster images should be converted to vector format."
+  },
+  {
+    "id": 257,
+    "question": "Should overprint and transparency both be ignored?",
+    "answer": "Yes, overprint settings must be verified."
+  },
+  {
+    "id": 258,
+    "question": "Silver PMS?",
+    "answer": "Please use Pantone 877."
+  },
+  {
+    "id": 259,
+    "question": "Gold PMS?",
+    "answer": "Please use Pantone 871."
+  },
+  {
+    "id": 260,
+    "question": "Convert text?",
+    "answer": "Yes, text should be converted to outlines."
+  },
+  {
+    "id": 261,
+    "question": "RGB ok?",
+    "answer": "No, RGB artwork must be converted to CMYK."
+  },
+  {
+    "id": 262,
+    "question": "Gradient allowed?",
+    "answer": "No, gradients should not be used in one-color screen print."
+  },
+  {
+    "id": 263,
+    "question": "Stray points?",
+    "answer": "Yes, stray points must be removed."
+  },
+  {
+    "id": 264,
+    "question": "Raster allowed?",
+    "answer": "No, raster images should be converted to vector format."
+  },
+  {
+    "id": 265,
+    "question": "Outline mode?",
+    "answer": "Yes, final file must be checked in outline mode."
+  },
+  {
+    "id": 266,
+    "question": "CMYK required?",
+    "answer": "No, RGB artwork must be converted to CMYK."
+  },
+  {
+    "id": 267,
+    "question": "Spell check?",
+    "answer": "Yes, spelling must be verified."
+  },
+  {
+    "id": 268,
+    "question": "Is minimum font size and stroke thickness the same rule?",
+    "answer": "Minimum stroke thickness is 1 pt."
+  },
+  {
+    "id": 269,
+    "question": "What is the PMS value of bronze standard?",
+    "answer": "This question is not covered in the SOP. Please contact HR."
+  },
+  {
+    "id": 270,
+    "question": "What is the maximum stroke thickness?",
+    "answer": "This question is not covered in the SOP. Please contact HR."
+  },
+  {
+    "id": 271,
+    "question": "What is the minimum RGB value for print?",
+    "answer": "This question is not covered in the SOP. Please contact HR."
+  },
+  {
+    "id": 272,
+    "question": "Can gradients be used in four-color printing?",
+    "answer": "This question is not covered in the SOP. Please contact HR."
+  },
+  {
+    "id": 273,
+    "question": "What is the maximum font size allowed?",
+    "answer": "This question is not covered in the SOP. Please contact HR."
   }
 ]

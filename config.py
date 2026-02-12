@@ -24,9 +24,9 @@ SIMILARITY_THRESHOLD = 0.75
 TOP_K = 1
 
 # ── LLM Rewrite (Optional) ───────────────────────────
-USE_LLM_REWRITE = False
+USE_LLM_REWRITE = True
 OLLAMA_BASE_URL = "http://localhost:11434"
-OLLAMA_MODEL = "mistral"
+OLLAMA_MODEL = "qwen2.5:1.5b"
 
 # ── Rejection Message ────────────────────────────────
 REJECTION_MESSAGE = (

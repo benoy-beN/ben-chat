@@ -21,14 +21,12 @@ class Embedder:
         self.model_name = model_name or config.EMBEDDING_MODEL
         self.model = None
 
-    def load(self):
-        """Load the embedding model onto GPU."""
+    def load(self, device: str = "cpu"):
+        """Load the embedding model onto the specified device."""
         print(f"🔄 Loading embedding model: {self.model_name}")
-        self.model = SentenceTransformer(self.model_name)
+        self.model = SentenceTransformer(self.model_name, device=device)
 
-        # Move to GPU if available
-        device = self.model.device
-        print(f"✅ Model loaded on device: {device}")
+        print(f"✅ Model loaded on device: {self.model.device}")
         return self
 
     def embed(self, text: str) -> np.ndarray:

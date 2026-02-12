@@ -4,12 +4,6 @@ A: Please use Pantone 877.
 Q: What is the PMS value of gold standard?
 A: Please use Pantone 871.
 
-Q: Which PMS should be used for metallic silver?
-A: Pantone 877 should be used.
-
-Q: Which PMS should be used for metallic gold?
-A: Pantone 871 should be used.
-
 Q: What is the minimum stroke thickness for positive space?
 A: Minimum stroke thickness is 1 pt.
 
@@ -28,122 +22,799 @@ A: Minimum size is 10 pt.
 Q: What is the minimum font size for negative serif text?
 A: Minimum size is 14 pt.
 
-Q: Should gradients be used in one-color screen print?
-A: No, gradients must be removed.
-
-Q: Should transparency be used in vector art?
-A: No, transparency must be flattened.
-
-Q: What color format should one-color artwork be in?
-A: Solid black or a single PMS color.
-
-Q: What file formats are preferred for final vector artwork?
-A: EPS or PDF formats are preferred.
-
-Q: What does width 0.0000 indicate?
-A: It indicates a circular imprint area.
-
-Q: What is the diameter when width shows 0.0000?
-A: The diameter is 1.5 inches.
-
-Q: What should be followed if artwork and label colors differ?
-A: Always follow the imprint color mentioned on the label.
-
-Q: What should be done if the imprint color is unclear?
-A: Clarify with CSR or check order details.
-
-Q: What details must be checked on proof labels?
-A: Order ID, date, CSR name, and imprint color.
-
-Q: Should spelling be checked even if text is in customer artwork?
-A: Yes, spelling must always be verified.
-
-Q: What should be done if text looks incorrect?
-A: Flag it and inform the team leader.
-
-Q: When should a premockup be created?
-A: When customer artwork does not meet vendor specifications.
-
-Q: How many premockup options should be shown?
-A: At least two options should be shown.
-
-Q: Which premockup option should be recommended?
-A: The best compliant option should be highlighted.
-
-Q: What does empty Art on File mean?
-A: Artwork must be created from scratch.
-
-Q: Should stray points be removed from vector artwork?
-A: Yes, all stray points must be removed.
-
-Q: Should overlapping paths be cleaned?
-A: Yes, overlapping paths should be corrected.
-
-Q: Should artwork be centered automatically?
-A: Yes, unless otherwise specified.
-
-Q: Should artwork exceed the imprint area?
-A: No, artwork must fit within the imprint area.
-
-Q: Where are vendor specifications usually found?
-A: In the blank mockup template.
-
-Q: Should vendor line weight rules be followed strictly?
-A: Yes, they must be followed exactly.
-
-Q: Should proof notes be read before finalizing artwork?
-A: Yes, proof notes must be reviewed.
-
-Q: Should the JPG proof match the vector file exactly?
-A: Yes, both must match perfectly.
-
-Q: Can grayscale be used for one-color print?
-A: No, use solid black or a single PMS color.
-
-Q: Should multiple black shades be used in one-color artwork?
-A: No, use only one black value.
-
 Q: Should text be converted to outlines?
 A: Yes, text should be converted to outlines.
 
-Q: Should live fonts remain in final files?
+Q: Should gradients be used in one-color screen print?
+A: No, gradients should not be used in one-color screen print.
+
+Q: Should raster images be submitted for screen printing?
+A: No, raster images should be converted to vector format.
+
+Q: What file formats are acceptable for vector artwork?
+A: Acceptable formats are AI, EPS, and PDF.
+
+Q: Should stray points be removed from artwork?
+A: Yes, stray points must be removed.
+
+Q: Should transparency be flattened before submission?
+A: Yes, transparency must be flattened.
+
+Q: Should fonts be embedded in final PDF?
 A: No, fonts must be converted to outlines.
 
-Q: Should fine details be simplified for screen printing?
-A: Yes, fine details should be simplified.
+Q: What should be done if artwork is blurry?
+A: Artwork must be recreated in vector format.
 
-Q: Should thin strokes be thickened if below minimum size?
-A: Yes, adjust to meet minimum stroke requirements.
+Q: What should be done if artwork contains low resolution images?
+A: Low resolution images must be replaced with high resolution versions.
 
-Q: Should imprint size be mentioned on mockups?
-A: Yes, imprint size must be shown.
+Q: What is the recommended color mode for print artwork?
+A: CMYK color mode is recommended.
 
-Q: Should imprint location be clearly marked?
-A: Yes, imprint location must be clearly shown.
+Q: Should RGB artwork be used for print?
+A: No, RGB artwork must be converted to CMYK.
 
-Q: Should previous revisions be reviewed before making changes?
-A: Yes, always review revision history.
+Q: Should Pantone colors be specified clearly?
+A: Yes, Pantone colors must be clearly mentioned.
 
-Q: Should old errors be repeated in revisions?
-A: No, errors must be corrected.
+Q: What should be done if Pantone code is missing?
+A: Contact CSR for clarification.
 
-Q: What is the main goal of vector cleanup?
-A: To create clear, printable, and error-free artwork.
+Q: Should overlapping objects be merged?
+A: Yes, overlapping objects should be merged.
+
+Q: Should clipping masks be expanded?
+A: Yes, clipping masks must be expanded.
+
+Q: Should linked images be embedded?
+A: Yes, linked images must be embedded.
+
+Q: What should be done if artwork size is incorrect?
+A: Artwork must be resized according to vendor specifications.
+
+Q: Should stroke alignment be checked?
+A: Yes, stroke alignment must be checked.
+
+Q: Should negative space text follow minimum thickness rules?
+A: Yes, negative space text must follow minimum thickness rules.
+
+Q: Should artwork follow imprint area guidelines?
+A: Yes, artwork must stay within imprint area.
+
+Q: What should be done if imprint color mismatches label?
+A: The mismatch must be corrected before proofing.
+
+Q: Should spelling be verified before proof?
+A: Yes, spelling must be verified.
+
+Q: Should vendor specs be reviewed before approval?
+A: Yes, vendor specifications must be reviewed.
+
+Q: What should be done if artwork exceeds imprint area?
+A: Artwork must be adjusted to fit imprint area.
+
+Q: Should line weights be consistent?
+A: Yes, line weights must be consistent.
+
+Q: Should artwork be centered when required?
+A: Yes, artwork must be centered if specified.
+
+Q: What should be done if fonts are missing?
+A: Replace with correct font and convert to outlines.
+
+Q: Should black be set to 100 percent K for single color print?
+A: Yes, black should be set to 100 percent K.
+
+Q: Should bleed be added if required?
+A: Yes, bleed must be added when specified.
+
+Q: Should artwork resolution be checked?
+A: Yes, resolution must be verified.
+
+Q: What should be done if artwork contains extra hidden layers?
+A: Hidden layers must be removed.
+
+Q: Should white objects be checked on white background items?
+A: Yes, white objects must be clearly visible in proof.
+
+Q: Should preview PDF be checked before sending?
+A: Yes, preview must be verified.
+
+Q: Should outline strokes be expanded if required?
+A: Yes, strokes must be expanded if necessary.
+
+Q: What should be done if proof date is missing?
+A: Add the correct proof date.
+
+Q: Should CSR name be included in proof?
+A: Yes, CSR name must be included.
+
+Q: Should order ID be verified?
+A: Yes, order ID must be verified.
+
+Q: Should art be enlarged proportionally?
+A: Yes, art must be enlarged proportionally.
+
+Q: What should be done if there is a typo in artwork?
+A: The typo must be corrected before proof.
+
+Q: Should all elements be aligned properly?
+A: Yes, elements must be aligned properly.
+
+Q: Should unnecessary anchor points be removed?
+A: Yes, unnecessary anchor points must be removed.
+
+Q: Should artwork be saved in compatible version?
+A: Yes, artwork must be saved in compatible version.
 
 Q: Should artwork be checked at 100 percent zoom?
-A: Yes, final checks should be done at 100 percent zoom.
+A: Yes, artwork must be checked at 100 percent zoom.
 
-Q: Should RGB colors be used for print vectors?
-A: No, use PMS or solid black only.
+Q: Should spot colors be separated correctly?
+A: Yes, spot colors must be separated correctly.
 
-Q: Should extra artboards be removed before exporting?
-A: Yes, remove unused artboards.
+Q: Should overprint settings be verified?
+A: Yes, overprint settings must be verified.
 
-Q: Should final files be reopened and verified?
-A: Yes, always reopen and verify final files.
+Q: What should be done if overprint is enabled incorrectly?
+A: Overprint must be disabled unless required.
 
-Q: Who is responsible for final artwork accuracy?
-A: The assigned designer is responsible.
+Q: Should artwork layers be organized properly?
+A: Yes, artwork layers must be organized properly.
 
-Q: What should be done if unsure about artwork changes?
-A: Escalate to the team leader or QA.
+Q: Should template guidelines be removed before final export?
+A: Yes, template guidelines must be removed.
+
+Q: Should dielines be clearly marked?
+A: Yes, dielines must be clearly marked.
+
+Q: Should dielines be set to non-printing color?
+A: Yes, dielines must be set to non-printing color.
+
+Q: What should be done if artwork is pixelated after scaling?
+A: Artwork must be recreated in vector format.
+
+Q: Should fonts be verified against customer artwork?
+A: Yes, fonts must match customer artwork.
+
+Q: Should logo proportions be maintained?
+A: Yes, logo proportions must be maintained.
+
+Q: Should minimum spacing between elements be maintained?
+A: Yes, minimum spacing must be maintained.
+
+Q: Should artwork be mirrored if required by imprint method?
+A: Yes, artwork must be mirrored when required.
+
+Q: Should embroidery files follow thread chart?
+A: Yes, embroidery files must follow approved thread chart.
+
+Q: What should be done if thread code is missing?
+A: Confirm thread code with digitizing team.
+
+Q: Should embroidery text follow minimum stitch height?
+A: Yes, text must follow minimum stitch height.
+
+Q: Should thin lines be avoided in embroidery?
+A: Yes, thin lines should be avoided.
+
+Q: Should small details be simplified for embroidery?
+A: Yes, small details must be simplified.
+
+Q: Should metallic ink be specified clearly?
+A: Yes, metallic ink must be clearly specified.
+
+Q: Should artwork include safety margin?
+A: Yes, safety margin must be included.
+
+Q: Should proof background match product color?
+A: Yes, proof background must match product color.
+
+Q: Should artboard size match imprint area?
+A: Yes, artboard size must match imprint area.
+
+Q: Should duplicate objects be removed?
+A: Yes, duplicate objects must be removed.
+
+Q: Should outlines be checked for breaks?
+A: Yes, outlines must be checked for breaks.
+
+Q: Should compound paths be properly created?
+A: Yes, compound paths must be properly created.
+
+Q: Should white ink be clearly indicated?
+A: Yes, white ink must be clearly indicated.
+
+Q: Should knockouts be verified?
+A: Yes, knockouts must be verified.
+
+Q: Should negative text be checked for fill?
+A: Yes, negative text must be checked for proper fill.
+
+Q: Should artwork follow supplier template?
+A: Yes, artwork must follow supplier template.
+
+Q: Should scale be verified before export?
+A: Yes, scale must be verified.
+
+Q: Should proof include imprint method?
+A: Yes, imprint method must be included.
+
+Q: Should color count be verified?
+A: Yes, color count must be verified.
+
+Q: Should stroke caps and joins be checked?
+A: Yes, stroke caps and joins must be checked.
+
+Q: Should vector paths be closed?
+A: Yes, vector paths must be closed.
+
+Q: Should raster effects be removed from vector art?
+A: Yes, raster effects must be removed.
+
+Q: Should artwork include registration marks when required?
+A: Yes, registration marks must be included when required.
+
+Q: Should final file be checked in outline mode?
+A: Yes, final file must be checked in outline mode.
+
+Q: Should final proof be approved before production?
+A: Yes, final proof must be approved before production.
+
+Q: Should special characters be verified in text?
+A: Yes, special characters must be verified.
+
+Q: Should barcodes be tested for readability?
+A: Yes, barcodes must be tested for readability.
+
+Q: Should QR codes be verified before approval?
+A: Yes, QR codes must be verified.
+
+Q: Should multi-color designs be separated by layers?
+A: Yes, multi-color designs must be separated by layers.
+
+Q: Should artwork follow one-color restrictions when applicable?
+A: Yes, artwork must follow one-color restrictions.
+
+Q: Should gradients be replaced with solid fills in one-color print?
+A: Yes, gradients must be replaced with solid fills.
+
+Q: Should artwork be saved with linked fonts removed?
+A: Yes, linked fonts must be removed.
+
+Q: Should dimension lines be removed before final export?
+A: Yes, dimension lines must be removed.
+
+Q: Should artwork margins match vendor spec?
+A: Yes, margins must match vendor specification.
+
+Q: Should EPS files be saved without preview transparency?
+A: Yes, EPS files must be saved without transparency.
+
+Q: Should PDF compatibility be set correctly?
+A: Yes, PDF compatibility must be set correctly.
+
+Q: Should artwork be checked for reversed text?
+A: Yes, reversed text must be checked.
+
+Q: Should duplicate layers be deleted?
+A: Yes, duplicate layers must be deleted.
+
+Q: Should artwork be aligned to center when required?
+A: Yes, artwork must be aligned to center when required.
+
+Q: Should art be flattened before sending to vendor?
+A: Yes, art must be flattened when required.
+
+Q: Should grayscale artwork be converted to black?
+A: Yes, grayscale must be converted to solid black.
+
+Q: Should multi-line text be evenly spaced?
+A: Yes, multi-line text must be evenly spaced.
+
+Q: Should artwork follow PMS conversion chart?
+A: Yes, artwork must follow PMS conversion chart.
+
+Q: Should image links be updated before export?
+A: Yes, image links must be updated.
+
+Q: Should unused swatches be removed?
+A: Yes, unused swatches must be removed.
+
+Q: Should document color mode be verified?
+A: Yes, document color mode must be verified.
+
+Q: Should art be rotated correctly as per imprint?
+A: Yes, art must be rotated correctly.
+
+Q: Should emboss designs avoid fine detail?
+A: Yes, fine detail must be avoided in emboss.
+
+Q: Should deboss designs avoid thin lines?
+A: Yes, thin lines must be avoided in deboss.
+
+Q: Should artwork be previewed in print simulation mode?
+A: Yes, artwork must be previewed in print simulation mode.
+
+Q: Should linked transparency effects be rasterized?
+A: Yes, transparency effects must be rasterized.
+
+Q: Should artboard units match specification?
+A: Yes, artboard units must match specification.
+
+Q: Should artwork include crop marks when required?
+A: Yes, crop marks must be included when required.
+
+Q: Should art be locked before final export?
+A: Yes, art must be locked before final export.
+
+Q: Should artwork file name include order ID?
+A: Yes, file name must include order ID.
+
+Q: Should vendor instructions be reviewed carefully?
+A: Yes, vendor instructions must be reviewed.
+
+Q: Should white background objects be outlined if needed?
+A: Yes, white objects must be outlined if needed.
+
+Q: Should small text be bolded if too thin?
+A: Yes, small text should be bolded if too thin.
+
+Q: Should proof show actual imprint size?
+A: Yes, proof must show actual imprint size.
+
+Q: Should artwork alignment be double checked?
+A: Yes, alignment must be double checked.
+
+Q: Should vector art avoid unnecessary effects?
+A: Yes, unnecessary effects must be avoided.
+
+Q: Should transparency layers be merged?
+A: Yes, transparency layers must be merged.
+
+Q: Should art be simplified for pad printing?
+A: Yes, art must be simplified for pad printing.
+
+Q: Should artwork follow minimum gap rules?
+A: Yes, artwork must follow minimum gap rules.
+
+Q: Should outline thickness be uniform?
+A: Yes, outline thickness must be uniform.
+
+Q: Should final export be reviewed in PDF?
+A: Yes, final export must be reviewed in PDF.
+
+Q: Should print preview be checked for color shifts?
+A: Yes, print preview must be checked for color shifts.
+
+Q: Should art scale remain proportional?
+A: Yes, art scale must remain proportional.
+
+Q: Should curved text follow path correctly?
+A: Yes, curved text must follow path correctly.
+
+Q: Should art include bleed when required by vendor?
+A: Yes, bleed must be included when required.
+
+Q: Should artwork follow screen print separation rules?
+A: Yes, artwork must follow screen print separation rules.
+
+Q: Should art be approved internally before sending to CSR?
+A: Yes, art must be approved internally.
+
+Q: Should artwork follow laser engraving thickness rules?
+A: Yes, artwork must follow engraving thickness rules.
+
+Q: Should design be simplified for small imprint areas?
+A: Yes, design must be simplified for small imprint areas.
+
+Q: Should color references match thread chart for embroidery?
+A: Yes, color references must match thread chart.
+
+Q: Should artwork background be removed if not required?
+A: Yes, background must be removed if not required.
+
+Q: Should art layers be renamed clearly?
+A: Yes, layers must be renamed clearly.
+
+Q: Should master file be archived after approval?
+A: Yes, master file must be archived.
+
+Q: Should artwork follow minimum font height in embroidery?
+A: Yes, artwork must follow minimum font height in embroidery.
+
+Q: Should outline view be used to detect hidden objects?
+A: Yes, outline view must be used.
+
+Q: Should customer instructions be read fully before editing?
+A: Yes, customer instructions must be read fully.
+
+Q: Should proof label match imprint color exactly?
+A: Yes, proof label must match imprint color exactly.
+
+Q: Should artwork reflect correct orientation of product?
+A: Yes, artwork must reflect correct orientation.
+
+Q: Should final file be saved without locked template layers?
+A: Yes, locked template layers must be removed.
+
+Q: Should design follow maximum imprint size?
+A: Yes, design must follow maximum imprint size.
+
+Q: Should art be tested in grayscale for visibility?
+A: Yes, art must be tested in grayscale.
+
+Q: Should fine script fonts be avoided in small print?
+A: Yes, fine script fonts must be avoided.
+
+Q: Should customer logo spacing be preserved?
+A: Yes, customer logo spacing must be preserved.
+
+Q: Should artwork be reviewed before marking as complete?
+A: Yes, artwork must be reviewed before completion.
+
+Q: Should artwork follow minimum line thickness for engraving?
+A: Yes, artwork must follow minimum line thickness for engraving.
+
+Q: Should artwork be checked for overlapping strokes?
+A: Yes, overlapping strokes must be checked.
+
+Q: Should Pantone black be avoided in one-color black print?
+A: Yes, Pantone black should be avoided unless specified.
+
+Q: Should rich black be avoided in single-color print?
+A: Yes, rich black must be avoided in single-color print.
+
+Q: Should art be converted to vector before resizing?
+A: Yes, art must be converted to vector before resizing.
+
+Q: Should artwork file be free of password protection?
+A: Yes, artwork file must not be password protected.
+
+Q: Should artwork include correct bleed size?
+A: Yes, artwork must include correct bleed size.
+
+Q: Should art follow vendor minimum spacing between colors?
+A: Yes, art must follow minimum spacing between colors.
+
+Q: Should multi-color art avoid color overlaps without trapping?
+A: Yes, overlaps must include proper trapping.
+
+Q: Should trapping be applied when required by print method?
+A: Yes, trapping must be applied when required.
+
+Q: Should art be proofed against original customer file?
+A: Yes, art must be proofed against original file.
+
+Q: Should artboard background be removed before export?
+A: Yes, artboard background must be removed.
+
+Q: Should objects outside artboard be deleted?
+A: Yes, objects outside artboard must be deleted.
+
+Q: Should white stroke on white object be avoided?
+A: Yes, white stroke on white object must be avoided.
+
+Q: Should vector curves be smooth and clean?
+A: Yes, vector curves must be smooth and clean.
+
+Q: Should art avoid excessive anchor points?
+A: Yes, excessive anchor points must be avoided.
+
+Q: Should art follow minimum negative space gap?
+A: Yes, art must follow minimum negative space gap.
+
+Q: Should artwork follow foil stamping thickness rules?
+A: Yes, artwork must follow foil stamping thickness rules.
+
+Q: Should proof indicate front or back imprint clearly?
+A: Yes, proof must indicate imprint location clearly.
+
+Q: Should artwork match customer color reference image?
+A: Yes, artwork must match customer color reference.
+
+Q: Should PMS conversion to CMYK be verified carefully?
+A: Yes, PMS to CMYK conversion must be verified.
+
+Q: Should art avoid gradient mesh in print files?
+A: Yes, gradient mesh must be avoided.
+
+Q: Should artwork avoid transparency blending modes?
+A: Yes, transparency blending modes must be avoided.
+
+Q: Should stroke weights be expanded when required?
+A: Yes, stroke weights must be expanded when required.
+
+Q: Should fonts with effects be expanded before export?
+A: Yes, fonts with effects must be expanded.
+
+Q: Should text kerning be reviewed manually?
+A: Yes, text kerning must be reviewed.
+
+Q: Should text tracking be adjusted for readability?
+A: Yes, text tracking must be adjusted.
+
+Q: Should artwork margins be equal on all sides?
+A: Yes, margins must be equal when required.
+
+Q: Should file version compatibility be checked before sending?
+A: Yes, file version compatibility must be checked.
+
+Q: Should artwork follow UV print color limitations?
+A: Yes, artwork must follow UV print color limitations.
+
+Q: Should art be simplified for heat transfer print?
+A: Yes, art must be simplified for heat transfer.
+
+Q: Should artwork follow sublimation print rules?
+A: Yes, artwork must follow sublimation print rules.
+
+Q: Should art avoid ultra-thin script fonts in embroidery?
+A: Yes, ultra-thin script fonts must be avoided.
+
+Q: Should art include safe zone margins?
+A: Yes, safe zone margins must be included.
+
+Q: Should art avoid placing text too close to edges?
+A: Yes, text must not be placed too close to edges.
+
+Q: Should art be tested on dark and light backgrounds?
+A: Yes, art must be tested on dark and light backgrounds.
+
+Q: Should proof show actual color swatch references?
+A: Yes, proof must show actual color swatches.
+
+Q: Should art maintain consistent stroke style?
+A: Yes, stroke style must remain consistent.
+
+Q: Should final file be scanned for hidden images?
+A: Yes, hidden images must be removed.
+
+Q: Should art include correct scale ratio for mockup?
+A: Yes, art must include correct scale ratio.
+
+Q: Should artwork reflect correct bleed trimming lines?
+A: Yes, artwork must reflect correct bleed trimming lines.
+
+Q: Should artwork follow minimum dot size for halftone?
+A: Yes, artwork must follow minimum dot size for halftone.
+
+Q: Should halftone patterns be avoided in one-color print?
+A: Yes, halftone patterns must be avoided.
+
+Q: Should artwork include correct orientation arrow if required?
+A: Yes, orientation arrow must be included when required.
+
+Q: Should art be flattened before exporting EPS?
+A: Yes, art must be flattened before exporting EPS.
+
+Q: Should artwork avoid linked cloud files?
+A: Yes, linked cloud files must be embedded.
+
+Q: Should final file be reviewed in Acrobat preview?
+A: Yes, final file must be reviewed in Acrobat preview.
+
+Q: Should art avoid unnecessary clipping paths?
+A: Yes, unnecessary clipping paths must be removed.
+
+Q: Should artwork follow minimum height for small caps text?
+A: Yes, artwork must follow minimum height for small caps text.
+
+Q: Should art avoid over-complex vector patterns?
+A: Yes, over-complex vector patterns must be avoided.
+
+Q: Should artwork include correct product mockup placement?
+A: Yes, artwork must include correct product mockup placement.
+
+Q: Should art match approved brand guidelines?
+A: Yes, art must match approved brand guidelines.
+
+Q: Should artwork avoid mixing RGB and CMYK colors?
+A: Yes, RGB and CMYK must not be mixed.
+
+Q: Should art be reviewed after conversion to outlines?
+A: Yes, art must be reviewed after conversion.
+
+Q: Should artwork follow minimum corner radius rules?
+A: Yes, artwork must follow minimum corner radius rules.
+
+Q: Should art avoid extreme scaling distortions?
+A: Yes, extreme scaling distortions must be avoided.
+
+Q: Should artwork follow minimum contrast requirements?
+A: Yes, artwork must follow minimum contrast requirements.
+
+Q: Should proof show color separation preview if needed?
+A: Yes, proof must show color separation preview.
+
+Q: Should artwork avoid jagged vector edges?
+A: Yes, jagged vector edges must be corrected.
+
+Q: Should art include correct font weight as specified?
+A: Yes, correct font weight must be used.
+
+Q: Should artwork maintain consistent alignment grid?
+A: Yes, artwork must maintain consistent alignment grid.
+
+Q: Should art avoid unnecessary raster overlays?
+A: Yes, unnecessary raster overlays must be removed.
+
+Q: Should artwork follow minimum emboss depth rules?
+A: Yes, artwork must follow minimum emboss depth rules.
+
+Q: Should art avoid placing small details near stitching area?
+A: Yes, small details must be avoided near stitching area.
+
+Q: Should artwork follow minimum stitch density?
+A: Yes, artwork must follow minimum stitch density.
+
+Q: Should proof indicate actual scale percentage?
+A: Yes, proof must indicate actual scale percentage.
+
+Q: Should art avoid mirrored text errors?
+A: Yes, mirrored text errors must be avoided.
+
+Q: Should artwork be tested for readability at small size?
+A: Yes, artwork must be tested for readability at small size.
+
+Q: Should art include correct color legend if required?
+A: Yes, correct color legend must be included.
+
+Q: Should artwork avoid transparent white fills?
+A: Yes, transparent white fills must be avoided.
+
+Q: Should art be exported using correct preset settings?
+A: Yes, correct preset settings must be used.
+
+Q: Should artwork follow minimum foil line width?
+A: Yes, artwork must follow minimum foil line width.
+
+Q: Should art avoid overlapping white objects on transparent background?
+A: Yes, overlapping white objects must be avoided.
+
+Q: Should artwork maintain correct aspect ratio?
+A: Yes, correct aspect ratio must be maintained.
+
+Q: Should art follow supplier laser marking guidelines?
+A: Yes, art must follow supplier laser marking guidelines.
+
+Q: Should artwork avoid using opacity below 100 percent?
+A: Yes, opacity below 100 percent must be avoided.
+
+Q: Should art be checked for color accuracy in preview?
+A: Yes, color accuracy must be checked.
+
+Q: Should artwork include correct PMS notation format?
+A: Yes, correct PMS notation format must be used.
+
+Q: Should art avoid raster drop shadows in vector files?
+A: Yes, raster drop shadows must be removed.
+
+Q: Should artwork include correct bleed outline color?
+A: Yes, correct bleed outline color must be used.
+
+Q: Should art be verified for text alignment on curves?
+A: Yes, text alignment on curves must be verified.
+
+Q: Should artwork follow vendor padding requirements?
+A: Yes, artwork must follow vendor padding requirements.
+
+Q: Should art avoid ultra-light font weights in print?
+A: Yes, ultra-light font weights must be avoided.
+
+Q: Should artwork maintain consistent margin spacing?
+A: Yes, consistent margin spacing must be maintained.
+
+Q: Should art include correct reference image if required?
+A: Yes, correct reference image must be included.
+
+Q: Should artwork avoid extra artboards in final file?
+A: Yes, extra artboards must be removed.
+
+Q: Should art be validated against QA checklist?
+A: Yes, art must be validated against QA checklist.
+
+Q: Should artwork follow minimum text spacing for legibility?
+A: Yes, artwork must follow minimum text spacing.
+
+Q: Should art avoid printing registration marks in final output?
+A: Yes, registration marks must not be printed in final output.
+
+Q: Should artwork follow minimum cut path thickness?
+A: Yes, artwork must follow minimum cut path thickness.
+
+Q: Should art include correct orientation for heat press?
+A: Yes, correct orientation must be included for heat press.
+
+Q: Should artwork avoid gradient transparency masks?
+A: Yes, gradient transparency masks must be avoided.
+
+Q: Should art include clear indication of special finishes?
+A: Yes, special finishes must be clearly indicated.
+
+Q: Should artwork follow minimum dot gain compensation?
+A: Yes, artwork must follow dot gain compensation guidelines.
+
+Q: Should art avoid mixing spot and process colors improperly?
+A: Yes, spot and process colors must not be mixed improperly.
+
+Q: Should artwork include proper labeling of color layers?
+A: Yes, color layers must be properly labeled.
+
+Q: Should art be double checked before marking complete?
+A: Yes, art must be double checked before completion.
+
+Q: Can I use Pantone 877 for gold standard?
+A: Please use Pantone 871.
+
+Q: Should stray gradients be removed?
+A: No, gradients should not be used in one-color screen print.
+
+Q: Can we use raster format like AI?
+A: Acceptable formats are AI, EPS, and PDF.
+
+Q: Imprint limit?
+A: Yes, artwork must stay within imprint area.
+
+Q: Can I use RGB and keep gradients in one-color print?
+A: No, RGB artwork must be converted to CMYK.
+
+Q: Can I use Pantone 877 and 871 together for silver?
+A: Please use Pantone 877.
+
+Q: Can raster images stay if gradients are removed?
+A: No, raster images should be converted to vector format.
+
+Q: Should overprint and transparency both be ignored?
+A: Yes, overprint settings must be verified.
+
+Q: Silver PMS?
+A: Please use Pantone 877.
+
+Q: Gold PMS?
+A: Please use Pantone 871.
+
+Q: Convert text?
+A: Yes, text should be converted to outlines.
+
+Q: RGB ok?
+A: No, RGB artwork must be converted to CMYK.
+
+Q: Gradient allowed?
+A: No, gradients should not be used in one-color screen print.
+
+Q: Stray points?
+A: Yes, stray points must be removed.
+
+Q: Raster allowed?
+A: No, raster images should be converted to vector format.
+
+Q: Outline mode?
+A: Yes, final file must be checked in outline mode.
+
+Q: CMYK required?
+A: No, RGB artwork must be converted to CMYK.
+
+
+Q: Spell check?
+A: Yes, spelling must be verified.
+
+Q: Is minimum font size and stroke thickness the same rule?
+A: Minimum stroke thickness is 1 pt.
+
+Q: What is the PMS value of bronze standard?
+A: This question is not covered in the SOP. Please contact HR.
+
+Q: What is the maximum stroke thickness?
+A: This question is not covered in the SOP. Please contact HR.
+
+Q: What is the minimum RGB value for print?
+A: This question is not covered in the SOP. Please contact HR.
+
+Q: Can gradients be used in four-color printing?
+A: This question is not covered in the SOP. Please contact HR.
+
+Q: What is the maximum font size allowed?
+A: This question is not covered in the SOP. Please contact HR.
+

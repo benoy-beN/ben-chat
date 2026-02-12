@@ -1,0 +1,149 @@
+Q: What is the PMS value of silver standard?
+A: Please use Pantone 877.
+
+Q: What is the PMS value of gold standard?
+A: Please use Pantone 871.
+
+Q: Which PMS should be used for metallic silver?
+A: Pantone 877 should be used.
+
+Q: Which PMS should be used for metallic gold?
+A: Pantone 871 should be used.
+
+Q: What is the minimum stroke thickness for positive space?
+A: Minimum stroke thickness is 1 pt.
+
+Q: What is the minimum stroke thickness for negative space?
+A: Minimum stroke thickness is 1.5 pt.
+
+Q: What is the minimum font size for positive sans-serif text?
+A: Minimum size is 8 pt.
+
+Q: What is the minimum font size for negative sans-serif text?
+A: Minimum size is 12 pt.
+
+Q: What is the minimum font size for positive serif text?
+A: Minimum size is 10 pt.
+
+Q: What is the minimum font size for negative serif text?
+A: Minimum size is 14 pt.
+
+Q: Should gradients be used in one-color screen print?
+A: No, gradients must be removed.
+
+Q: Should transparency be used in vector art?
+A: No, transparency must be flattened.
+
+Q: What color format should one-color artwork be in?
+A: Solid black or a single PMS color.
+
+Q: What file formats are preferred for final vector artwork?
+A: EPS or PDF formats are preferred.
+
+Q: What does width 0.0000 indicate?
+A: It indicates a circular imprint area.
+
+Q: What is the diameter when width shows 0.0000?
+A: The diameter is 1.5 inches.
+
+Q: What should be followed if artwork and label colors differ?
+A: Always follow the imprint color mentioned on the label.
+
+Q: What should be done if the imprint color is unclear?
+A: Clarify with CSR or check order details.
+
+Q: What details must be checked on proof labels?
+A: Order ID, date, CSR name, and imprint color.
+
+Q: Should spelling be checked even if text is in customer artwork?
+A: Yes, spelling must always be verified.
+
+Q: What should be done if text looks incorrect?
+A: Flag it and inform the team leader.
+
+Q: When should a premockup be created?
+A: When customer artwork does not meet vendor specifications.
+
+Q: How many premockup options should be shown?
+A: At least two options should be shown.
+
+Q: Which premockup option should be recommended?
+A: The best compliant option should be highlighted.
+
+Q: What does empty Art on File mean?
+A: Artwork must be created from scratch.
+
+Q: Should stray points be removed from vector artwork?
+A: Yes, all stray points must be removed.
+
+Q: Should overlapping paths be cleaned?
+A: Yes, overlapping paths should be corrected.
+
+Q: Should artwork be centered automatically?
+A: Yes, unless otherwise specified.
+
+Q: Should artwork exceed the imprint area?
+A: No, artwork must fit within the imprint area.
+
+Q: Where are vendor specifications usually found?
+A: In the blank mockup template.
+
+Q: Should vendor line weight rules be followed strictly?
+A: Yes, they must be followed exactly.
+
+Q: Should proof notes be read before finalizing artwork?
+A: Yes, proof notes must be reviewed.
+
+Q: Should the JPG proof match the vector file exactly?
+A: Yes, both must match perfectly.
+
+Q: Can grayscale be used for one-color print?
+A: No, use solid black or a single PMS color.
+
+Q: Should multiple black shades be used in one-color artwork?
+A: No, use only one black value.
+
+Q: Should text be converted to outlines?
+A: Yes, text should be converted to outlines.
+
+Q: Should live fonts remain in final files?
+A: No, fonts must be converted to outlines.
+
+Q: Should fine details be simplified for screen printing?
+A: Yes, fine details should be simplified.
+
+Q: Should thin strokes be thickened if below minimum size?
+A: Yes, adjust to meet minimum stroke requirements.
+
+Q: Should imprint size be mentioned on mockups?
+A: Yes, imprint size must be shown.
+
+Q: Should imprint location be clearly marked?
+A: Yes, imprint location must be clearly shown.
+
+Q: Should previous revisions be reviewed before making changes?
+A: Yes, always review revision history.
+
+Q: Should old errors be repeated in revisions?
+A: No, errors must be corrected.
+
+Q: What is the main goal of vector cleanup?
+A: To create clear, printable, and error-free artwork.
+
+Q: Should artwork be checked at 100 percent zoom?
+A: Yes, final checks should be done at 100 percent zoom.
+
+Q: Should RGB colors be used for print vectors?
+A: No, use PMS or solid black only.
+
+Q: Should extra artboards be removed before exporting?
+A: Yes, remove unused artboards.
+
+Q: Should final files be reopened and verified?
+A: Yes, always reopen and verify final files.
+
+Q: Who is responsible for final artwork accuracy?
+A: The assigned designer is responsible.
+
+Q: What should be done if unsure about artwork changes?
+A: Escalate to the team leader or QA.
