@@ -26,13 +26,13 @@ Version 3.0 focuses on eliminating "False Negatives" (valid questions being reje
 
 ```mermaid
 graph LR
-    A[User Question] --> B(Normalize)
-    B --> C(Embed & Search)
-    C --> D{Similarity > 0.75?}
-    D -- No --> E[Reject]
-    D -- Yes --> F[Retrieve Top-1 Match]
-    F --> G[LLM Rewrite (Strict Prompt)]
-    G --> H[Final Response]
+    A["User Question"] --> B("Normalize")
+    B --> C("Embed & Search")
+    C --> D{"Similarity > 0.75?"}
+    D -- No --> E["Reject"]
+    D -- Yes --> F["Retrieve Top-1 Match"]
+    F --> G["LLM Rewrite (Strict Prompt)"]
+    G --> H["Final Response"]
 ```
 
 ## 🛠️ Quick Start
