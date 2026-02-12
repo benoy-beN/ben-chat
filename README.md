@@ -1,4 +1,4 @@
-# 🛡️ SOP Chatbot — Zero Hallucination
+# 🛡️ SOP Chatbot - Zero Hallucination
 
 A **deterministic, high-accuracy** SOP chatbot that answers **only** from a pre-loaded Q&A knowledge base. Uses FAISS vector search with a hard similarity threshold — the LLM is **never** used to generate answers, only to optionally rewrite retrieved answers.
 
