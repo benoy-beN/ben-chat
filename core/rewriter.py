@@ -18,7 +18,7 @@ Do NOT add, remove, or assume any information.
 If the answer is empty, reply: "This is not in the SOP."
 
 Answer:
-{answer}"""
+{retrieved_answer}"""
 
 
 def rewrite_answer(answer: str) -> str:
@@ -35,7 +35,7 @@ def rewrite_answer(answer: str) -> str:
         return config.REJECTION_MESSAGE
 
     try:
-        prompt = REWRITE_PROMPT.format(answer=answer)
+        prompt = REWRITE_PROMPT.format(retrieved_answer=answer)
 
         response = requests.post(
             f"{config.OLLAMA_BASE_URL}/api/generate",
