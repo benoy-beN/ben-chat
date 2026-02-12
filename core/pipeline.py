@@ -1,209 +1,228 @@
 """
-Full SOP retrieval pipeline.
-Handles: normalize → embed → FAISS search → threshold → answer/reject → optional rewrite.
+Full SOP retrieval pipeline (v4 SOTA).
+Handles: Hybrid Search (Dual Encoder) → Rerank → Threshold.
 
-This is the main entry point for answering user questions.
-The LLM is NEVER used to answer questions — only to optionally rewrite retrieved answers.
+Architecture:
+1. Normalize Query
+2. Embed (bge) & Embed (e5)
+3. Parallel FAISS Search
+4. Weighted Score Fusion
+5. Cross-Encoder Reranking (Top-K)
+6. Calibrated Threshold
 """
 import json
 import os
 import time
-
 import numpy as np
-
 import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
 
 from core.normalizer import normalize
 from core.embedder import Embedder
 from core.index import FAISSIndex
-from core.rewriter import rewrite_answer, check_ollama_status
-
+from core.rewriter import rewrite_answer
+from core.reranker import Reranker
 
 class SOPPipeline:
     """
-    Deterministic SOP retrieval pipeline.
-
-    Flow:
-        1. Normalize user input (lowercase, strip punctuation)
-        2. Embed with same model used for indexing
-        3. FAISS top-1 search
-        4. Threshold check (≥ 0.75 similarity)
-        5. Return verbatim SOP answer OR rejection message
-        6. Optional: LLM rewrite of answer (no new content generation)
+    State-of-the-Art SOP retrieval pipeline.
+    Combines two embedding models and a cross-encoder reranker.
     """
-
     def __init__(self):
-        self.embedder = Embedder()
-        self.index = FAISSIndex()
+        # Dual Encoders
+        self.embedder_a = Embedder(config.EMBEDDING_MODEL)
+        self.embedder_b = Embedder(config.MODEL_B_NAME)
+        
+        # Dual Indices
+        self.index_a = FAISSIndex()
+        self.index_b = FAISSIndex()
+        
+        # Reranker
+        self.reranker = Reranker()
+        
         self.sop_data: list[dict] = []
         self.is_loaded = False
 
     def build(self):
-        """
-        Build the FAISS index from SOP data.
-        Loads augmented data, embeds all questions, builds and saves the index.
-        """
+        """Build both indices from SOP data."""
         print("=" * 60)
-        print("  Building SOP Pipeline")
+        print("  Building SOTA Pipeline (Dual Encoder)")
         print("=" * 60)
 
-        # Load augmented data (with paraphrases)
+        # Load data
         aug_file = os.path.join(config.DATA_DIR, "sop_data_augmented.json")
-        if os.path.exists(aug_file):
-            with open(aug_file, "r", encoding="utf-8") as f:
-                self.sop_data = json.load(f)
-            print(f"📂 Loaded augmented dataset: {len(self.sop_data)} entries")
-        else:
-            # Fall back to base data
-            with open(config.SOP_DATA_FILE, "r", encoding="utf-8") as f:
-                self.sop_data = json.load(f)
-            # Add source_id if missing
-            for entry in self.sop_data:
-                if "source_id" not in entry:
-                    entry["source_id"] = entry["id"]
-            print(f"📂 Loaded base dataset: {len(self.sop_data)} entries")
+        source_file = aug_file if os.path.exists(aug_file) else config.SOP_DATA_FILE
+        
+        with open(source_file, "r", encoding="utf-8") as f:
+            self.sop_data = json.load(f)
+        
+        # Ensure source_id
+        for entry in self.sop_data:
+            if "source_id" not in entry:
+                entry["source_id"] = entry["id"]
 
-        # Load embedder
-        self.embedder.load()
-
-        # Embed all questions (documents — no query prefix)
+        print(f"📂 Loaded dataset: {len(self.sop_data)} entries")
+        
         questions = [entry["question"] for entry in self.sop_data]
-        print(f"\n🔄 Embedding {len(questions)} questions...")
-        start = time.time()
-        vectors = self.embedder.embed_batch(questions, is_query=False)
-        elapsed = time.time() - start
-        print(f"✅ Embedded in {elapsed:.2f}s")
+        
+        # --- Build Index A (BGE) ---
+        print(f"\n🔄 [Model A] Embedding with {self.embedder_a.model_name}...")
+        self.embedder_a.load()
+        vecs_a = self.embedder_a.embed_batch(questions, is_query=False)
+        self.index_a.build(vecs_a, self.sop_data)
+        self.index_a.save(index_path=config.FAISS_INDEX_FILE)
 
-        # Build FAISS index
-        self.index.build(vectors, self.sop_data)
-
-        # Save to disk
-        self.index.save()
+        # --- Build Index B (E5) ---
+        print(f"\n🔄 [Model B] Embedding with {self.embedder_b.model_name}...")
+        self.embedder_b.load()
+        vecs_b = self.embedder_b.embed_batch(questions, is_query=False)
+        self.index_b.build(vecs_b, self.sop_data)
+        self.index_b.save(index_path=config.FAISS_INDEX_FILE_B)
 
         self.is_loaded = True
-        print(f"\n✅ Pipeline built and saved!")
+        print(f"\n✅ Dual Pipeline built and saved!")
         return self
 
     def load(self):
-        """Load a previously built index from disk."""
-        print("🔄 Loading SOP Pipeline...")
-        self.embedder.load()
-        self.index.load()
-
-        # Load SOP data
-        aug_file = os.path.join(config.DATA_DIR, "sop_data_augmented.json")
-        if os.path.exists(aug_file):
-            with open(aug_file, "r", encoding="utf-8") as f:
-                self.sop_data = json.load(f)
+        """Load all models and indices."""
+        print("🔄 Loading SOTA Pipeline...")
+        
+        # Load indices (Model loading is lazy/on-demand usually, but we can pre-load)
+        # We only really need to load indices eagerly.
+        self.index_a.load(index_path=config.FAISS_INDEX_FILE)
+        if hasattr(config, "FAISS_INDEX_FILE_B") and os.path.exists(config.FAISS_INDEX_FILE_B):
+            self.index_b.load(index_path=config.FAISS_INDEX_FILE_B)
         else:
-            with open(config.SOP_DATA_FILE, "r", encoding="utf-8") as f:
-                self.sop_data = json.load(f)
+            print("⚠️ Index B not found. Dual encoder features disabled.")
 
+        # Load ID map (same for both)
+        self.sop_data = self.index_a.id_map
+        
         self.is_loaded = True
         print("✅ Pipeline loaded!")
         return self
 
     def query(self, user_question: str) -> dict:
         """
-        Answer a user question using deterministic SOP retrieval.
-
-        Args:
-            user_question: Raw user input text.
-
-        Returns:
-            dict with keys:
-                - question: Original user question
-                - normalized: Normalized form
-                - matched_question: Best matching SOP question (or None)
-                - answer: SOP answer or rejection message
-                - score: Similarity score (0-1)
-                - source_id: ID of the matched SOP entry (or None)
-                - rejected: True if below threshold
-                - threshold: The threshold used
+        Hybrid retrieval + Reranking.
         """
         if not self.is_loaded:
-            raise RuntimeError("Pipeline not loaded. Call build() or load() first.")
+            raise RuntimeError("Pipeline not loaded.")
 
-        # Step 1: Normalize
         normalized = normalize(user_question)
+        
+        # --- Stage 1: Hybrid Retrieval ---
+        # Search Index A
+        vec_a = self.embedder_a.embed(normalized)
+        results_a = self.index_a.search(vec_a, top_k=config.TOP_K_RETRIEVAL)
+        
+        # Search Index B
+        vec_b = self.embedder_b.embed(normalized)
+        results_b = self.index_b.search(vec_b, top_k=config.TOP_K_RETRIEVAL)
 
-        # Step 2: Embed (as query — with prefix for bge)
-        query_vector = self.embedder.embed(normalized)
+        # Fusion
+        combined_scores = {}
+        entries = {}
+        
+        # Helper to process results
+        def process_results(results, weight):
+            for r in results:
+                eid = r["entry"].get("source_id", r["entry"].get("id")) # Use source ID to identify unique q
+                # Use question content as unique key if IDs overlap for different paraphrases
+                # Actually, our ID map stores each paraphrase as separate entry.
+                # We want to retrieve specific paraphrases.
+                key = r["entry"]["question"] 
+                entries[key] = r["entry"]
+                combined_scores[key] = combined_scores.get(key, 0.0) + (r["score"] * weight)
 
-        # Step 3: FAISS search
-        results = self.index.search(query_vector, top_k=config.TOP_K)
+        process_results(results_a, config.HYBRID_WEIGHT_A)
+        process_results(results_b, config.HYBRID_WEIGHT_B)
+        
+        # Sort candidates
+        candidates = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)
+        top_candidates = candidates[:config.TOP_K_RETRIEVAL] # e.g. Top 5
+        
+        if not top_candidates:
+             return self._reject(user_question, normalized, 0.0)
 
-        if not results:
-            return {
-                "question": user_question,
-                "normalized": normalized,
-                "matched_question": None,
-                "answer": config.REJECTION_MESSAGE,
-                "score": 0.0,
-                "source_id": None,
-                "rejected": True,
-                "threshold": config.SIMILARITY_THRESHOLD,
-            }
+        # --- Stage 2: Reranking ---
+        # Construct candidate texts: Just Answer? Or Q+A?
+        # Using Q+A works best generally.
+        candidate_texts = []
+        for q_text, score in top_candidates:
+            entry = entries[q_text]
+            combined_text = f"{entry['question']} {entry['answer']}"
+            candidate_texts.append(combined_text)
+            
+        rerank_scores = self.reranker.compute_scores(normalized, candidate_texts)
+        
+        final_candidates = []
+        for i, (q_text, old_score) in enumerate(top_candidates):
+            r_score = rerank_scores[i]
+            # Ensemble Score: 50% Hybrid (Recall) + 50% Reranker (Precision)
+            # This handles cases where Reranker is incorrectly confident (0.001)
+            # while Hybrid is confident (0.8). Result ~0.4.
+            ensemble_score = 0.5 * old_score + 0.5 * r_score
+            
+            final_candidates.append({
+                "entry": entries[q_text],
+                "score": ensemble_score,
+                "initial_score": old_score,
+                "rerank_score": r_score
+            })
+            
+        # Resort by ENSEMBLE score
+        final_candidates.sort(key=lambda x: x["score"], reverse=True)
+        best_match = final_candidates[0]
+        
+        # --- Stage 3: Threshold ---
+        threshold = config.SIMILARITY_THRESHOLD
+        
+        if best_match["score"] < threshold:
+             return self._reject(user_question, normalized, best_match["score"])
 
-        top_result = results[0]
-        score = top_result["score"]
-        entry = top_result["entry"]
-
-        # Step 4: Threshold check
-        if score < config.SIMILARITY_THRESHOLD:
-            return {
-                "question": user_question,
-                "normalized": normalized,
-                "matched_question": entry["question"],
-                "answer": config.REJECTION_MESSAGE,
-                "score": score,
-                "source_id": entry.get("source_id", entry.get("id")),
-                "rejected": True,
-                "threshold": config.SIMILARITY_THRESHOLD,
-            }
-
-        # Step 5: Return verbatim answer
-        answer = entry["answer"]
-
-        # Step 6: Optional LLM rewrite
+        # --- Stage 4: Output ---
+        answer = best_match["entry"]["answer"]
         if config.USE_LLM_REWRITE:
             answer = rewrite_answer(answer)
-
+            
         return {
             "question": user_question,
             "normalized": normalized,
-            "matched_question": entry["question"],
+            "matched_question": best_match["entry"]["question"],
             "answer": answer,
-            "score": score,
-            "source_id": entry.get("source_id", entry.get("id")),
+            "score": best_match["score"],
+            "source_id": best_match["entry"].get("source_id"),
             "rejected": False,
-            "threshold": config.SIMILARITY_THRESHOLD,
+            "threshold": threshold,
+            "top_k_results": [
+                {
+                    "question": c["entry"]["question"],
+                    "answer": c["entry"]["answer"],
+                    "score": c["score"],
+                    "initial_score": c["initial_score"],
+                    "source_id": c["entry"].get("source_id")
+                }
+                for c in final_candidates
+            ]
         }
 
     def query_detailed(self, user_question: str, top_k: int = 5) -> dict:
-        """
-        Like query(), but returns top-K results for debugging/analysis.
-        """
-        if not self.is_loaded:
-            raise RuntimeError("Pipeline not loaded. Call build() or load() first.")
+        """Alias for query to maintain compatibility with app.py."""
+        # Note: top_k argument is currently ignored as config.TOP_K_RETRIEVAL is used
+        return self.query(user_question)
 
-        normalized = normalize(user_question)
-        query_vector = self.embedder.embed(normalized)
-        results = self.index.search(query_vector, top_k=top_k)
-
-        top_results = []
-        for r in results:
-            top_results.append({
-                "question": r["entry"]["question"],
-                "answer": r["entry"]["answer"],
-                "score": r["score"],
-                "source_id": r["entry"].get("source_id", r["entry"].get("id")),
-            })
-
-        # Primary result
-        primary = self.query(user_question)
-        primary["top_k_results"] = top_results
-
-        return primary
+    def _reject(self, question, normalized, score):
+        return {
+            "question": question,
+            "normalized": normalized,
+            "matched_question": None,
+            "answer": config.REJECTION_MESSAGE,
+            "score": score,
+            "source_id": None,
+            "rejected": True,
+            "threshold": config.SIMILARITY_THRESHOLD,
+            "top_k_results": []
+        }

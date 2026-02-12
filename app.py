@@ -92,8 +92,8 @@ def get_system_status() -> str:
     status_lines = [
         f"📦 Embedding Model: {config.EMBEDDING_MODEL}",
         f"📊 Threshold: {config.SIMILARITY_THRESHOLD}",
-        f"📂 SOP Entries: {len(pipeline.sop_data) if pipeline else 'Not loaded'}",
-        f"🔍 Index Size: {pipeline.index.index.ntotal if pipeline and pipeline.index.index else 'N/A'} vectors",
+        f"📂 SOP Entries (A): {pipeline.index_a.index.ntotal if pipeline and pipeline.index_a.index else 'N/A'}",
+        f"🔍 SOP Entries (B): {pipeline.index_b.index.ntotal if pipeline and pipeline.index_b.index else 'N/A'}",
     ]
 
     # Check Ollama

@@ -29,48 +29,45 @@ class Embedder:
         print(f"✅ Model loaded on device: {self.model.device}")
         return self
 
-    def embed(self, text: str) -> np.ndarray:
-        """
-        Embed a single text string.
-        For bge models, prepends the query instruction prefix.
+    def _preprocess(self, text: str, is_query: bool) -> str:
+        """Add model-specific prefix."""
+        model_lower = self.model_name.lower()
+        
+        if "bge" in model_lower:
+            if is_query:
+                return config.QUERY_PREFIX + text
+            return text  # BGE docs have no prefix
+            
+        if "e5" in model_lower:
+            if is_query:
+                return "query: " + text
+            return "passage: " + text
+            
+        return text
 
-        Returns:
-            np.ndarray of shape (dim,) — L2-normalized vector.
-        """
+    def embed(self, text: str) -> np.ndarray:
+        """Embed a single query string."""
         if self.model is None:
             self.load()
 
-        # bge models need instruction prefix for queries
-        if "bge" in self.model_name.lower():
-            text = config.QUERY_PREFIX + text
+        text = self._preprocess(text, is_query=True)
 
         vector = self.model.encode(
             text,
-            normalize_embeddings=True,  # L2-normalize for cosine similarity via dot product
+            normalize_embeddings=True,
             show_progress_bar=False,
         )
         return np.array(vector, dtype=np.float32)
 
     def embed_batch(self, texts: list[str], is_query: bool = False) -> np.ndarray:
-        """
-        Embed a batch of texts.
-
-        Args:
-            texts: List of strings to embed.
-            is_query: If True and using bge model, prepend query prefix.
-
-        Returns:
-            np.ndarray of shape (n, dim) — L2-normalized vectors.
-        """
+        """Embed a batch of texts."""
         if self.model is None:
             self.load()
 
-        # For bge models, add prefix to queries but NOT to documents
-        if is_query and "bge" in self.model_name.lower():
-            texts = [config.QUERY_PREFIX + t for t in texts]
+        processed_texts = [self._preprocess(t, is_query=is_query) for t in texts]
 
         vectors = self.model.encode(
-            texts,
+            processed_texts,
             normalize_embeddings=True,
             show_progress_bar=True,
             batch_size=64,
