@@ -1,0 +1,992 @@
+[
+  {
+    "id": 1,
+    "question": "What is the PMS value of silver standard?",
+    "answer": "Please use Pantone 877.",
+    "source_id": 1
+  },
+  {
+    "id": 2,
+    "question": "Tell me about the pms value of silver standard",
+    "answer": "Please use Pantone 877.",
+    "source_id": 1
+  },
+  {
+    "id": 3,
+    "question": "the pms value of silver standard",
+    "answer": "Please use Pantone 877.",
+    "source_id": 1
+  },
+  {
+    "id": 4,
+    "question": "Explain the pms value of silver standard",
+    "answer": "Please use Pantone 877.",
+    "source_id": 1
+  },
+  {
+    "id": 5,
+    "question": "What is the PMS value of gold standard?",
+    "answer": "Please use Pantone 871.",
+    "source_id": 2
+  },
+  {
+    "id": 6,
+    "question": "Tell me about the pms value of gold standard",
+    "answer": "Please use Pantone 871.",
+    "source_id": 2
+  },
+  {
+    "id": 7,
+    "question": "the pms value of gold standard",
+    "answer": "Please use Pantone 871.",
+    "source_id": 2
+  },
+  {
+    "id": 8,
+    "question": "Explain the pms value of gold standard",
+    "answer": "Please use Pantone 871.",
+    "source_id": 2
+  },
+  {
+    "id": 9,
+    "question": "Which PMS should be used for metallic silver?",
+    "answer": "Pantone 877 should be used.",
+    "source_id": 3
+  },
+  {
+    "id": 10,
+    "question": "What pms should be used for metallic silver",
+    "answer": "Pantone 877 should be used.",
+    "source_id": 3
+  },
+  {
+    "id": 11,
+    "question": "Which PMS should be used for metallic gold?",
+    "answer": "Pantone 871 should be used.",
+    "source_id": 4
+  },
+  {
+    "id": 12,
+    "question": "What pms should be used for metallic gold",
+    "answer": "Pantone 871 should be used.",
+    "source_id": 4
+  },
+  {
+    "id": 13,
+    "question": "What is the minimum stroke thickness for positive space?",
+    "answer": "Minimum stroke thickness is 1 pt.",
+    "source_id": 5
+  },
+  {
+    "id": 14,
+    "question": "Tell me about the minimum stroke thickness for positive space",
+    "answer": "Minimum stroke thickness is 1 pt.",
+    "source_id": 5
+  },
+  {
+    "id": 15,
+    "question": "the minimum stroke thickness for positive space",
+    "answer": "Minimum stroke thickness is 1 pt.",
+    "source_id": 5
+  },
+  {
+    "id": 16,
+    "question": "Explain the minimum stroke thickness for positive space",
+    "answer": "Minimum stroke thickness is 1 pt.",
+    "source_id": 5
+  },
+  {
+    "id": 17,
+    "question": "What is the minimum stroke thickness for negative space?",
+    "answer": "Minimum stroke thickness is 1.5 pt.",
+    "source_id": 6
+  },
+  {
+    "id": 18,
+    "question": "Tell me about the minimum stroke thickness for negative space",
+    "answer": "Minimum stroke thickness is 1.5 pt.",
+    "source_id": 6
+  },
+  {
+    "id": 19,
+    "question": "the minimum stroke thickness for negative space",
+    "answer": "Minimum stroke thickness is 1.5 pt.",
+    "source_id": 6
+  },
+  {
+    "id": 20,
+    "question": "Explain the minimum stroke thickness for negative space",
+    "answer": "Minimum stroke thickness is 1.5 pt.",
+    "source_id": 6
+  },
+  {
+    "id": 21,
+    "question": "What is the minimum font size for positive sans-serif text?",
+    "answer": "Minimum size is 8 pt.",
+    "source_id": 7
+  },
+  {
+    "id": 22,
+    "question": "Tell me about the minimum font size for positive sans-serif text",
+    "answer": "Minimum size is 8 pt.",
+    "source_id": 7
+  },
+  {
+    "id": 23,
+    "question": "the minimum font size for positive sans-serif text",
+    "answer": "Minimum size is 8 pt.",
+    "source_id": 7
+  },
+  {
+    "id": 24,
+    "question": "Explain the minimum font size for positive sans-serif text",
+    "answer": "Minimum size is 8 pt.",
+    "source_id": 7
+  },
+  {
+    "id": 25,
+    "question": "What is the minimum font size for negative sans-serif text?",
+    "answer": "Minimum size is 12 pt.",
+    "source_id": 8
+  },
+  {
+    "id": 26,
+    "question": "Tell me about the minimum font size for negative sans-serif text",
+    "answer": "Minimum size is 12 pt.",
+    "source_id": 8
+  },
+  {
+    "id": 27,
+    "question": "the minimum font size for negative sans-serif text",
+    "answer": "Minimum size is 12 pt.",
+    "source_id": 8
+  },
+  {
+    "id": 28,
+    "question": "Explain the minimum font size for negative sans-serif text",
+    "answer": "Minimum size is 12 pt.",
+    "source_id": 8
+  },
+  {
+    "id": 29,
+    "question": "What is the minimum font size for positive serif text?",
+    "answer": "Minimum size is 10 pt.",
+    "source_id": 9
+  },
+  {
+    "id": 30,
+    "question": "Tell me about the minimum font size for positive serif text",
+    "answer": "Minimum size is 10 pt.",
+    "source_id": 9
+  },
+  {
+    "id": 31,
+    "question": "the minimum font size for positive serif text",
+    "answer": "Minimum size is 10 pt.",
+    "source_id": 9
+  },
+  {
+    "id": 32,
+    "question": "Explain the minimum font size for positive serif text",
+    "answer": "Minimum size is 10 pt.",
+    "source_id": 9
+  },
+  {
+    "id": 33,
+    "question": "What is the minimum font size for negative serif text?",
+    "answer": "Minimum size is 14 pt.",
+    "source_id": 10
+  },
+  {
+    "id": 34,
+    "question": "Tell me about the minimum font size for negative serif text",
+    "answer": "Minimum size is 14 pt.",
+    "source_id": 10
+  },
+  {
+    "id": 35,
+    "question": "the minimum font size for negative serif text",
+    "answer": "Minimum size is 14 pt.",
+    "source_id": 10
+  },
+  {
+    "id": 36,
+    "question": "Explain the minimum font size for negative serif text",
+    "answer": "Minimum size is 14 pt.",
+    "source_id": 10
+  },
+  {
+    "id": 37,
+    "question": "Should gradients be used in one-color screen print?",
+    "answer": "No, gradients must be removed.",
+    "source_id": 11
+  },
+  {
+    "id": 38,
+    "question": "Do I need to gradients be used in one-color screen print",
+    "answer": "No, gradients must be removed.",
+    "source_id": 11
+  },
+  {
+    "id": 39,
+    "question": "Is it required to gradients be used in one-color screen print",
+    "answer": "No, gradients must be removed.",
+    "source_id": 11
+  },
+  {
+    "id": 40,
+    "question": "Must I gradients be used in one-color screen print",
+    "answer": "No, gradients must be removed.",
+    "source_id": 11
+  },
+  {
+    "id": 41,
+    "question": "Should transparency be used in vector art?",
+    "answer": "No, transparency must be flattened.",
+    "source_id": 12
+  },
+  {
+    "id": 42,
+    "question": "Do I need to transparency be used in vector art",
+    "answer": "No, transparency must be flattened.",
+    "source_id": 12
+  },
+  {
+    "id": 43,
+    "question": "Is it required to transparency be used in vector art",
+    "answer": "No, transparency must be flattened.",
+    "source_id": 12
+  },
+  {
+    "id": 44,
+    "question": "Must I transparency be used in vector art",
+    "answer": "No, transparency must be flattened.",
+    "source_id": 12
+  },
+  {
+    "id": 45,
+    "question": "What color format should one-color artwork be in?",
+    "answer": "Solid black or a single PMS color.",
+    "source_id": 13
+  },
+  {
+    "id": 46,
+    "question": "What file formats are preferred for final vector artwork?",
+    "answer": "EPS or PDF formats are preferred.",
+    "source_id": 14
+  },
+  {
+    "id": 47,
+    "question": "What does width 0.0000 indicate?",
+    "answer": "It indicates a circular imprint area.",
+    "source_id": 15
+  },
+  {
+    "id": 48,
+    "question": "What is the diameter when width shows 0.0000?",
+    "answer": "The diameter is 1.5 inches.",
+    "source_id": 16
+  },
+  {
+    "id": 49,
+    "question": "Tell me about the diameter when width shows 0.0000",
+    "answer": "The diameter is 1.5 inches.",
+    "source_id": 16
+  },
+  {
+    "id": 50,
+    "question": "the diameter when width shows 0.0000",
+    "answer": "The diameter is 1.5 inches.",
+    "source_id": 16
+  },
+  {
+    "id": 51,
+    "question": "Explain the diameter when width shows 0.0000",
+    "answer": "The diameter is 1.5 inches.",
+    "source_id": 16
+  },
+  {
+    "id": 52,
+    "question": "What should be followed if artwork and label colors differ?",
+    "answer": "Always follow the imprint color mentioned on the label.",
+    "source_id": 17
+  },
+  {
+    "id": 53,
+    "question": "What should be done if the imprint color is unclear?",
+    "answer": "Clarify with CSR or check order details.",
+    "source_id": 18
+  },
+  {
+    "id": 54,
+    "question": "How to handle if the imprint color is unclear",
+    "answer": "Clarify with CSR or check order details.",
+    "source_id": 18
+  },
+  {
+    "id": 55,
+    "question": "Steps for if the imprint color is unclear",
+    "answer": "Clarify with CSR or check order details.",
+    "source_id": 18
+  },
+  {
+    "id": 56,
+    "question": "What details must be checked on proof labels?",
+    "answer": "Order ID, date, CSR name, and imprint color.",
+    "source_id": 19
+  },
+  {
+    "id": 57,
+    "question": "Should spelling be checked even if text is in customer artwork?",
+    "answer": "Yes, spelling must always be verified.",
+    "source_id": 20
+  },
+  {
+    "id": 58,
+    "question": "Do I need to spelling be checked even if text is in customer artwork",
+    "answer": "Yes, spelling must always be verified.",
+    "source_id": 20
+  },
+  {
+    "id": 59,
+    "question": "Is it required to spelling be checked even if text is in customer artwork",
+    "answer": "Yes, spelling must always be verified.",
+    "source_id": 20
+  },
+  {
+    "id": 60,
+    "question": "Must I spelling be checked even if text is in customer artwork",
+    "answer": "Yes, spelling must always be verified.",
+    "source_id": 20
+  },
+  {
+    "id": 61,
+    "question": "What should be done if text looks incorrect?",
+    "answer": "Flag it and inform the team leader.",
+    "source_id": 21
+  },
+  {
+    "id": 62,
+    "question": "How to handle if text looks incorrect",
+    "answer": "Flag it and inform the team leader.",
+    "source_id": 21
+  },
+  {
+    "id": 63,
+    "question": "Steps for if text looks incorrect",
+    "answer": "Flag it and inform the team leader.",
+    "source_id": 21
+  },
+  {
+    "id": 64,
+    "question": "When should a premockup be created?",
+    "answer": "When customer artwork does not meet vendor specifications.",
+    "source_id": 22
+  },
+  {
+    "id": 65,
+    "question": "When to a premockup be created",
+    "answer": "When customer artwork does not meet vendor specifications.",
+    "source_id": 22
+  },
+  {
+    "id": 66,
+    "question": "How many premockup options should be shown?",
+    "answer": "At least two options should be shown.",
+    "source_id": 23
+  },
+  {
+    "id": 67,
+    "question": "Number of premockup options should be shown",
+    "answer": "At least two options should be shown.",
+    "source_id": 23
+  },
+  {
+    "id": 68,
+    "question": "Which premockup option should be recommended?",
+    "answer": "The best compliant option should be highlighted.",
+    "source_id": 24
+  },
+  {
+    "id": 69,
+    "question": "What premockup option should be recommended",
+    "answer": "The best compliant option should be highlighted.",
+    "source_id": 24
+  },
+  {
+    "id": 70,
+    "question": "What does empty Art on File mean?",
+    "answer": "Artwork must be created from scratch.",
+    "source_id": 25
+  },
+  {
+    "id": 71,
+    "question": "Should stray points be removed from vector artwork?",
+    "answer": "Yes, all stray points must be removed.",
+    "source_id": 26
+  },
+  {
+    "id": 72,
+    "question": "Do I need to stray points be removed from vector artwork",
+    "answer": "Yes, all stray points must be removed.",
+    "source_id": 26
+  },
+  {
+    "id": 73,
+    "question": "Is it required to stray points be removed from vector artwork",
+    "answer": "Yes, all stray points must be removed.",
+    "source_id": 26
+  },
+  {
+    "id": 74,
+    "question": "Must I stray points be removed from vector artwork",
+    "answer": "Yes, all stray points must be removed.",
+    "source_id": 26
+  },
+  {
+    "id": 75,
+    "question": "Should overlapping paths be cleaned?",
+    "answer": "Yes, overlapping paths should be corrected.",
+    "source_id": 27
+  },
+  {
+    "id": 76,
+    "question": "Do I need to overlapping paths be cleaned",
+    "answer": "Yes, overlapping paths should be corrected.",
+    "source_id": 27
+  },
+  {
+    "id": 77,
+    "question": "Is it required to overlapping paths be cleaned",
+    "answer": "Yes, overlapping paths should be corrected.",
+    "source_id": 27
+  },
+  {
+    "id": 78,
+    "question": "Must I overlapping paths be cleaned",
+    "answer": "Yes, overlapping paths should be corrected.",
+    "source_id": 27
+  },
+  {
+    "id": 79,
+    "question": "Should artwork be centered automatically?",
+    "answer": "Yes, unless otherwise specified.",
+    "source_id": 28
+  },
+  {
+    "id": 80,
+    "question": "Do I need to artwork be centered automatically",
+    "answer": "Yes, unless otherwise specified.",
+    "source_id": 28
+  },
+  {
+    "id": 81,
+    "question": "Is it required to artwork be centered automatically",
+    "answer": "Yes, unless otherwise specified.",
+    "source_id": 28
+  },
+  {
+    "id": 82,
+    "question": "Must I artwork be centered automatically",
+    "answer": "Yes, unless otherwise specified.",
+    "source_id": 28
+  },
+  {
+    "id": 83,
+    "question": "Should artwork exceed the imprint area?",
+    "answer": "No, artwork must fit within the imprint area.",
+    "source_id": 29
+  },
+  {
+    "id": 84,
+    "question": "Do I need to artwork exceed the imprint area",
+    "answer": "No, artwork must fit within the imprint area.",
+    "source_id": 29
+  },
+  {
+    "id": 85,
+    "question": "Is it required to artwork exceed the imprint area",
+    "answer": "No, artwork must fit within the imprint area.",
+    "source_id": 29
+  },
+  {
+    "id": 86,
+    "question": "Must I artwork exceed the imprint area",
+    "answer": "No, artwork must fit within the imprint area.",
+    "source_id": 29
+  },
+  {
+    "id": 87,
+    "question": "Where are vendor specifications usually found?",
+    "answer": "In the blank mockup template.",
+    "source_id": 30
+  },
+  {
+    "id": 88,
+    "question": "Where to find vendor specifications usually found",
+    "answer": "In the blank mockup template.",
+    "source_id": 30
+  },
+  {
+    "id": 89,
+    "question": "Location of vendor specifications usually found",
+    "answer": "In the blank mockup template.",
+    "source_id": 30
+  },
+  {
+    "id": 90,
+    "question": "Should vendor line weight rules be followed strictly?",
+    "answer": "Yes, they must be followed exactly.",
+    "source_id": 31
+  },
+  {
+    "id": 91,
+    "question": "Do I need to vendor line weight rules be followed strictly",
+    "answer": "Yes, they must be followed exactly.",
+    "source_id": 31
+  },
+  {
+    "id": 92,
+    "question": "Is it required to vendor line weight rules be followed strictly",
+    "answer": "Yes, they must be followed exactly.",
+    "source_id": 31
+  },
+  {
+    "id": 93,
+    "question": "Must I vendor line weight rules be followed strictly",
+    "answer": "Yes, they must be followed exactly.",
+    "source_id": 31
+  },
+  {
+    "id": 94,
+    "question": "Should proof notes be read before finalizing artwork?",
+    "answer": "Yes, proof notes must be reviewed.",
+    "source_id": 32
+  },
+  {
+    "id": 95,
+    "question": "Do I need to proof notes be read before finalizing artwork",
+    "answer": "Yes, proof notes must be reviewed.",
+    "source_id": 32
+  },
+  {
+    "id": 96,
+    "question": "Is it required to proof notes be read before finalizing artwork",
+    "answer": "Yes, proof notes must be reviewed.",
+    "source_id": 32
+  },
+  {
+    "id": 97,
+    "question": "Must I proof notes be read before finalizing artwork",
+    "answer": "Yes, proof notes must be reviewed.",
+    "source_id": 32
+  },
+  {
+    "id": 98,
+    "question": "Should the JPG proof match the vector file exactly?",
+    "answer": "Yes, both must match perfectly.",
+    "source_id": 33
+  },
+  {
+    "id": 99,
+    "question": "Do I need to the jpg proof match the vector file exactly",
+    "answer": "Yes, both must match perfectly.",
+    "source_id": 33
+  },
+  {
+    "id": 100,
+    "question": "Is it required to the jpg proof match the vector file exactly",
+    "answer": "Yes, both must match perfectly.",
+    "source_id": 33
+  },
+  {
+    "id": 101,
+    "question": "Must I the jpg proof match the vector file exactly",
+    "answer": "Yes, both must match perfectly.",
+    "source_id": 33
+  },
+  {
+    "id": 102,
+    "question": "Can grayscale be used for one-color print?",
+    "answer": "No, use solid black or a single PMS color.",
+    "source_id": 34
+  },
+  {
+    "id": 103,
+    "question": "Is grayscale be used for one-color print allowed",
+    "answer": "No, use solid black or a single PMS color.",
+    "source_id": 34
+  },
+  {
+    "id": 104,
+    "question": "Is it ok to grayscale be used for one-color print",
+    "answer": "No, use solid black or a single PMS color.",
+    "source_id": 34
+  },
+  {
+    "id": 105,
+    "question": "Should multiple black shades be used in one-color artwork?",
+    "answer": "No, use only one black value.",
+    "source_id": 35
+  },
+  {
+    "id": 106,
+    "question": "Do I need to multiple black shades be used in one-color artwork",
+    "answer": "No, use only one black value.",
+    "source_id": 35
+  },
+  {
+    "id": 107,
+    "question": "Is it required to multiple black shades be used in one-color artwork",
+    "answer": "No, use only one black value.",
+    "source_id": 35
+  },
+  {
+    "id": 108,
+    "question": "Must I multiple black shades be used in one-color artwork",
+    "answer": "No, use only one black value.",
+    "source_id": 35
+  },
+  {
+    "id": 109,
+    "question": "Should text be converted to outlines?",
+    "answer": "Yes, text should be converted to outlines.",
+    "source_id": 36
+  },
+  {
+    "id": 110,
+    "question": "Do I need to text be converted to outlines",
+    "answer": "Yes, text should be converted to outlines.",
+    "source_id": 36
+  },
+  {
+    "id": 111,
+    "question": "Is it required to text be converted to outlines",
+    "answer": "Yes, text should be converted to outlines.",
+    "source_id": 36
+  },
+  {
+    "id": 112,
+    "question": "Must I text be converted to outlines",
+    "answer": "Yes, text should be converted to outlines.",
+    "source_id": 36
+  },
+  {
+    "id": 113,
+    "question": "Should live fonts remain in final files?",
+    "answer": "No, fonts must be converted to outlines.",
+    "source_id": 37
+  },
+  {
+    "id": 114,
+    "question": "Do I need to live fonts remain in final files",
+    "answer": "No, fonts must be converted to outlines.",
+    "source_id": 37
+  },
+  {
+    "id": 115,
+    "question": "Is it required to live fonts remain in final files",
+    "answer": "No, fonts must be converted to outlines.",
+    "source_id": 37
+  },
+  {
+    "id": 116,
+    "question": "Must I live fonts remain in final files",
+    "answer": "No, fonts must be converted to outlines.",
+    "source_id": 37
+  },
+  {
+    "id": 117,
+    "question": "Should fine details be simplified for screen printing?",
+    "answer": "Yes, fine details should be simplified.",
+    "source_id": 38
+  },
+  {
+    "id": 118,
+    "question": "Do I need to fine details be simplified for screen printing",
+    "answer": "Yes, fine details should be simplified.",
+    "source_id": 38
+  },
+  {
+    "id": 119,
+    "question": "Is it required to fine details be simplified for screen printing",
+    "answer": "Yes, fine details should be simplified.",
+    "source_id": 38
+  },
+  {
+    "id": 120,
+    "question": "Must I fine details be simplified for screen printing",
+    "answer": "Yes, fine details should be simplified.",
+    "source_id": 38
+  },
+  {
+    "id": 121,
+    "question": "Should thin strokes be thickened if below minimum size?",
+    "answer": "Yes, adjust to meet minimum stroke requirements.",
+    "source_id": 39
+  },
+  {
+    "id": 122,
+    "question": "Do I need to thin strokes be thickened if below minimum size",
+    "answer": "Yes, adjust to meet minimum stroke requirements.",
+    "source_id": 39
+  },
+  {
+    "id": 123,
+    "question": "Is it required to thin strokes be thickened if below minimum size",
+    "answer": "Yes, adjust to meet minimum stroke requirements.",
+    "source_id": 39
+  },
+  {
+    "id": 124,
+    "question": "Must I thin strokes be thickened if below minimum size",
+    "answer": "Yes, adjust to meet minimum stroke requirements.",
+    "source_id": 39
+  },
+  {
+    "id": 125,
+    "question": "Should imprint size be mentioned on mockups?",
+    "answer": "Yes, imprint size must be shown.",
+    "source_id": 40
+  },
+  {
+    "id": 126,
+    "question": "Do I need to imprint size be mentioned on mockups",
+    "answer": "Yes, imprint size must be shown.",
+    "source_id": 40
+  },
+  {
+    "id": 127,
+    "question": "Is it required to imprint size be mentioned on mockups",
+    "answer": "Yes, imprint size must be shown.",
+    "source_id": 40
+  },
+  {
+    "id": 128,
+    "question": "Must I imprint size be mentioned on mockups",
+    "answer": "Yes, imprint size must be shown.",
+    "source_id": 40
+  },
+  {
+    "id": 129,
+    "question": "Should imprint location be clearly marked?",
+    "answer": "Yes, imprint location must be clearly shown.",
+    "source_id": 41
+  },
+  {
+    "id": 130,
+    "question": "Do I need to imprint location be clearly marked",
+    "answer": "Yes, imprint location must be clearly shown.",
+    "source_id": 41
+  },
+  {
+    "id": 131,
+    "question": "Is it required to imprint location be clearly marked",
+    "answer": "Yes, imprint location must be clearly shown.",
+    "source_id": 41
+  },
+  {
+    "id": 132,
+    "question": "Must I imprint location be clearly marked",
+    "answer": "Yes, imprint location must be clearly shown.",
+    "source_id": 41
+  },
+  {
+    "id": 133,
+    "question": "Should previous revisions be reviewed before making changes?",
+    "answer": "Yes, always review revision history.",
+    "source_id": 42
+  },
+  {
+    "id": 134,
+    "question": "Do I need to previous revisions be reviewed before making changes",
+    "answer": "Yes, always review revision history.",
+    "source_id": 42
+  },
+  {
+    "id": 135,
+    "question": "Is it required to previous revisions be reviewed before making changes",
+    "answer": "Yes, always review revision history.",
+    "source_id": 42
+  },
+  {
+    "id": 136,
+    "question": "Must I previous revisions be reviewed before making changes",
+    "answer": "Yes, always review revision history.",
+    "source_id": 42
+  },
+  {
+    "id": 137,
+    "question": "Should old errors be repeated in revisions?",
+    "answer": "No, errors must be corrected.",
+    "source_id": 43
+  },
+  {
+    "id": 138,
+    "question": "Do I need to old errors be repeated in revisions",
+    "answer": "No, errors must be corrected.",
+    "source_id": 43
+  },
+  {
+    "id": 139,
+    "question": "Is it required to old errors be repeated in revisions",
+    "answer": "No, errors must be corrected.",
+    "source_id": 43
+  },
+  {
+    "id": 140,
+    "question": "Must I old errors be repeated in revisions",
+    "answer": "No, errors must be corrected.",
+    "source_id": 43
+  },
+  {
+    "id": 141,
+    "question": "What is the main goal of vector cleanup?",
+    "answer": "To create clear, printable, and error-free artwork.",
+    "source_id": 44
+  },
+  {
+    "id": 142,
+    "question": "Tell me about the main goal of vector cleanup",
+    "answer": "To create clear, printable, and error-free artwork.",
+    "source_id": 44
+  },
+  {
+    "id": 143,
+    "question": "the main goal of vector cleanup",
+    "answer": "To create clear, printable, and error-free artwork.",
+    "source_id": 44
+  },
+  {
+    "id": 144,
+    "question": "Explain the main goal of vector cleanup",
+    "answer": "To create clear, printable, and error-free artwork.",
+    "source_id": 44
+  },
+  {
+    "id": 145,
+    "question": "Should artwork be checked at 100 percent zoom?",
+    "answer": "Yes, final checks should be done at 100 percent zoom.",
+    "source_id": 45
+  },
+  {
+    "id": 146,
+    "question": "Do I need to artwork be checked at 100 percent zoom",
+    "answer": "Yes, final checks should be done at 100 percent zoom.",
+    "source_id": 45
+  },
+  {
+    "id": 147,
+    "question": "Is it required to artwork be checked at 100 percent zoom",
+    "answer": "Yes, final checks should be done at 100 percent zoom.",
+    "source_id": 45
+  },
+  {
+    "id": 148,
+    "question": "Must I artwork be checked at 100 percent zoom",
+    "answer": "Yes, final checks should be done at 100 percent zoom.",
+    "source_id": 45
+  },
+  {
+    "id": 149,
+    "question": "Should RGB colors be used for print vectors?",
+    "answer": "No, use PMS or solid black only.",
+    "source_id": 46
+  },
+  {
+    "id": 150,
+    "question": "Do I need to rgb colors be used for print vectors",
+    "answer": "No, use PMS or solid black only.",
+    "source_id": 46
+  },
+  {
+    "id": 151,
+    "question": "Is it required to rgb colors be used for print vectors",
+    "answer": "No, use PMS or solid black only.",
+    "source_id": 46
+  },
+  {
+    "id": 152,
+    "question": "Must I rgb colors be used for print vectors",
+    "answer": "No, use PMS or solid black only.",
+    "source_id": 46
+  },
+  {
+    "id": 153,
+    "question": "Should extra artboards be removed before exporting?",
+    "answer": "Yes, remove unused artboards.",
+    "source_id": 47
+  },
+  {
+    "id": 154,
+    "question": "Do I need to extra artboards be removed before exporting",
+    "answer": "Yes, remove unused artboards.",
+    "source_id": 47
+  },
+  {
+    "id": 155,
+    "question": "Is it required to extra artboards be removed before exporting",
+    "answer": "Yes, remove unused artboards.",
+    "source_id": 47
+  },
+  {
+    "id": 156,
+    "question": "Must I extra artboards be removed before exporting",
+    "answer": "Yes, remove unused artboards.",
+    "source_id": 47
+  },
+  {
+    "id": 157,
+    "question": "Should final files be reopened and verified?",
+    "answer": "Yes, always reopen and verify final files.",
+    "source_id": 48
+  },
+  {
+    "id": 158,
+    "question": "Do I need to final files be reopened and verified",
+    "answer": "Yes, always reopen and verify final files.",
+    "source_id": 48
+  },
+  {
+    "id": 159,
+    "question": "Is it required to final files be reopened and verified",
+    "answer": "Yes, always reopen and verify final files.",
+    "source_id": 48
+  },
+  {
+    "id": 160,
+    "question": "Must I final files be reopened and verified",
+    "answer": "Yes, always reopen and verify final files.",
+    "source_id": 48
+  },
+  {
+    "id": 161,
+    "question": "Who is responsible for final artwork accuracy?",
+    "answer": "The assigned designer is responsible.",
+    "source_id": 49
+  },
+  {
+    "id": 162,
+    "question": "Who's responsible for final artwork accuracy",
+    "answer": "The assigned designer is responsible.",
+    "source_id": 49
+  },
+  {
+    "id": 163,
+    "question": "What should be done if unsure about artwork changes?",
+    "answer": "Escalate to the team leader or QA.",
+    "source_id": 50
+  },
+  {
+    "id": 164,
+    "question": "How to handle if unsure about artwork changes",
+    "answer": "Escalate to the team leader or QA.",
+    "source_id": 50
+  },
+  {
+    "id": 165,
+    "question": "Steps for if unsure about artwork changes",
+    "answer": "Escalate to the team leader or QA.",
+    "source_id": 50
+  }
+]

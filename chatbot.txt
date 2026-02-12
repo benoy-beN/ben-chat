@@ -1,0 +1,213 @@
+HIGH-ACCURACY SOP CHATBOT 
+
+GOAL: Answer ONLY from SOP. Never hallucinate. Reject unknown queries. Deterministic + auditable behavior.
+everything should be completely open source license and compatible for corporate use.
+
+
+##################################################################
+                        +----------------------+
+                         |      SOP DATA        |
+                         |  (100 Q&A Pairs)     |
+                         +----------+-----------+
+                                    |
+                                    v
+                         +----------------------+
+                         |   QUESTION EMBEDDER  |
+                         |  (bge-base / e5)     |
+                         +----------+-----------+
+                                    |
+                                    v
+                         +----------------------+
+                         |    FAISS INDEX       |
+                         |  (Vectors of Qs)    |
+                         +----------+-----------+
+                                    |
+                                    |
+ USER QUESTION                       |
+     |                               |
+     v                               |
++-------------------+                |
+| INPUT NORMALIZER  |                |
+| - lowercase       |                |
+| - trim spaces     |                |
+| - remove punct    |                |
++---------+---------+                |
+          |                          |
+          v                          |
++-------------------+                |
+| QUESTION EMBEDDER |----------------+
+|  (same model)     |
++---------+---------+
+          |
+          v
++-------------------+
+|  FAISS SEARCH     |
+|   Top-1 Match     |
++---------+---------+
+          |
+          v
++-----------------------------+
+| SIMILARITY THRESHOLD CHECK |
+|   score >= 0.75 ?          |
++------------+----------------+
+             |
+      +------+------+
+      |             |
+      v             v
++-------------+   +---------------------+
+|  REJECT     |   |  SOP ANSWER (GT)    |
+| "Not in SOP"|   |  (Verbatim)         |
++-------------+   +----------+----------+
+                               |
+                        OPTIONAL REWRITE
+                               |
+                               v
+                       +------------------+
+                       |   FINAL ANSWER   |
+                       +------------------+
+
+
+##################################################################
+DATA FORMAT
+[
+  {
+    "id": 1,
+    "question": "How do I apply for leave?",
+    "answer": "Employees must submit a leave request through the HR portal."
+  },
+  {
+    "id": 2,
+    "question": "What is the work from home policy?",
+    "answer": "Employees may work from home up to 2 days per week with manager approval."
+  }
+]
+
+##################################################################
+
+RETRIEVAL PIPELINE
+
+User Question
+      |
+      v
+Normalize Text
+(lowercase, strip punctuation)
+      |
+      v
+Embed Question (bge / e5)
+      |
+      v
+FAISS Search (Top-1 only)
+      |
+      v
+If similarity < 0.75:
+    -> "This question is not covered in SOP"
+Else:
+    -> Return stored answer (ground truth)
+
+
+##################################################################	
+
+
+HALLUCINATION PREVENTION RULES
+
+[ RULE 1 ] LLM is NOT allowed to answer questions
+[ RULE 2 ] LLM can only rewrite retrieved answer
+[ RULE 3 ] Top-1 retrieval only
+[ RULE 4 ] Hard similarity threshold
+[ RULE 5 ] Reject unknown questions
+[ RULE 6 ] Return verbatim SOP answer
+
+##################################################################
+
+
+
+OPTIONAL LLM PROMPT (REWRITE-ONLY MODE)
+
+You are an SOP assistant.
+Rewrite the following answer clearly and concisely.
+Do NOT add, remove, or assume any information.
+If the answer is empty, reply: "This is not in the SOP."
+
+Answer:
+{retrieved_answer}
+
+
+
+
+##################################################################
+
+
+ACCURACY EVALUATION PIPELINE
+
+
+TEST SET (100 Questions)
+        |
+        v
+Run Through Pipeline
+        |
+        v
+Compare Retrieved ID vs Expected ID
+        |
+        v
+Compute Metrics:
+- Accuracy %
+- Rejection Rate %
+- Hallucination Rate %
+
+
+##################################################################
+
+PARAPHRASE AUGMENTATION (BOOST ACCURACY)
+
+Original:
+How do I apply for leave?
+
+Augmented:
+- How can I request leave?
+- What is the leave application process?
+- How to submit leave request?
+
+(All point to the SAME answer)
+
+
+##################################################################
+
+
+FAILURE BEHAVIOR (PRODUCTION SAFE)
+
+If similarity score < threshold:
+
+"This question is not covered in the SOP.
+Please contact HR."
+
+##################################################################
+
+
+TECH STACK (MINIMAL & RELIABLE)
+- Python
+- FAISS
+- bge-base or e5 embeddings
+- Optional: Ollama (rewrite only)
+- No LangChain required
+
+##################################################################
+
+
+ONE-LINE SUMMARY
+
+DETERMINISTIC RETRIEVAL FIRST
+LLM ONLY FOR REWRITING
+NEVER LET THE MODEL THINK
+
+
+
+
+
+
+
+
+
+
+
+
+

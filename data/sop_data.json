@@ -1,0 +1,252 @@
+[
+  {
+    "id": 1,
+    "question": "What is the PMS value of silver standard?",
+    "answer": "Please use Pantone 877."
+  },
+  {
+    "id": 2,
+    "question": "What is the PMS value of gold standard?",
+    "answer": "Please use Pantone 871."
+  },
+  {
+    "id": 3,
+    "question": "Which PMS should be used for metallic silver?",
+    "answer": "Pantone 877 should be used."
+  },
+  {
+    "id": 4,
+    "question": "Which PMS should be used for metallic gold?",
+    "answer": "Pantone 871 should be used."
+  },
+  {
+    "id": 5,
+    "question": "What is the minimum stroke thickness for positive space?",
+    "answer": "Minimum stroke thickness is 1 pt."
+  },
+  {
+    "id": 6,
+    "question": "What is the minimum stroke thickness for negative space?",
+    "answer": "Minimum stroke thickness is 1.5 pt."
+  },
+  {
+    "id": 7,
+    "question": "What is the minimum font size for positive sans-serif text?",
+    "answer": "Minimum size is 8 pt."
+  },
+  {
+    "id": 8,
+    "question": "What is the minimum font size for negative sans-serif text?",
+    "answer": "Minimum size is 12 pt."
+  },
+  {
+    "id": 9,
+    "question": "What is the minimum font size for positive serif text?",
+    "answer": "Minimum size is 10 pt."
+  },
+  {
+    "id": 10,
+    "question": "What is the minimum font size for negative serif text?",
+    "answer": "Minimum size is 14 pt."
+  },
+  {
+    "id": 11,
+    "question": "Should gradients be used in one-color screen print?",
+    "answer": "No, gradients must be removed."
+  },
+  {
+    "id": 12,
+    "question": "Should transparency be used in vector art?",
+    "answer": "No, transparency must be flattened."
+  },
+  {
+    "id": 13,
+    "question": "What color format should one-color artwork be in?",
+    "answer": "Solid black or a single PMS color."
+  },
+  {
+    "id": 14,
+    "question": "What file formats are preferred for final vector artwork?",
+    "answer": "EPS or PDF formats are preferred."
+  },
+  {
+    "id": 15,
+    "question": "What does width 0.0000 indicate?",
+    "answer": "It indicates a circular imprint area."
+  },
+  {
+    "id": 16,
+    "question": "What is the diameter when width shows 0.0000?",
+    "answer": "The diameter is 1.5 inches."
+  },
+  {
+    "id": 17,
+    "question": "What should be followed if artwork and label colors differ?",
+    "answer": "Always follow the imprint color mentioned on the label."
+  },
+  {
+    "id": 18,
+    "question": "What should be done if the imprint color is unclear?",
+    "answer": "Clarify with CSR or check order details."
+  },
+  {
+    "id": 19,
+    "question": "What details must be checked on proof labels?",
+    "answer": "Order ID, date, CSR name, and imprint color."
+  },
+  {
+    "id": 20,
+    "question": "Should spelling be checked even if text is in customer artwork?",
+    "answer": "Yes, spelling must always be verified."
+  },
+  {
+    "id": 21,
+    "question": "What should be done if text looks incorrect?",
+    "answer": "Flag it and inform the team leader."
+  },
+  {
+    "id": 22,
+    "question": "When should a premockup be created?",
+    "answer": "When customer artwork does not meet vendor specifications."
+  },
+  {
+    "id": 23,
+    "question": "How many premockup options should be shown?",
+    "answer": "At least two options should be shown."
+  },
+  {
+    "id": 24,
+    "question": "Which premockup option should be recommended?",
+    "answer": "The best compliant option should be highlighted."
+  },
+  {
+    "id": 25,
+    "question": "What does empty Art on File mean?",
+    "answer": "Artwork must be created from scratch."
+  },
+  {
+    "id": 26,
+    "question": "Should stray points be removed from vector artwork?",
+    "answer": "Yes, all stray points must be removed."
+  },
+  {
+    "id": 27,
+    "question": "Should overlapping paths be cleaned?",
+    "answer": "Yes, overlapping paths should be corrected."
+  },
+  {
+    "id": 28,
+    "question": "Should artwork be centered automatically?",
+    "answer": "Yes, unless otherwise specified."
+  },
+  {
+    "id": 29,
+    "question": "Should artwork exceed the imprint area?",
+    "answer": "No, artwork must fit within the imprint area."
+  },
+  {
+    "id": 30,
+    "question": "Where are vendor specifications usually found?",
+    "answer": "In the blank mockup template."
+  },
+  {
+    "id": 31,
+    "question": "Should vendor line weight rules be followed strictly?",
+    "answer": "Yes, they must be followed exactly."
+  },
+  {
+    "id": 32,
+    "question": "Should proof notes be read before finalizing artwork?",
+    "answer": "Yes, proof notes must be reviewed."
+  },
+  {
+    "id": 33,
+    "question": "Should the JPG proof match the vector file exactly?",
+    "answer": "Yes, both must match perfectly."
+  },
+  {
+    "id": 34,
+    "question": "Can grayscale be used for one-color print?",
+    "answer": "No, use solid black or a single PMS color."
+  },
+  {
+    "id": 35,
+    "question": "Should multiple black shades be used in one-color artwork?",
+    "answer": "No, use only one black value."
+  },
+  {
+    "id": 36,
+    "question": "Should text be converted to outlines?",
+    "answer": "Yes, text should be converted to outlines."
+  },
+  {
+    "id": 37,
+    "question": "Should live fonts remain in final files?",
+    "answer": "No, fonts must be converted to outlines."
+  },
+  {
+    "id": 38,
+    "question": "Should fine details be simplified for screen printing?",
+    "answer": "Yes, fine details should be simplified."
+  },
+  {
+    "id": 39,
+    "question": "Should thin strokes be thickened if below minimum size?",
+    "answer": "Yes, adjust to meet minimum stroke requirements."
+  },
+  {
+    "id": 40,
+    "question": "Should imprint size be mentioned on mockups?",
+    "answer": "Yes, imprint size must be shown."
+  },
+  {
+    "id": 41,
+    "question": "Should imprint location be clearly marked?",
+    "answer": "Yes, imprint location must be clearly shown."
+  },
+  {
+    "id": 42,
+    "question": "Should previous revisions be reviewed before making changes?",
+    "answer": "Yes, always review revision history."
+  },
+  {
+    "id": 43,
+    "question": "Should old errors be repeated in revisions?",
+    "answer": "No, errors must be corrected."
+  },
+  {
+    "id": 44,
+    "question": "What is the main goal of vector cleanup?",
+    "answer": "To create clear, printable, and error-free artwork."
+  },
+  {
+    "id": 45,
+    "question": "Should artwork be checked at 100 percent zoom?",
+    "answer": "Yes, final checks should be done at 100 percent zoom."
+  },
+  {
+    "id": 46,
+    "question": "Should RGB colors be used for print vectors?",
+    "answer": "No, use PMS or solid black only."
+  },
+  {
+    "id": 47,
+    "question": "Should extra artboards be removed before exporting?",
+    "answer": "Yes, remove unused artboards."
+  },
+  {
+    "id": 48,
+    "question": "Should final files be reopened and verified?",
+    "answer": "Yes, always reopen and verify final files."
+  },
+  {
+    "id": 49,
+    "question": "Who is responsible for final artwork accuracy?",
+    "answer": "The assigned designer is responsible."
+  },
+  {
+    "id": 50,
+    "question": "What should be done if unsure about artwork changes?",
+    "answer": "Escalate to the team leader or QA."
+  }
+]
