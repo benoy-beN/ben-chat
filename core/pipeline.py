@@ -221,11 +221,18 @@ class SOPPipeline:
         best = top_candidates[0]
         
         # --- Stage 5: Confidence Calibration ---
-        calibrated_confidence = self.calibrator.calibrate(best["rerank_score"])
+        # When calibrator is trained, apply Platt scaling to raw reranker score.
+        # When untrained, use reranker score directly (already sigmoid-normalized).
+        if self.calibrator.is_trained:
+            calibrated_confidence = self.calibrator.calibrate(best["rerank_score"])
+            threshold = self.calibrator.threshold
+        else:
+            calibrated_confidence = best["rerank_score"]
+            threshold = config.SIMILARITY_THRESHOLD
         
         # --- Stage 6: Threshold Decision ---
-        if not self.calibrator.should_accept(calibrated_confidence):
-            return self._reject(user_question, normalized, calibrated_confidence)
+        if calibrated_confidence < threshold:
+            return self._reject(user_question, normalized, calibrated_confidence, threshold)
 
         # --- Stage 7: Output ---
         answer = best["entry"]["answer"]
@@ -240,7 +247,7 @@ class SOPPipeline:
             "score": calibrated_confidence,
             "source_id": best["entry"].get("source_id"),
             "rejected": False,
-            "threshold": self.calibrator.threshold,
+            "threshold": threshold,
             "top_k_results": [
                 {
                     "question": c["entry"]["question"],
@@ -259,7 +266,7 @@ class SOPPipeline:
         """Alias for query to maintain compatibility with app.py."""
         return self.query(user_question)
 
-    def _reject(self, question, normalized, score):
+    def _reject(self, question, normalized, score, threshold=None):
         return {
             "question": question,
             "normalized": normalized,
@@ -268,6 +275,6 @@ class SOPPipeline:
             "score": score,
             "source_id": None,
             "rejected": True,
-            "threshold": self.calibrator.threshold,
+            "threshold": threshold or config.SIMILARITY_THRESHOLD,
             "top_k_results": [],
         }
