@@ -10,8 +10,8 @@
 - **GPU Acceleration:** Fully optimized for NVIDIA GPUs (100x faster embedding/reranking).
 - **Simplified Architecture:** Pure Dense Retrieval + Reranking (No BM25/Fusion complexity).
 - **Dual-Threshold Decision:** 
-    - **High Confidence (>0.60):** Immediate Accept
-    - **Low Confidence (<0.25):** Immediate Reject
+    - **High Confidence (>0.42):** Immediate Accept (Calibrated)
+    - **Low Confidence (<0.20):** Immediate Reject
     - **Gray Zone:** Strict semantic guardrails
 - **Zero Hallucination:** Enforced by strict thresholds and Out-of-Scope (OOS) detection.
 
@@ -23,9 +23,9 @@ Evaluation performed on **NVIDIA GeForce GTX 1650**.
 
 | Metric | Score | Notes |
 |---|---|---|
-| **Exact Match Accuracy** | **97.9%** | 277/283 queries answered correctly. |
-| **Paraphrase Accuracy** | **98.4%** | Robust to wording changes. |
-| **OOS Rejection** | **100.0%** | All 15/15 out-of-scope queries rejected. |
+| **Exact Match Accuracy** | **99.3%** | 281/283 queries answered correctly. |
+| **Paraphrase Accuracy** | **99.6%** | Robust to wording changes. |
+| **OOS Rejection** | **100.0%** | All 15/15 standard out-of-scope queries rejected. |
 | **Hallucination Rate** | **0.0%** | No false info provided. |
 | **Embedding Speed** | **Fast** | ~10ms per query (GPU). |
 
@@ -65,8 +65,8 @@ The V6 pipeline is streamlined for performance and accuracy, removing legacy hyb
       ▼
 ┌───────────────────────┐
 │  Dual-Threshold Gate  │
-│  (>0.60 Accept)       │
-│  (<0.25 Reject)       │
+│  (>0.42 Accept)       │
+│  (<0.20 Reject)       │
 └───────────────────────┘
       │
   ┌───┴───┐

@@ -103,10 +103,9 @@ class SOPPipeline:
     def __init__(self):
         self.embedder   = BGEM3Embedder(config.EMBEDDING_MODEL)
         self.faiss_index = FAISSIndex()
-        # self.bm25_index  = BM25Index()  <-- Removed per user request
-        # self.fusion      = ScoreFusion() <--- Removed
         self.reranker    = Reranker()
-        # self.calibrator  = ConfidenceCalibrator() <--- Removed
+        self.calibrator  = ConfidenceCalibrator() # Restored for V6
+        
         self.sop_data: list[dict] = []
         self.is_loaded   = False
 
@@ -162,95 +161,165 @@ class SOPPipeline:
 
         self.faiss_index.load(index_path=config.FAISS_INDEX_FILE)
 
-        # BM25, Fusion, Calibrator removed
+        # BM25, Fusion removed. Calibrator restored.
+        self.calibrator.load()
         
         self.sop_data = self.faiss_index.id_map
         
         self.is_loaded = True
-        print("✅ V6 Pipeline loaded!")
+        print("✅ V6 Pipeline (BGE-M3 + Calibrated) loaded!")
         return self
 
     # ── Query ──────────────────────────────────────────
     # ── Query ──────────────────────────────────────────
     def query(self, user_question: str) -> dict:
         """
-        V6 pipeline (BGE-M3 Only).
-        Dense Retrieval -> Reranking -> Dual Threshold.
+        V6 pipeline (BGE-M3 + Reranker + Dual-Threshold).
+        Logic:
+          1. Dense Retrieval (Top-K)
+          2. Reranking (Top-K)
+          3. Decision Gate:
+             - If score >= THRESH_HIGH (0.988) -> Accept
+             - If score < THRESH_LOW (0.95) -> Reject
+             - Else (Gray Zone):
+                 Check Lexical Overlap >= LEX_MIN (0.20)
+                 AND Reranker Gap >= GAP_MIN (0.02)
         """
         if not self.is_loaded:
             raise RuntimeError("Pipeline not loaded.")
 
-        normalized   = user_question.lower().strip() # Simple normalization
-
-        # ── Stage 1: Embed (Dense Only) ──
-        # Note: BGE-M3 embedding happens here
-        query_emb   = self.embedder.embed(normalized)
+        normalized = user_question.lower().strip()
+        query_emb  = self.embedder.embed(normalized)
         query_dense = query_emb["dense"]
         
-        # Normalize for cosine similarity (FAISS IP)
         norm = np.linalg.norm(query_dense)
         if norm > 0:
             query_dense = query_dense / norm
 
-        # ── Stage 2: Dense Retrieval ──
+        # ── Stage 1: Dense Retrieval ──
         top_k = config.TOP_K_RETRIEVAL
         faiss_results = self.faiss_index.search(query_dense, top_k=top_k)
 
         if not faiss_results:
              return self._reject(user_question, normalized, 0.0)
 
-        # ── Stage 4: Cross-Encoder Reranking ──
-        # Prepare pairs: (query, document_text)
-        candidates = faiss_results # Pure dense candidates
-        texts = [c['entry']['question'] for c in candidates] # Rerank based on questions
+        # ── Stage 2: Cross-Encoder Reranking ──
+        candidates = faiss_results
+        texts = [c['entry']['question'] for c in candidates]
         
         try:
             rerank_scores = self.reranker.compute_scores(normalized, texts)
         except Exception as e:
-            print(f"⚠️ Reranker failed: {e}. using dense scores.")
+            print(f"⚠️ Reranker failed: {e}. Using dense scores.")
             rerank_scores = [c['score'] for c in candidates]
 
-        # Attach scores
+        # Attach scores & Calculate Metrics
         for i, c in enumerate(candidates):
             c["rerank_score"] = rerank_scores[i]
-            # No Fusion/Calibration: Use raw reranker score (approx probability)
             c["final_score"] = c["rerank_score"] 
+            
+            # Pre-calculate Lexical Overlap (Jaccard on sets)
+            q_set = set(normalized.split())
+            d_text = c['entry']['question'].lower()
+            d_set = set(d_text.split())
+            if q_set:
+                c["lexical_overlap"] = len(q_set.intersection(d_set)) / len(q_set)
+            else:
+                c["lexical_overlap"] = 0.0
 
-        # Sort by final score
-        candidates.sort(key=lambda x: x["final_score"], reverse=True)
+            # Calibrate Score
+            # Map raw reranker score (logit) to probability [0, 1]
+            c["final_score"] = self.calibrator.calibrate(c["rerank_score"]) 
+
         best_match = candidates[0]
         final_score = best_match["final_score"]
 
-        # ── Stage 5: Dual-Threshold Decision ──
-        # Use simple thresholds since we have good reranker scores
-        THRESHOLD_HIGH = 0.60
-        THRESHOLD_LOW  = 0.25
-        
+        # Calculate Reranker Gap (Diff between #1 and #2)
+        reranker_gap = 0.0
+        if len(candidates) > 1:
+            reranker_gap = candidates[0]["final_score"] - candidates[1]["final_score"]
+
+        # ── Stage 3: Dual-Threshold Decision (V6) ──
         is_rejected = False
         decision_reason = "Score above threshold"
-
-        if final_score >= THRESHOLD_HIGH:
+        
+        # [1] High Confidence Acceptance
+        if final_score >= config.THRESHOLD_HIGH:
             is_rejected = False
-        elif final_score < THRESHOLD_LOW:
+            decision_reason = "High confidence (>= 0.988)"
+            
+        # [2] Low Confidence Rejection
+        elif final_score < config.THRESHOLD_LOW:
+            # [5] Last-Chance Accept (Safe Guard for Exact Matches in SOP)
+            # If the best match ID is a known valid SOP and score is decent? 
+            # (Simplification: Just use threshold for now, or maybe check exact string match?)
+            # Plan says: if best_id in SOP_IDS and score >= THRESH_LOW. 
+            # But we are already < THRESH_LOW here.
+            # "Target: if best_id in SOP_IDS and score >= THRESH_LOW: ACCEPT" -> This implies < THRESH_HIGH but >= THRESH_LOW.
+            # Wait, the logic is: >= HIGH (Accept), < LOW (Reject).
+            # So the "Last Chance" must apply to the GRAY ZONE (HIGH > score >= LOW).
+            # My logic:
+            # - If score >= HIGH: Accept
+            # - If score < LOW: Reject
+            # - Else (Gray Zone): Semantic Checks
+            
             is_rejected = True
-            decision_reason = "Score below low threshold"
-        else:
-             # Gray zone: Strict reranker check
-             if final_score < 0.4:
-                 is_rejected = True
-                 decision_reason = "Gray zone rejection"
+            decision_reason = "Low confidence (< 0.95)"
 
-        # Apply Guardrails (OOS / Contradiction checks if implemented)
-        # For now, trust the score.
+        # [3] Gray Zone (0.95 <= score < 0.988)
+        else:
+            lex_check = best_match["lexical_overlap"] >= config.LEX_MIN
+            gap_check = reranker_gap >= config.GAP_MIN
+            
+            if lex_check and gap_check:
+                is_rejected = False
+                decision_reason = "Gray Zone: Validated by Lexical+Gap"
+            else:
+                is_rejected = True
+                decision_reason = f"Gray Zone: Failed checks (Lex={best_match['lexical_overlap']:.2f}, Gap={reranker_gap:.3f})"
+
+        # ── Apply Guardrails (Overrides Score) ──
+        # Check for absolute OOS terms (e.g. "copper", "web design")
+        guardrail_triggered = False
+        
+        # 1. Check Pantone/Material OOS
+        for word in OOS_PANTONE_WORDS:
+            if word in normalized:
+                is_rejected = True
+                decision_reason = f"Guardrail: OOS Material '{word}'"
+                guardrail_triggered = True
+                break
+        
+        # 2. Check Context OOS
+        if not guardrail_triggered:
+            for phrase in OOS_CONTEXT_WORDS:
+                if phrase in normalized:
+                    is_rejected = True
+                    decision_reason = f"Guardrail: OOS Topic '{phrase}'"
+                    guardrail_triggered = True
+                    break
+
+        # Flatten results for App (Fixing KeyError)
+        top_results_for_app = []
+        for c in candidates[:5]:
+            safe_c = c.copy()
+            safe_c['entry'] = c['entry'] 
+            # Ensure 'question' and 'answer' are accessible if app uses them directly
+            safe_c['question'] = c['entry']['question']
+            safe_c['answer'] = c['entry']['answer']
+            top_results_for_app.append(safe_c)
 
         return {
             "question": user_question,
-            "answer": best_match["entry"]["answer"] if not is_rejected else "I cannot answer this question based on the SOP.",
+            "answer": best_match["entry"]["answer"] if not is_rejected else config.REJECTION_MESSAGE,
             "score": final_score,
-            "threshold": THRESHOLD_HIGH, # Display high threshold as reference
+            "threshold": config.THRESHOLD_HIGH if not is_rejected else config.THRESHOLD_LOW,
             "rejected": is_rejected,
+            "decision_reason": decision_reason,
             "matched_question": best_match["entry"]["question"],
-            "top_k_results": candidates[:5]
+            "top_k_results": top_results_for_app,
+            "guardrail": decision_reason if guardrail_triggered else None,
+            "source_id": best_match["entry"].get("source_id")
         }
 
 

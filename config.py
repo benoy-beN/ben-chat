@@ -38,9 +38,14 @@ EMBEDDING_DIM = 1024  # BGE-M3 dense dimension
 # Prefix for BGE queries (used by fallback mode)
 QUERY_PREFIX = "Represent this sentence for searching relevant passages: "
 
-# ── Retrieval (V5) ────────────────────────────────────
-SIMILARITY_THRESHOLD = 0.45   # Adaptive fallback (calibrator overrides when trained)
-TOP_K_RETRIEVAL = 20          # Candidates for reranking (was 5 in V4)
+# ── Retrieval (V6) ────────────────────────────────────
+THRESHOLD_HIGH = 0.42         # Set to calibrated optimal (F1 max)
+THRESHOLD_LOW  = 0.20         # Wide gray zone for safety
+LEX_MIN = 0.20                # Minimum token overlap for gray zone
+GAP_MIN = 0.02                # Minimum reranker score gap for gray zone
+
+SIMILARITY_THRESHOLD = 0.45   # Legacy fallback
+TOP_K_RETRIEVAL = 20          # Candidates for reranking
 TOP_K_FINAL = 1               # Final output
 
 # Fusion default weights: [dense, sparse, bm25]

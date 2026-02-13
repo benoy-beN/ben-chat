@@ -1,0 +1,155 @@
+Q: Should art follow imprint area and ignore minimum stroke rules?
+Expected: Yes, artwork must stay within imprint area.
+
+Q: Consistent lines?
+Expected: Yes, line weights must be consistent.
+
+Q: What is the Pantone value for platinum?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Is Pantone 871 used for silver standard?
+Expected: Please use Pantone 877.
+
+Q: PMS for silver?
+Expected: Please use Pantone 877.
+
+Q: Should we ignore imprint area guidelines?
+Expected: Yes, artwork must stay within imprint area.
+
+Q: Can raster images stay if gradients are removed?
+Expected: No, raster images should be converted to vector format.
+
+Q: Smallest serif font?
+Expected: Minimum size is 10 pt.
+
+Q: Color mismatch?
+Expected: The mismatch must be corrected before proofing.
+
+Q: Gold PMS?
+Expected: Please use Pantone 871.
+
+Q: Is CMYK not required for print?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: What is the maximum font size allowed?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Paper stock?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Shipping weight?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Blurry art?
+Expected: Artwork must be recreated in vector format.
+
+# Out-of-Scope (Adversarial)
+Q: Copper PMS?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Should we skip vendor specification review?
+Expected: Yes, vendor specifications must be reviewed.
+
+Q: Missing pantone?
+Expected: Contact CSR for clarification.
+
+Q: What is the minimum RGB value for print?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Video format?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Should fonts remain editable in final file?
+Expected: Yes, text should be converted to outlines.
+
+Single-line Q and Expected answer for evaluation.
+
+Q: Inks allowed?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Min stroke negative?
+Expected: Minimum stroke thickness is 1.5 pt.
+
+Q: Screen mesh?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: CMYK required?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: Digital ad RGB?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Gradient allowed?
+Expected: No, gradients should not be used in one-color screen print.
+
+Q: Low res images?
+Expected: Low resolution images must be replaced with high resolution versions.
+
+Q: Max stroke?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Incorrect size?
+Expected: Artwork must be resized according to vendor specifications.
+
+Q: Raster allowed?
+Expected: No, raster images should be converted to vector format.
+
+Q: Outline mode?
+Expected: Yes, final file must be checked in outline mode.
+
+Q: Imprint limit?
+Expected: Yes, artwork must stay within imprint area.
+
+Q: Web resolution?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Press speed?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Are gradients required in one-color print?
+Expected: No, gradients should not be used in one-color screen print.
+
+Q: Raster allowed?
+Expected: No, raster images should be converted to vector format.
+
+Q: Merge overlapping?
+Expected: Yes, overlapping objects should be merged.
+
+Q: Should gradients always be used in one-color screen print?
+Expected: No, gradients should not be used in one-color screen print.
+
+Q: Embed fonts?
+Expected: No, fonts must be converted to outlines.
+
+Q: Rose gold?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Is RGB preferred over CMYK for printing?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: Cleaning fluid?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Is spelling check unnecessary before proof?
+Expected: Yes, spelling must be verified.
+
+Q: Spell check?
+Expected: Yes, spelling must be verified.
+
+Q: Should text be converted to outlines and gradients be used?
+Expected: Yes, text should be converted to outlines.
+
+Q: Can I use Pantone 877 and 871 together for silver?
+Expected: Please use Pantone 877.
+
+Q: Box size?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Should RGB be converted to RGB for print?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: Should stray points remain in artwork?
+Expected: Yes, stray points must be removed.
+
+Q: Verify spelling?
+Expected: Yes, spelling must be verified.

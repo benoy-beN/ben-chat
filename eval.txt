@@ -1,0 +1,316 @@
+
+Single-line Q and Expected answer for evaluation.
+
+
+Q: Can I use Pantone 877 for gold standard?
+Expected: Please use Pantone 871.
+
+Q: Is Pantone 871 used for silver standard?
+Expected: Please use Pantone 877.
+
+Q: Should RGB be converted to RGB for print?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: Are gradients required in one-color print?
+Expected: No, gradients should not be used in one-color screen print.
+
+Q: Should stray gradients be removed?
+Expected: No, gradients should not be used in one-color screen print.
+
+Q: Is CMYK not required for print?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: Should outlines be removed from text?
+Expected: Yes, text should be converted to outlines.
+
+Q: Is negative stroke allowed below 1 pt?
+Expected: Minimum stroke thickness is 1.5 pt.
+
+Q: Can we use raster format like AI?
+Expected: Acceptable formats are AI, EPS, and PDF.
+
+Q: Should PDF be converted to raster before screen print?
+Expected: No, raster images should be converted to vector format.
+
+Q: Should gradients always be used in one-color screen print?
+Expected: No, gradients should not be used in one-color screen print.
+
+Q: Should we avoid converting text to outlines?
+Expected: Yes, text should be converted to outlines.
+
+Q: Is RGB preferred over CMYK for printing?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: Should stray points remain in artwork?
+Expected: Yes, stray points must be removed.
+
+Q: Is minimum stroke thickness optional?
+Expected: Minimum stroke thickness is 1 pt.
+
+Q: Should we ignore imprint area guidelines?
+Expected: Yes, artwork must stay within imprint area.
+
+Q: Is spelling check unnecessary before proof?
+Expected: Yes, spelling must be verified.
+
+Q: Can artwork exceed imprint area?
+Expected: Artwork must be adjusted to fit imprint area.
+
+Q: Should we skip vendor specification review?
+Expected: Yes, vendor specifications must be reviewed.
+
+Q: Should fonts remain editable in final file?
+Expected: Yes, text should be converted to outlines.
+
+Q: Silver PMS?
+Expected: Please use Pantone 877.
+
+Q: Gold PMS?
+Expected: Please use Pantone 871.
+
+Q: Convert text?
+Expected: Yes, text should be converted to outlines.
+
+Q: RGB ok?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: Gradient allowed?
+Expected: No, gradients should not be used in one-color screen print.
+
+Q: Stray points?
+Expected: Yes, stray points must be removed.
+
+Q: Imprint limit?
+Expected: Yes, artwork must stay within imprint area.
+
+Q: Spell check?
+Expected: Yes, spelling must be verified.
+
+Q: Outline mode?
+Expected: Yes, final file must be checked in outline mode.
+
+Q: Vector formats?
+Expected: Acceptable formats are AI, EPS, and PDF.
+
+Q: Should text be converted to outlines and gradients be used?
+Expected: Yes, text should be converted to outlines.
+
+Q: Can I use RGB and keep gradients in one-color print?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: Should stray points be removed before checking spelling?
+Expected: Yes, stray points must be removed.
+
+Q: Should art follow imprint area and ignore minimum stroke rules?
+Expected: Yes, artwork must stay within imprint area.
+
+Q: Can I use Pantone 877 and 871 together for silver?
+Expected: Please use Pantone 877.
+
+Q: Should CMYK and RGB both be present in print file?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: Is minimum font size and stroke thickness the same rule?
+Expected: Minimum stroke thickness is 1 pt.
+
+Q: Can raster images stay if gradients are removed?
+Expected: No, raster images should be converted to vector format.
+
+Q: Should overprint and transparency both be ignored?
+Expected: Yes, overprint settings must be verified.
+
+Q: Can I skip outline conversion if spelling is correct?
+Expected: Yes, text should be converted to outlines.
+
+Q: What is the PMS value of bronze standard?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: What is the maximum stroke thickness?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: What is the minimum RGB value for print?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Can gradients be used in four-color printing?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Should text be converted to curves for web design?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: What is the Pantone value for platinum?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Should CMYK be converted to RGB for website?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: What is the maximum font size allowed?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Can I use SVG for website animation?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: What is the emboss depth limit in millimeters?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: PMS for silver?
+Expected: Please use Pantone 877.
+
+Q: Text outlines needed?
+Expected: Yes, text should be converted to outlines.
+
+Q: CMYK required?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: Raster allowed?
+Expected: No, raster images should be converted to vector format.
+
+Q: Gradient one color?
+Expected: No, gradients should not be used in one-color screen print.
+
+
+
+# In-Scope (Short/Paraphrased)
+Q: Min stroke positive?
+Expected: Minimum stroke thickness is 1 pt.
+
+Q: Min stroke negative?
+Expected: Minimum stroke thickness is 1.5 pt.
+
+Q: Silver code?
+Expected: Please use Pantone 877.
+
+Q: Gold code?
+Expected: Please use Pantone 871.
+
+Q: Smallest sans font?
+Expected: Minimum size is 8 pt.
+
+Q: Smallest serif font?
+Expected: Minimum size is 10 pt.
+
+Q: Convert text?
+Expected: Yes, text should be converted to outlines.
+
+Q: Gradients allowed?
+Expected: No, gradients should not be used in one-color screen print.
+
+Q: Raster allowed?
+Expected: No, raster images should be converted to vector format.
+
+Q: Vector formats?
+Expected: Acceptable formats are AI, EPS, and PDF.
+
+Q: Remove stray points?
+Expected: Yes, stray points must be removed.
+
+Q: Flatten transparency?
+Expected: Yes, transparency must be flattened.
+
+Q: Embed linked images?
+Expected: Yes, linked images must be embedded.
+
+Q: Embed fonts?
+Expected: No, fonts must be converted to outlines.
+
+Q: Blurry art?
+Expected: Artwork must be recreated in vector format.
+
+Q: Low res images?
+Expected: Low resolution images must be replaced with high resolution versions.
+
+Q: Color mode?
+Expected: CMYK color mode is recommended.
+
+Q: Use RGB?
+Expected: No, RGB artwork must be converted to CMYK.
+
+Q: Missing pantone?
+Expected: Contact CSR for clarification.
+
+Q: Merge overlapping?
+Expected: Yes, overlapping objects should be merged.
+
+Q: Expand clipping masks?
+Expected: Yes, clipping masks must be expanded.
+
+Q: Incorrect size?
+Expected: Artwork must be resized according to vendor specifications.
+
+Q: Check alignment?
+Expected: Yes, stroke alignment must be checked.
+
+Q: Imprint guidelines?
+Expected: Yes, artwork must stay within imprint area.
+
+Q: Color mismatch?
+Expected: The mismatch must be corrected before proofing.
+
+Q: Verify spelling?
+Expected: Yes, spelling must be verified.
+
+Q: Verify specs?
+Expected: Yes, vendor specifications must be reviewed.
+
+Q: Exceeds imprint?
+Expected: Artwork must be adjusted to fit imprint area.
+
+Q: Consistent lines?
+Expected: Yes, line weights must be consistent.
+
+# Out-of-Scope (Adversarial)
+Q: Copper PMS?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Rose gold?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Max stroke?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Max font?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Video format?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Audio format?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Web resolution?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Digital ad RGB?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Paper stock?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Box size?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Shipping weight?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Embroidery thread?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Screen mesh?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Squeegee type?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Inks allowed?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Cleaning fluid?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Press speed?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Curing temp?
+Expected: This question is not covered in the SOP. Please contact HR.
+
+Q: Burn time?
+Expected: This question is not covered in the SOP. Please contact HR.

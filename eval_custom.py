@@ -116,18 +116,31 @@ def answer_matches(pipeline_answer: str, expected: str) -> bool:
     return False
 
 
+import argparse
+
 def run_custom_eval():
     """Run custom evaluation from eval.txt files."""
+    parser = argparse.ArgumentParser(description="Run custom evaluation.")
+    parser.add_argument("--test", type=str, default="eval.txt", help="Path to test file (e.g., test.txt)")
+    args = parser.parse_args()
+
     print("=" * 70)
-    print("  SOP CHATBOT V6 — CUSTOM EVALUATION (eval.txt)")
+    print(f"  SOP CHATBOT V6 — CUSTOM EVALUATION ({args.test})")
     print("=" * 70)
     
     # Find eval file
-    eval_file = os.path.join(config.BASE_DIR, "..", "eval.txt")
+    if os.path.exists(args.test):
+        eval_file = args.test
+    else:
+        # Fallback to parent dir if relative path fails
+        eval_file = os.path.join(config.BASE_DIR, "..", args.test)
+        
     if not os.path.exists(eval_file):
-        eval_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "eval.txt")
+        # Try local folder
+        eval_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), args.test)
+
     if not os.path.exists(eval_file):
-        print(f"❌ eval.txt not found")
+        print(f"❌ Test file '{args.test}' not found.")
         return
     
     test_pairs = parse_eval_file(eval_file)
@@ -328,7 +341,7 @@ def run_custom_eval():
   │  Total Tests:              {overall_total:<22d}│
   │  In-Scope Tests:           {len(in_scope_tests):<22d}│
   │  Out-of-Scope Tests:       {len(oos_tests):<22d}│
-  │  Threshold:                {config.SIMILARITY_THRESHOLD:<22.3f}│
+  │  Threshold (High):         {config.THRESHOLD_HIGH:<22.3f}│
   │  Time Elapsed:             {elapsed:<20.1f}s │
   └────────────────────────────────────────────────────┘
 """)

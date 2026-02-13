@@ -59,7 +59,7 @@ def run_evaluation():
     print(f"📊 Out-of-scope test: {len(OUT_OF_SCOPE_QUESTIONS)} questions")
     print(f"📊 Threshold: {pipeline.calibrator.threshold:.3f}")
     print(f"📊 Calibrator: {'Trained' if pipeline.calibrator.is_trained else 'Default sigmoid'}")
-    print(f"📊 Fusion: {'Trained' if pipeline.fusion.is_trained else 'Default weights'}")
+
 
     # Collect all scores and labels for ROC/confusion matrix
     all_scores = []
@@ -255,7 +255,6 @@ def run_evaluation():
   │  Retrieval Top-K:         {config.TOP_K_RETRIEVAL:<20d}│
   │  Total SOP Entries:       {len(sop_data):<20d}│
   │  Calibrator:              {'Trained' if pipeline.calibrator.is_trained else 'Default':<20s}│
-  │  Fusion:                  {'Trained' if pipeline.fusion.is_trained else 'Default':<20s}│
   └─────────────────────────────────────────────┘
 """)
 
