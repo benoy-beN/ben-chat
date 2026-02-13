@@ -18,11 +18,20 @@ FUSION_MODEL_FILE = os.path.join(DATA_DIR, "fusion_model.pkl")
 CALIBRATOR_FILE = os.path.join(DATA_DIR, "calibrator.pkl")
 
 # ── Hardware Settings ──────────────────────────────────
-DEVICE = "cpu"  # Force CPU for stability
+# ── Hardware Settings ──────────────────────────────────
+import torch
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"🖥️  Using device: {DEVICE}")
 
 # ── Embedding Model (V5: Single Strong Retriever) ─────
-# BGE-M3: dense + sparse in one model
-EMBEDDING_MODEL = "BAAI/bge-m3"
+# Check for local manual download first
+LOCAL_MODEL_PATH = os.path.join(BASE_DIR, "models", "bge-m3")
+if os.path.exists(LOCAL_MODEL_PATH):
+    EMBEDDING_MODEL = LOCAL_MODEL_PATH
+    print(f"📂 Using local embedding model: {EMBEDDING_MODEL}")
+else:
+    # BGE-M3: dense + sparse in one model (downloads from HF)
+    EMBEDDING_MODEL = "BAAI/bge-m3"
 RERANKER_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 EMBEDDING_DIM = 1024  # BGE-M3 dense dimension
 

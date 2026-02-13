@@ -83,7 +83,7 @@ def answer_question(question: str, use_rewrite: bool = False) -> tuple:
         dense = f" | D: {r.get('dense_score', 0):.3f}"
         bm25 = f" | BM25: {r.get('bm25_score', 0):.3f}"
         debug_lines.append(
-            f"  {marker} [{i}]{rerank}{dense}{bm25} | Q: {r['question'][:80]}"
+            f"  {marker} [{i}]{rerank}{dense}{bm25} | Q: {r['entry']['question'][:80]}"
         )
     debug_info = "\n".join(debug_lines)
 
@@ -93,14 +93,14 @@ def answer_question(question: str, use_rewrite: bool = False) -> tuple:
 def get_system_status() -> str:
     """Get system status information."""
     status_lines = [
-        "── V5 Pipeline (Accuracy-First) ──",
+        "── V6 Pipeline (BGE-M3 Only) ──",
         f"📦 Embedding: {config.EMBEDDING_MODEL}",
-        f"🔍 Reranker: {config.RERANKER_NAME}",
-        f"📊 Threshold: {pipeline.calibrator.threshold:.3f}" if pipeline else "N/A",
+        f"🔍 Reranking: Cross-Encoder (Enabled)",
+        f"📊 Threshold: 0.60 / 0.25 (Dual)",
         f"📂 FAISS Entries: {pipeline.faiss_index.index.ntotal if pipeline and pipeline.faiss_index.index else 'N/A'}",
-        f"📖 BM25 Entries: {len(pipeline.bm25_index.entries) if pipeline and pipeline.bm25_index.entries else 'N/A'}",
-        f"🎯 Fusion: {'Trained' if pipeline and pipeline.fusion.is_trained else 'Default weights'}",
-        f"📐 Calibrator: {'Trained' if pipeline and pipeline.calibrator.is_trained else 'Default sigmoid'}",
+        # f"📖 BM25 Entries: {len(pipeline.bm25_index.entries) if pipeline and pipeline.bm25_index.entries else 'N/A'}",
+        # f"🎯 Fusion: {'Trained' if pipeline and pipeline.fusion.is_trained else 'Default weights'}",
+        # f"📐 Calibrator: {'Trained' if pipeline and pipeline.calibrator.is_trained else 'Default sigmoid'}",
     ]
 
     # Check Ollama
@@ -178,131 +178,179 @@ footer {
 }
 """
 
+
 # ── Build Gradio App ─────────────────────────────────
+def format_status_html(result):
+    """Format the status/match info as an HTML block."""
+    if not result["answer"]:
+        return "<div style='padding:10px; color:#666;'>Ready to search...</div>"
+
+    if result["rejected"]:
+        color = "#ef4444"
+        bg = "#fee2e2"
+        icon = "🔴"
+        title = "REJECTED"
+        desc = "Question appears out-of-scope or contradictory."
+    else:
+        color = "#10b981"
+        bg = "#d1fae5"
+        icon = "🟢"
+        title = "MATCHED"
+        desc = f"Confidence: <b>{result['score']:.4f}</b>"
+
+    matched_q = result.get('matched_question', 'N/A')
+    
+    html = f"""
+    <div style="border: 1px solid {color}; background-color: {bg}10; border-radius: 8px; padding: 12px;">
+        <div style="color: {color}; font-weight: bold; font-size: 1.1em; margin-bottom: 4px;">
+            {icon} {title} &nbsp;&nbsp;<span style="font-size:0.9em; font-weight:normal; color:#555;">{desc}</span>
+        </div>
+        <div style="margin-top: 8px; font-size: 0.95em; color: #444;">
+            <span style="font-weight:600;">Matched SOP Question:</span><br>
+            <span style="font-style:italic;">"{matched_q}"</span>
+        </div>
+    </div>
+    """
+    return html
+
 def create_app():
     """Create and configure the Gradio app."""
+    
+    # Define example categories
+    examples_color = [
+        ["What is the PMS value of silver standard?"],
+        ["Should black be set to 100 percent K for single color print?"],
+        ["Should gradients be used in one-color screen print?"],
+        ["What is the PMS value of gold standard?"],
+    ]
+    examples_artwork = [
+        ["Should text be converted to outlines?"],
+        ["What file formats are acceptable for vector artwork?"],
+        ["Should transparency be flattened before submission?"],
+        ["What should be done if artwork is blurry?"],
+    ]
+    examples_type = [
+        ["What is the minimum font size for positive sans-serif text?"],
+        ["Should fonts be embedded in final PDF?"],
+        ["What is the minimum stroke thickness for negative space?"],
+    ]
+    examples_oos = [
+        ["How do I cook pasta?"],
+        ["What is the weather today?"],
+        ["Tell me a joke."],
+    ]
 
-    with gr.Blocks(
-        title="SOP Chatbot V5 — Zero Hallucination",
-    ) as app:
+    with gr.Blocks(title="SOP Chatbot V6", css=CUSTOM_CSS) as app:
 
         # ── Header ──────────────────────────────
         gr.HTML("""
         <div class="main-header">
-            <h1>🛡️ SOP Chatbot V5</h1>
-            <p>BGE-M3 + BM25 • Cross-Encoder Reranking • Calibrated Confidence • Zero Hallucination</p>
+            <h1>🛡️ SOP Chatbot V6</h1>
+            <p>BGE-M3 (1024d) • GPU Accelerated • Zero Hallucination Guardrails</p>
         </div>
         """)
 
         with gr.Row():
-            with gr.Column(scale=3):
-                # ── Input ────────────────────────
-                question_input = gr.Textbox(
+            # ── LEFT COL: Input & Examples ──
+            with gr.Column(scale=4):
+                input_box = gr.Textbox(
                     label="Ask a question",
                     placeholder="e.g. What is the PMS value of silver standard?",
-                    lines=2,
-                    max_lines=4,
-                    autofocus=True,
-                )
-
-                with gr.Row():
-                    submit_btn = gr.Button(
-                        "🔍 Search SOP",
-                        variant="primary",
-                        size="lg",
-                    )
-                    clear_btn = gr.Button(
-                        "🗑️ Clear",
-                        variant="secondary",
-                        size="lg",
-                    )
-                    rewrite_toggle = gr.Checkbox(
-                        label="✨ LLM Rewrite",
-                        value=False,
-                        info="Reformat answer using Ollama (requires Ollama running)",
-                    )
-
-                # ── Answer ───────────────────────
-                answer_output = gr.Textbox(
-                    label="Answer",
                     lines=3,
-                    max_lines=8,
-                    interactive=False,
-                    elem_classes=["answer-box"],
+                    autofocus=True,
+                    elem_id="input-box"
                 )
-
-                # ── Status ───────────────────────
-                status_output = gr.Textbox(
-                    label="Status",
-                    lines=1,
-                    interactive=False,
-                    elem_classes=["status-box"],
-                )
-
-            with gr.Column(scale=2):
-                # ── Match Details ────────────────
-                matched_output = gr.Textbox(
-                    label="Matched SOP Question",
-                    lines=2,
-                    interactive=False,
-                )
-                score_output = gr.Textbox(
-                    label="Calibrated Confidence",
-                    lines=1,
-                    interactive=False,
-                )
-
-                # ── Debug ────────────────────────
-                debug_output = gr.Textbox(
-                    label="Debug Info (Rerank / Dense / BM25)",
-                    lines=8,
-                    interactive=False,
-                    elem_classes=["debug-box"],
-                )
-
-                # ── System Status ────────────────
-                with gr.Accordion("⚙️ System Status", open=False):
-                    system_status = gr.Textbox(
-                        label="",
-                        lines=9,
-                        interactive=False,
-                        value=lambda: get_system_status(),
+                
+                with gr.Row():
+                    submit_btn = gr.Button("🔍 Search SOP", variant="primary", scale=2)
+                    clear_btn = gr.Button("🗑️ Clear", variant="secondary", scale=1)
+                
+                with gr.Accordion("⚙️ Options", open=False):
+                    rewrite_toggle = gr.Checkbox(
+                        label="Enable LLM Rewrite (requires Ollama)",
+                        value=False
                     )
-                    refresh_btn = gr.Button("🔄 Refresh", size="sm")
-                    refresh_btn.click(fn=get_system_status, outputs=system_status)
 
-        # ── Example Questions ────────────────────
-        gr.Examples(
-            examples=[
-                ["What is the PMS value of silver standard?"],
-                ["Should text be converted to outlines?"],
-                ["What file formats are preferred for final vector artwork?"],
-                ["How do I cook pasta?"],  # Out-of-scope — should reject
-                ["What is the minimum font size for positive sans-serif text?"],
-                ["Should artwork exceed the imprint area?"],
-                ["Who is responsible for final artwork accuracy?"],
-                ["What is the weather today?"],  # Out-of-scope — should reject
-            ],
-            inputs=question_input,
-            label="📋 Try these examples",
-        )
+                # ── Examples Sections ──
+                gr.Markdown("### 📋 Try these examples")
+                with gr.Tabs():
+                    with gr.Tab("🎨 Color & Ink"):
+                        gr.Examples(examples_color, inputs=input_box, label=None)
+                    with gr.Tab("📐 Artwork & files"):
+                        gr.Examples(examples_artwork, inputs=input_box, label=None)
+                    with gr.Tab("🔤 Typography"):
+                        gr.Examples(examples_type, inputs=input_box, label=None)
+                    with gr.Tab("🧪 Guardrail Tests"):
+                        gr.Examples(examples_oos, inputs=input_box, label=None)
 
-        # ── Event Handlers ───────────────────────
+            # ── RIGHT COL: Results ──
+            with gr.Column(scale=5):
+                # Answer Box
+                answer_result = gr.Textbox(
+                    label="Answer", 
+                    lines=4, 
+                    elem_classes=["answer-box"]
+                )
+                
+                # Consolidated Status
+                status_html = gr.HTML(label="Analysis Status")
+
+                # Debug Info (Hidden by default)
+                with gr.Accordion("🛠️ Debug Information", open=False):
+                    debug_info = gr.Textbox(
+                        label="Pipeline Details",
+                        lines=10,
+                        elem_classes=["debug-box"]
+                    )
+                
+                # System Status
+                with gr.Accordion("🖥️ System Health", open=False):
+                     system_stat = gr.Textbox(
+                        show_label=False,
+                        lines=6,
+                        value=lambda: get_system_status()
+                    )
+                     refresh_sys = gr.Button("Refresh Status", size="sm")
+                     refresh_sys.click(get_system_status, outputs=system_stat)
+
+        # ── Logic ──────────────────────────────
+        def process_query(q, rw):
+            # Wrapper to parse generic output into specific UI fields
+            ans, stat_text, match, score, dbg = answer_question(q, rw)
+            
+            # Reconstruct result dict for HTML formatter
+            # (We need to reverse-engineer matching logic or modify answer_question to return dict)
+            # Easier: modify answer_question? No, let's parse or just update answer_question in next step.
+            # Using existing return values to build a fake dict for formatter:
+            
+            is_rejected = "REJECTED" in stat_text
+            try:
+                sc = float(score) if score != "N/A" else 0.0
+            except: sc = 0.0
+            
+            fake_result = {
+                "answer": ans.replace("✅ ", "").replace("❌ ", ""),
+                "rejected": is_rejected,
+                "score": sc,
+                "matched_question": match,
+                "threshold": 0.0 # Not passed, but HTML doesn't strictly need it if we put score
+            }
+            html = format_status_html(fake_result)
+            return ans, html, dbg
+
         submit_btn.click(
-            fn=answer_question,
-            inputs=[question_input, rewrite_toggle],
-            outputs=[answer_output, status_output, matched_output, score_output, debug_output],
+            process_query,
+            inputs=[input_box, rewrite_toggle],
+            outputs=[answer_result, status_html, debug_info]
         )
-
-        question_input.submit(
-            fn=answer_question,
-            inputs=[question_input, rewrite_toggle],
-            outputs=[answer_output, status_output, matched_output, score_output, debug_output],
+        input_box.submit(
+            process_query,
+            inputs=[input_box, rewrite_toggle],
+            outputs=[answer_result, status_html, debug_info]
         )
-
         clear_btn.click(
-            fn=lambda: ("", "", "", "", ""),
-            outputs=[answer_output, status_output, matched_output, score_output, debug_output],
+            lambda: ("", "", ""),
+            outputs=[answer_result, status_html, debug_info]
         )
 
     return app

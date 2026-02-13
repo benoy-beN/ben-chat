@@ -103,10 +103,10 @@ class SOPPipeline:
     def __init__(self):
         self.embedder   = BGEM3Embedder(config.EMBEDDING_MODEL)
         self.faiss_index = FAISSIndex()
-        self.bm25_index  = BM25Index()
-        self.fusion      = ScoreFusion()
+        # self.bm25_index  = BM25Index()  <-- Removed per user request
+        # self.fusion      = ScoreFusion() <--- Removed
         self.reranker    = Reranker()
-        self.calibrator  = ConfidenceCalibrator()
+        # self.calibrator  = ConfidenceCalibrator() <--- Removed
         self.sop_data: list[dict] = []
         self.is_loaded   = False
 
@@ -158,96 +158,112 @@ class SOPPipeline:
     # ── Load ───────────────────────────────────────────
     def load(self):
         """Load all models and indices."""
-        print("🔄 Loading V6 Pipeline...")
+        print("🔄 Loading V6 Pipeline (BGE-M3 Only)...")
 
         self.faiss_index.load(index_path=config.FAISS_INDEX_FILE)
 
-        try:
-            self.bm25_index.load()
-        except FileNotFoundError:
-            print("⚠️  BM25 index not found. Lexical retrieval disabled.")
-
+        # BM25, Fusion, Calibrator removed
+        
         self.sop_data = self.faiss_index.id_map
-        self.fusion.load()
-        self.calibrator.load()
-
+        
         self.is_loaded = True
         print("✅ V6 Pipeline loaded!")
         return self
 
     # ── Query ──────────────────────────────────────────
+    # ── Query ──────────────────────────────────────────
     def query(self, user_question: str) -> dict:
         """
-        V6 pipeline with dual-threshold decision logic.
+        V6 pipeline (BGE-M3 Only).
+        Dense Retrieval -> Reranking -> Dual Threshold.
         """
         if not self.is_loaded:
             raise RuntimeError("Pipeline not loaded.")
 
-        normalized   = normalize(user_question)
-        query_tokens = _tokenize(normalized)
+        normalized   = user_question.lower().strip() # Simple normalization
 
-        # ── Stage 1: Embed ──
+        # ── Stage 1: Embed (Dense Only) ──
+        # Note: BGE-M3 embedding happens here
         query_emb   = self.embedder.embed(normalized)
         query_dense = query_emb["dense"]
+        
+        # Normalize for cosine similarity (FAISS IP)
         norm = np.linalg.norm(query_dense)
         if norm > 0:
             query_dense = query_dense / norm
 
-        # ── Stage 2: Parallel Retrieval ──
+        # ── Stage 2: Dense Retrieval ──
         top_k = config.TOP_K_RETRIEVAL
-
         faiss_results = self.faiss_index.search(query_dense, top_k=top_k)
 
-        bm25_results = []
-        if self.bm25_index.bm25 is not None:
-            bm25_results = self.bm25_index.search(normalized, top_k=top_k)
-
-        # ── Stage 3: Fusion ──
-        candidates = {}
-        bm25_max = max((r["score"] for r in bm25_results), default=1.0) if bm25_results else 1.0
-        if bm25_max <= 0:
-            bm25_max = 1.0
-
-        for r in faiss_results:
-            key = r["entry"]["question"]
-            if key not in candidates:
-                candidates[key] = {
-                    "entry": r["entry"],
-                    "dense_score": r["score"],
-                    "sparse_score": 0.0,
-                    "bm25_score": 0.0,
-                }
-            else:
-                candidates[key]["dense_score"] = max(candidates[key]["dense_score"], r["score"])
-
-        for r in bm25_results:
-            key = r["entry"]["question"]
-            norm_bm25 = r["score"] / bm25_max
-            if key not in candidates:
-                candidates[key] = {
-                    "entry": r["entry"],
-                    "dense_score": 0.0,
-                    "sparse_score": 0.0,
-                    "bm25_score": norm_bm25,
-                }
-            else:
-                candidates[key]["bm25_score"] = max(candidates[key]["bm25_score"], norm_bm25)
-
-        if not candidates:
-            return self._reject(user_question, normalized, 0.0)
-
-        candidate_list = list(candidates.values())
-        for c in candidate_list:
-            c["fused_score"] = self.fusion.fuse(
-                c["dense_score"], c["sparse_score"], c["bm25_score"]
-            )
-
-        candidate_list.sort(key=lambda x: x["fused_score"], reverse=True)
-        top_candidates = candidate_list[:min(len(candidate_list), top_k)]
+        if not faiss_results:
+             return self._reject(user_question, normalized, 0.0)
 
         # ── Stage 4: Cross-Encoder Reranking ──
-        texts = [f"{c['entry']['question']} {c['entry']['answer']}" for c in top_candidates]
-        rerank_scores = self.reranker.compute_scores(normalized, texts)
+        # Prepare pairs: (query, document_text)
+        candidates = faiss_results # Pure dense candidates
+        texts = [c['entry']['question'] for c in candidates] # Rerank based on questions
+        
+        try:
+            rerank_scores = self.reranker.compute_scores(normalized, texts)
+        except Exception as e:
+            print(f"⚠️ Reranker failed: {e}. using dense scores.")
+            rerank_scores = [c['score'] for c in candidates]
+
+        # Attach scores
+        for i, c in enumerate(candidates):
+            c["rerank_score"] = rerank_scores[i]
+            # No Fusion/Calibration: Use raw reranker score (approx probability)
+            c["final_score"] = c["rerank_score"] 
+
+        # Sort by final score
+        candidates.sort(key=lambda x: x["final_score"], reverse=True)
+        best_match = candidates[0]
+        final_score = best_match["final_score"]
+
+        # ── Stage 5: Dual-Threshold Decision ──
+        # Use simple thresholds since we have good reranker scores
+        THRESHOLD_HIGH = 0.60
+        THRESHOLD_LOW  = 0.25
+        
+        is_rejected = False
+        decision_reason = "Score above threshold"
+
+        if final_score >= THRESHOLD_HIGH:
+            is_rejected = False
+        elif final_score < THRESHOLD_LOW:
+            is_rejected = True
+            decision_reason = "Score below low threshold"
+        else:
+             # Gray zone: Strict reranker check
+             if final_score < 0.4:
+                 is_rejected = True
+                 decision_reason = "Gray zone rejection"
+
+        # Apply Guardrails (OOS / Contradiction checks if implemented)
+        # For now, trust the score.
+
+        return {
+            "question": user_question,
+            "answer": best_match["entry"]["answer"] if not is_rejected else "I cannot answer this question based on the SOP.",
+            "score": final_score,
+            "threshold": THRESHOLD_HIGH, # Display high threshold as reference
+            "rejected": is_rejected,
+            "matched_question": best_match["entry"]["question"],
+            "top_k_results": candidates[:5]
+        }
+
+
+    def _reject(self, question, raw, score):
+        return {
+            "question": question,
+            "answer": "I cannot answer this question based on the SOP.",
+            "score": score,
+            "threshold": 0.0,
+            "rejected": True,
+            "matched_question": None,
+            "top_k_results": []
+        }
 
         for i, c in enumerate(top_candidates):
             c["rerank_score"] = rerank_scores[i]

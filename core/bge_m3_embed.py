@@ -22,26 +22,53 @@ class BGEM3Embedder:
         self.model = None
         self._dimension = None
 
-    def load(self, device: str = "cpu"):
+    def load(self, device: str = None):
         """Load the BGE-M3 model."""
-        print(f"🔄 Loading BGE-M3 model: {self.model_name}")
+        device = device or config.DEVICE
+        print(f"🔄 Loading BGE-M3 model: {self.model_name} (device: {device})")
         
+        # Try offline first to utilize local cache/files (e.g. .bin)
+        # This prevents unnecessary downloads/checks for .safetensors
+        os.environ["HF_HUB_OFFLINE"] = "1"
         try:
+            self._load_model(device)
+            print("✅ BGE-M3 loaded locally (offline mode)")
+        except Exception as e_offline:
+            # Fallback to online if missing
+            print(f"⚠️  Local load failed ({type(e_offline).__name__}). Switching to online mode.")
+            if "HF_HUB_OFFLINE" in os.environ:
+                del os.environ["HF_HUB_OFFLINE"]
+            
+            try:
+                self._load_model(device)
+            except Exception as e:
+                print(f"❌ Failed to load BGE-M3: {e}")
+                raise e
+        finally:
+            if "HF_HUB_OFFLINE" in os.environ:
+                del os.environ["HF_HUB_OFFLINE"]
+        
+        return self
+
+    def _load_model(self, device: str):
+        try:
+            # Check if we can import without error
+            # (transformers 5.x breaks FlagEmbedding 1.3.5)
             from FlagEmbedding import BGEM3FlagModel
             self.model = BGEM3FlagModel(
                 self.model_name,
                 use_fp16=(device != "cpu"),
+                device=device
             )
             self._dimension = 1024  # BGE-M3 dense dimension
-            print(f"✅ BGE-M3 loaded (dense dim: {self._dimension})")
-        except ImportError:
-            print("⚠️  FlagEmbedding not installed. Falling back to sentence-transformers BGE.")
+        except Exception as e:
+            # Fallback for when FlagEmbedding is incompatible or missing
+            # print(f"⚠️  FlagEmbedding issue ({type(e).__name__}). Using sentence-transformers with BGE-M3.")
             from sentence_transformers import SentenceTransformer
-            self.model = SentenceTransformer("BAAI/bge-base-en-v1.5", device=device)
+            # Force valid BGE-M3 model name if config has something else
+            st_model_name = "BAAI/bge-m3" if "bge-m3" in self.model_name.lower() else "BAAI/bge-base-en-v1.5"
+            self.model = SentenceTransformer(st_model_name, device=device)
             self._dimension = self.model.get_sentence_embedding_dimension()
-            print(f"✅ Fallback model loaded (dim: {self._dimension})")
-
-        return self
 
     def _is_flag_model(self) -> bool:
         """Check if we're using the FlagEmbedding model."""
