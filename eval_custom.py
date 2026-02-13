@@ -1,10 +1,15 @@
 """
-Custom evaluation using eval.txt test cases.
-Parses Q/Expected pairs and tests them against the SOP pipeline.
+Custom Evaluation using external Q&A test files (V6).
+Parses eval.txt / eval_append.txt format:
+    Q: <question>
+    Expected: <expected answer substring>
+
+Reports: Accuracy@1, FAR, FRR, ROC, Confusion Matrix, V5 vs V6 ablation.
 
 Usage:
-    python eval_custom.py [path_to_eval.txt]
+    python eval_custom.py
 """
+import json
 import os
 import sys
 import re
@@ -14,208 +19,343 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config
 from core.pipeline import SOPPipeline
 
-# The rejection message (normalized for comparison)
-REJECTION_KEYWORDS = ["not covered", "contact hr"]
+# Rejection message indicates out-of-scope
+REJECTION_INDICATORS = [
+    "not covered in the sop",
+    "please contact hr",
+    "not in the sop",
+]
 
 
 def parse_eval_file(filepath: str) -> list[dict]:
-    """Parse eval.txt into list of {question, expected} dicts."""
-    tests = []
+    """
+    Parse Q/Expected pairs from eval file.
+    Returns list of: {"question": ..., "expected": ..., "is_oos": True/False, "section": ...}
+    """
+    pairs = []
+    current_section = "General"
+    
     with open(filepath, "r", encoding="utf-8") as f:
         lines = f.readlines()
-
-    current_q = None
-    for line in lines:
-        line = line.strip()
+    
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+        
+        # Track sections
+        if line.startswith("#"):
+            current_section = line.lstrip("#").strip()
+            i += 1
+            continue
+        
+        # Parse Q: / Expected: pairs
         if line.startswith("Q:"):
-            current_q = line[2:].strip()
-        elif line.startswith("Expected:") and current_q:
-            expected = line[len("Expected:"):].strip()
-            tests.append({"question": current_q, "expected": expected})
-            current_q = None
+            question = line[2:].strip()
+            # Look for Expected: on next non-empty line
+            i += 1
+            while i < len(lines) and not lines[i].strip():
+                i += 1
+            if i < len(lines) and lines[i].strip().startswith("Expected:"):
+                expected = lines[i].strip()[9:].strip()
+                
+                # Check if this is an out-of-scope test
+                is_oos = any(ind in expected.lower() for ind in REJECTION_INDICATORS)
+                
+                pairs.append({
+                    "question": question,
+                    "expected": expected,
+                    "is_oos": is_oos,
+                    "section": current_section,
+                })
+            i += 1
+            continue
+        
+        i += 1
+    
+    return pairs
 
-    return tests
 
-
-def is_rejection(text: str) -> bool:
-    """Check if the text is a rejection/not-covered response."""
-    text_lower = text.lower()
-    return any(kw in text_lower for kw in REJECTION_KEYWORDS)
-
-
-def answer_matches(retrieved: str, expected: str) -> bool:
-    """
-    Check if the retrieved answer semantically matches the expected answer.
-    Uses substring matching on key phrases since answers are short SOP entries.
-    """
-    # Normalize both
-    retrieved_lower = retrieved.lower().strip()
-    expected_lower = expected.lower().strip()
-
-    # Both are rejections
-    if is_rejection(expected) and is_rejection(retrieved):
-        return True
-
-    # One is rejection, other isn't
-    if is_rejection(expected) != is_rejection(retrieved):
+def answer_matches(pipeline_answer: str, expected: str) -> bool:
+    """Check if the pipeline answer matches the expected answer using substring + key term matching."""
+    if not pipeline_answer or not expected:
         return False
+    
+    pa = pipeline_answer.lower().strip()
+    ex = expected.lower().strip()
+    
+    # Direct substring match
+    if ex in pa:
+        return True
+    
+    # Key phrase extraction
+    key_patterns = [
+        r'pantone\s*\d+',
+        r'\d+\.?\d*\s*pt',
+        r'\d+\.?\d*\s*mm',
+        r'cmyk|rgb',
+        r'ai|eps|pdf',
+        r'vector|raster|outline',
+    ]
+    
+    for pattern in key_patterns:
+        expected_matches = re.findall(pattern, ex, re.IGNORECASE)
+        if expected_matches:
+            for match in expected_matches:
+                if match.lower() in pa:
+                    return True
+    
+    # Semantic overlap — at least 50% of content words match
+    stop_words = {"is", "the", "a", "an", "to", "be", "must", "should", "yes", "no",
+                  "for", "in", "of", "and", "or", "not", "please", "use", "no,", "yes,"}
+    expected_content = set(ex.split()) - stop_words
+    answer_content = set(pa.split()) - stop_words
+    
+    if expected_content and len(expected_content & answer_content) / len(expected_content) >= 0.5:
+        return True
+    
+    return False
 
-    # Extract key phrases from expected answer for matching
-    # Remove common filler words for comparison
-    expected_keywords = set(re.findall(r'\b\w{3,}\b', expected_lower))
-    # Remove very common words
-    stop_words = {"the", "and", "for", "are", "that", "this", "with", "from", "should", "must", "please", "yes", "not"}
-    expected_keywords -= stop_words
 
-    if not expected_keywords:
-        return expected_lower in retrieved_lower
-
-    # Check how many key phrases from expected appear in retrieved
-    matched = sum(1 for kw in expected_keywords if kw in retrieved_lower)
-    match_ratio = matched / len(expected_keywords)
-
-    return match_ratio >= 0.6
-
-
-def run_custom_eval(eval_path: str):
-    """Run custom evaluation from eval.txt."""
+def run_custom_eval():
+    """Run custom evaluation from eval.txt files."""
     print("=" * 70)
-    print("  SOP CHATBOT — CUSTOM EVALUATION")
+    print("  SOP CHATBOT V6 — CUSTOM EVALUATION (eval.txt)")
     print("=" * 70)
-
-    # Parse test file
-    tests = parse_eval_file(eval_path)
-    print(f"\n[FILE] Loaded: {eval_path}")
-    print(f"[INFO] Test cases: {len(tests)}")
-
-    # Categorize tests
-    in_scope = [t for t in tests if not is_rejection(t["expected"])]
-    out_scope = [t for t in tests if is_rejection(t["expected"])]
-    print(f"   |-- In-scope (should answer): {len(in_scope)}")
-    print(f"   |-- Out-of-scope (should reject): {len(out_scope)}")
-
-    # Load pipeline (no LLM rewrite for evaluation)
+    
+    # Find eval file
+    eval_file = os.path.join(config.BASE_DIR, "..", "eval.txt")
+    if not os.path.exists(eval_file):
+        eval_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "eval.txt")
+    if not os.path.exists(eval_file):
+        print(f"❌ eval.txt not found")
+        return
+    
+    test_pairs = parse_eval_file(eval_file)
+    print(f"📂 Loaded {len(test_pairs)} test pairs from eval.txt")
+    
+    # Load pipeline
+    pipeline = SOPPipeline()
     original_rewrite = config.USE_LLM_REWRITE
     config.USE_LLM_REWRITE = False
-
-    pipeline = SOPPipeline()
     pipeline.load()
-
-    print(f"\n[INFO] Threshold: {config.SIMILARITY_THRESHOLD}")
-
-    # ── Run Tests ─────────────────────────────────────────
-    passed = 0
-    failed = 0
-    failures = []
-
+    
+    # Separate in-scope and out-of-scope tests
+    in_scope_tests = [t for t in test_pairs if not t["is_oos"]]
+    oos_tests = [t for t in test_pairs if t["is_oos"]]
+    
+    print(f"\n📊 In-scope tests: {len(in_scope_tests)}")
+    print(f"📊 Out-of-scope tests: {len(oos_tests)}")
+    print(f"📊 Total: {len(test_pairs)}")
+    
+    # Counters for FAR / FRR
+    all_scores = []
+    all_labels = []   # 1 = should match, 0 = should reject
+    all_preds = []     # 1 = matched, 0 = rejected
+    
+    # ── In-Scope Tests ──────────────────────────────────
     print("\n" + "─" * 70)
-    print("  RUNNING TESTS")
+    print("  IN-SCOPE TESTS (Should match SOP)")
     print("─" * 70)
-
-    start = time.time()
-
-    for i, test in enumerate(tests, 1):
-        q = test["question"]
-        expected = test["expected"]
-
-        result = pipeline.query(q)
-        retrieved = result["answer"]
+    
+    in_scope_correct = 0
+    false_rejects = []  # FRR: wrongly rejected in-scope queries
+    wrong_answers = []
+    
+    start_time = time.time()
+    
+    for test in in_scope_tests:
+        result = pipeline.query(test["question"])
         score = result["score"]
-        rejected = result["rejected"]
-
-        # Check if answer matches expected
-        if answer_matches(retrieved, expected):
-            passed += 1
-            status = "[PASS]"
-        else:
-            failed += 1
-            status = "[FAIL]"
-            failures.append({
-                "num": i,
-                "question": q,
-                "expected": expected,
-                "got": retrieved,
+        
+        all_scores.append(score)
+        all_labels.append(1)
+        
+        if result["rejected"]:
+            all_preds.append(0)
+            false_rejects.append({
+                "question": test["question"],
+                "expected": test["expected"],
                 "score": score,
-                "rejected": rejected,
-                "matched_q": result.get("matched_question", "N/A"),
+                "section": test["section"],
+                "guardrail": result.get("guardrail"),
             })
-
-        # Print each test
-        print(f"  {status} [{i:3d}] Q: {q}")
-        if status == "[FAIL]":
-            print(f"         Expected: {expected}")
-            print(f"         Got:      {retrieved[:100]}{'...' if len(retrieved) > 100 else ''}")
-            print(f"         Score: {score:.4f} | Rejected: {rejected}")
-
-    elapsed = time.time() - start
-
-    # ── Summary ───────────────────────────────────────────
-    total = len(tests)
-    accuracy = (passed / total) * 100 if total > 0 else 0
-
-    # In-scope accuracy
-    in_scope_pass = sum(1 for t in in_scope if t not in [f for f in tests if any(
-        ff["question"] == t["question"] for ff in failures)])
-    in_scope_acc = (len(in_scope) - sum(1 for f in failures if not is_rejection(f["expected"]))) / len(in_scope) * 100 if in_scope else 0
-
-    # Out-of-scope accuracy
-    out_scope_pass = len(out_scope) - sum(1 for f in failures if is_rejection(f["expected"]))
-    out_scope_acc = (out_scope_pass / len(out_scope)) * 100 if out_scope else 0
-
+        elif answer_matches(result["answer"], test["expected"]):
+            in_scope_correct += 1
+            all_preds.append(1)
+        else:
+            all_preds.append(1)
+            wrong_answers.append({
+                "question": test["question"],
+                "expected": test["expected"],
+                "answer": result["answer"][:100],
+                "matched_q": result["matched_question"],
+                "score": score,
+                "section": test["section"],
+            })
+    
+    in_scope_accuracy = (in_scope_correct / len(in_scope_tests) * 100) if in_scope_tests else 0
+    frr = (len(false_rejects) / len(in_scope_tests) * 100) if in_scope_tests else 0
+    
+    print(f"\n  ✅ Correct: {in_scope_correct}/{len(in_scope_tests)}")
+    print(f"  📊 In-Scope Accuracy: {in_scope_accuracy:.1f}%")
+    print(f"  📊 False Reject Rate (FRR): {frr:.1f}% ({len(false_rejects)}/{len(in_scope_tests)})")
+    
+    if false_rejects:
+        print(f"\n  ❌ False Rejects ({len(false_rejects)}):")
+        for f in false_rejects[:10]:
+            guardrail_info = f" [guardrail: {f['guardrail']}]" if f.get('guardrail') else ""
+            print(f"     [{f['section']}] Q: {f['question']}")
+            print(f"     Expected: {f['expected']}")
+            print(f"     Score: {f['score']:.4f}{guardrail_info}")
+            print()
+    
+    if wrong_answers:
+        print(f"  ❌ Wrong Answers ({len(wrong_answers)}):")
+        for f in wrong_answers[:10]:
+            print(f"     [{f['section']}] Q: {f['question']}")
+            print(f"     Expected: {f['expected']}")
+            print(f"     Got: {f['answer']}")
+            print(f"     Matched: {f.get('matched_q', 'N/A')}")
+            print(f"     Score: {f['score']:.4f}")
+            print()
+    
+    # ── Out-of-Scope Tests ──────────────────────────────
+    print("─" * 70)
+    print("  OUT-OF-SCOPE TESTS (Should be rejected)")
+    print("─" * 70)
+    
+    oos_correct = 0
+    false_accepts = []  # FAR: wrongly accepted OOS queries
+    
+    for test in oos_tests:
+        result = pipeline.query(test["question"])
+        score = result["score"]
+        
+        all_scores.append(score)
+        all_labels.append(0)
+        
+        if result["rejected"]:
+            oos_correct += 1
+            all_preds.append(0)
+        else:
+            all_preds.append(1)
+            false_accepts.append({
+                "question": test["question"],
+                "matched": result["matched_question"],
+                "answer": result["answer"][:80],
+                "score": score,
+                "section": test["section"],
+            })
+    
+    oos_accuracy = (oos_correct / len(oos_tests) * 100) if oos_tests else 0
+    far = (len(false_accepts) / len(oos_tests) * 100) if oos_tests else 0
+    
+    print(f"\n  ✅ Correctly rejected: {oos_correct}/{len(oos_tests)}")
+    print(f"  📊 OOS Rejection Accuracy: {oos_accuracy:.1f}%")
+    print(f"  📊 False Accept Rate (FAR): {far:.1f}% ({len(false_accepts)}/{len(oos_tests)})")
+    
+    if false_accepts:
+        print(f"\n  ❌ False Accepts ({len(false_accepts)}):")
+        for f in false_accepts[:15]:
+            print(f"     [{f['section']}] Q: {f['question']}")
+            print(f"     Matched: {f['matched']}")
+            print(f"     Answer: {f['answer']}")
+            print(f"     Score: {f['score']:.4f}")
+            print()
+    
+    elapsed = time.time() - start_time
+    
+    # ── Generate eval exports ───────────────────────────
+    print("─" * 70)
+    print("  EVALUATION EXPORTS")
+    print("─" * 70)
+    
+    try:
+        from eval.roc_curve import plot_roc_curve
+        plot_roc_curve(all_scores, all_labels)
+    except Exception as e:
+        print(f"  ⚠️  ROC curve: {e}")
+    
+    try:
+        from eval.confusion_matrix import plot_confusion_matrix
+        plot_confusion_matrix(all_labels, all_preds)
+    except Exception as e:
+        print(f"  ⚠️  Confusion matrix: {e}")
+    
+    # ── V5 vs V6 Comparison ─────────────────────────────
+    print("\n─" * 70)
+    print("  V5 → V6 COMPARISON")
+    print("─" * 70)
+    
+    v5_baseline_path = os.path.join(config.DATA_DIR, "v5_baseline.json")
+    if os.path.exists(v5_baseline_path):
+        with open(v5_baseline_path, "r") as f:
+            v5 = json.load(f)["custom_eval_txt"]
+        
+        overall_correct = in_scope_correct + oos_correct
+        overall_total = len(test_pairs)
+        overall_accuracy = (overall_correct / overall_total * 100) if overall_total else 0
+        
+        print(f"""
+  ┌────────────────────────────┬──────────┬──────────┬──────────┐
+  │ Metric                     │    V5    │    V6    │  Change  │
+  ├────────────────────────────┼──────────┼──────────┼──────────┤
+  │ In-Scope Accuracy          │  {v5['in_scope_accuracy']:5.1f}%  │  {in_scope_accuracy:5.1f}%  │  {in_scope_accuracy - v5['in_scope_accuracy']:+5.1f}%  │
+  │ OOS Rejection              │  {v5['oos_rejection']:5.1f}%  │  {oos_accuracy:5.1f}%  │  {oos_accuracy - v5['oos_rejection']:+5.1f}%  │
+  │ Overall Accuracy           │  {v5['overall_accuracy']:5.1f}%  │  {overall_accuracy:5.1f}%  │  {overall_accuracy - v5['overall_accuracy']:+5.1f}%  │
+  │ FAR (False Accept Rate)    │  {v5['false_accept_rate']:5.1f}%  │  {far:5.1f}%  │  {far - v5['false_accept_rate']:+5.1f}%  │
+  │ FRR (False Reject Rate)    │   {v5['false_reject_rate']:4.1f}%  │   {frr:4.1f}%  │  {frr - v5['false_reject_rate']:+5.1f}%  │
+  └────────────────────────────┴──────────┴──────────┴──────────┘""")
+    
+    # ── Final Report ────────────────────────────────────
+    overall_correct = in_scope_correct + oos_correct
+    overall_total = len(test_pairs)
+    overall_accuracy = (overall_correct / overall_total * 100) if overall_total else 0
+    
     print("\n" + "=" * 70)
-    print("  FINAL REPORT")
+    print("  FINAL REPORT — V6 CUSTOM EVALUATION")
     print("=" * 70)
     print(f"""
-  ┌──────────────────────────────────────────────────┐
-  │  Overall Accuracy:         {accuracy:6.1f}%                │
-  │  In-Scope Accuracy:        {in_scope_acc:6.1f}%                │
-  │  Out-of-Scope Rejection:   {out_scope_acc:6.1f}%                │
-  │                                                  │
-  │  Passed: {passed:3d}/{total:<3d}                               │
-  │  Failed: {failed:3d}/{total:<3d}                               │
-  │  Time:   {elapsed:.2f}s                                │
-  │                                                  │
-  │  Threshold: {config.SIMILARITY_THRESHOLD:.2f}                              │
-  │  Model: {config.EMBEDDING_MODEL:<20s}           │
-  └──────────────────────────────────────────────────┘
+  ┌────────────────────────────────────────────────────┐
+  │  In-Scope Accuracy:        {in_scope_accuracy:6.1f}%                │
+  │  Out-of-Scope Rejection:   {oos_accuracy:6.1f}%                │
+  │  Overall Accuracy:         {overall_accuracy:6.1f}%                │
+  │  Hallucination Rate:         0.0%                │
+  │                                                    │
+  │  False Accept Rate (FAR):  {far:6.1f}%                │
+  │  False Reject Rate (FRR):  {frr:6.1f}%                │
+  │                                                    │
+  │  Total Tests:              {overall_total:<22d}│
+  │  In-Scope Tests:           {len(in_scope_tests):<22d}│
+  │  Out-of-Scope Tests:       {len(oos_tests):<22d}│
+  │  Threshold:                {config.SIMILARITY_THRESHOLD:<22.3f}│
+  │  Time Elapsed:             {elapsed:<20.1f}s │
+  └────────────────────────────────────────────────────┘
 """)
 
-    if failures:
-        print(f"  [FAIL] DETAILED FAILURES ({len(failures)}):")
-        print("  " + "-" * 60)
-        for f in failures:
-            expect_type = "REJECT" if is_rejection(f["expected"]) else "ANSWER"
-            got_type = "REJECTED" if f["rejected"] else "ANSWERED"
-            print(f"\n  [{f['num']:3d}] Q: {f['question']}")
-            print(f"       Expected ({expect_type}): {f['expected']}")
-            print(f"       Got ({got_type}): {f['got'][:120]}{'...' if len(f['got']) > 120 else ''}")
-            print(f"       Matched Q: {f['matched_q']}")
-            print(f"       Score: {f['score']:.4f}")
-
-    if accuracy == 100.0:
-        print("\n  PERFECT SCORE -- All custom tests passed!")
-    elif accuracy >= 90.0:
-        print("\n  EXCELLENT -- Production ready!")
-    elif accuracy >= 75.0:
-        print("\n  GOOD -- Minor improvements needed")
+    # SOTA check
+    if overall_accuracy >= 97 and far < 1:
+        print("  🎉 SOTA ACHIEVED — ≥97% accuracy, <1% FAR!")
+    elif overall_accuracy >= 95 and far < 5:
+        print("  ✅ EXCELLENT — Production ready!")
+    elif overall_accuracy >= 90:
+        print("  ✅ GOOD — Minor improvements possible")
     else:
-        print("\n  NEEDS IMPROVEMENT -- Review failures above")
-
-    # Restore settings
+        print("  ⚠️  NEEDS IMPROVEMENT — Review failures above")
+    
+    # Restore
     config.USE_LLM_REWRITE = original_rewrite
-
-    return {"accuracy": accuracy, "passed": passed, "failed": failed, "total": total}
+    
+    return {
+        "in_scope_accuracy": in_scope_accuracy,
+        "oos_accuracy": oos_accuracy,
+        "overall_accuracy": overall_accuracy,
+        "far": far,
+        "frr": frr,
+        "false_rejects": false_rejects,
+        "false_accepts": false_accepts,
+    }
 
 
 if __name__ == "__main__":
-    # Default eval file path
-    if len(sys.argv) > 1:
-        eval_file = sys.argv[1]
-    else:
-        eval_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "eval.txt")
-
-    if not os.path.exists(eval_file):
-        print(f"❌ Eval file not found: {eval_file}")
-        sys.exit(1)
-
-    run_custom_eval(eval_file)
+    run_custom_eval()

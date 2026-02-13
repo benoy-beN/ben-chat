@@ -1,0 +1,44 @@
+{
+    "version": "v5",
+    "timestamp": "2026-02-14T00:50:00+05:30",
+    "threshold": 0.45,
+    "embedding_model": "BAAI/bge-m3 (fallback: bge-base-en-v1.5)",
+    "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "top_k_retrieval": 20,
+    "sop_entries": 283,
+    "augmented_entries": 1044,
+    "standard_eval": {
+        "exact_match_accuracy": 99.3,
+        "paraphrase_accuracy": 100.0,
+        "rejection_accuracy": 100.0,
+        "hallucination_rate": 0.0,
+        "auc": 1.0
+    },
+    "custom_eval_txt": {
+        "total_tests": 103,
+        "in_scope_tests": 74,
+        "oos_tests": 29,
+        "in_scope_accuracy": 95.9,
+        "oos_rejection": 58.6,
+        "overall_accuracy": 85.4,
+        "auc": 0.886,
+        "false_accept_rate": 41.4,
+        "false_reject_rate": 4.1,
+        "false_rejects": [
+            {
+                "question": "Min stroke positive?",
+                "score": 0.1607
+            },
+            {
+                "question": "Min stroke negative?",
+                "score": 0.2512
+            },
+            {
+                "question": "Embed fonts?",
+                "score": 0.0017
+            }
+        ],
+        "false_accepts_real": 5,
+        "false_accepts_data_matches": 7
+    }
+}
