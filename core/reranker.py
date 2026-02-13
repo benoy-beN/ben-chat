@@ -1,13 +1,16 @@
 """
-Cross-Encoder Reranker wrapper.
-Uses BAAI/bge-reranker-base to score query-document pairs.
+Cross-Encoder Reranker wrapper (V5).
+Uses cross-encoder/ms-marco-MiniLM-L-6-v2 to score query-document pairs.
+Returns both raw logits and sigmoid scores for calibration.
 """
 from sentence_transformers import CrossEncoder
+import math
 import sys
 import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
+
 
 class Reranker:
     """
@@ -34,7 +37,7 @@ class Reranker:
             documents: List of candidate answers/documents.
             
         Returns:
-            List of float scores (higher is better).
+            List of float scores in [0, 1] (sigmoid of raw logits).
         """
         if self.model is None:
             self.load()
@@ -42,18 +45,32 @@ class Reranker:
         if not documents:
             return []
 
-        # bge-reranker input [[query, document], ...]
         pairs = [[query, doc] for doc in documents]
-        
-        # Calculate scores
         scores = self.model.predict(pairs)
         
         if isinstance(scores, (int, float)):
-             scores = [scores]
+            scores = [scores]
         elif hasattr(scores, "tolist"):
-             scores = scores.tolist()
-             
+            scores = scores.tolist()
+
         # Normalize logits to [0,1] using Sigmoid
-        # 1 / (1 + exp(-x))
-        import math
         return [1 / (1 + math.exp(-s)) for s in scores]
+
+    def compute_raw_logits(self, query: str, documents: list[str]) -> list[float]:
+        """
+        Return raw logits (pre-sigmoid) for calibration use.
+        """
+        if self.model is None:
+            self.load()
+
+        if not documents:
+            return []
+
+        pairs = [[query, doc] for doc in documents]
+        scores = self.model.predict(pairs)
+        
+        if isinstance(scores, (int, float)):
+            return [float(scores)]
+        elif hasattr(scores, "tolist"):
+            return scores.tolist()
+        return list(scores)

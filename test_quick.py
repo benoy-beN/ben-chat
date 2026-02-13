@@ -1,4 +1,4 @@
-"""Quick end-to-end test of the SOP pipeline."""
+"""Quick end-to-end test of the V5 SOP pipeline."""
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from core.pipeline import SOPPipeline
@@ -31,6 +31,12 @@ print(f"  Rejected: {r3['rejected']}")
 print()
 
 if not r1["rejected"] and not r2["rejected"] and r3["rejected"]:
-    print("ALL TESTS PASSED!")
+    print("✅ ALL TESTS PASSED!")
 else:
-    print("SOME TESTS FAILED")
+    print("❌ SOME TESTS FAILED")
+    if r1["rejected"]:
+        print("  FAIL: Test 1 was rejected (expected match)")
+    if r2["rejected"]:
+        print("  FAIL: Test 2 was rejected (expected match)")
+    if not r3["rejected"]:
+        print("  FAIL: Test 3 was NOT rejected (expected rejection)")

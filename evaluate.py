@@ -1,6 +1,7 @@
 """
-Evaluation pipeline for SOP Chatbot accuracy.
-Tests exact matches, paraphrased queries, and out-of-scope rejection.
+Evaluation pipeline for SOP Chatbot accuracy (V5).
+Tests exact matches, paraphrased queries, out-of-scope rejection.
+Generates ROC curve + confusion matrix exports.
 
 Usage:
     python evaluate.py
@@ -36,15 +37,15 @@ OUT_OF_SCOPE_QUESTIONS = [
 
 
 def run_evaluation():
-    """Run full evaluation suite and report metrics."""
+    """Run full V5 evaluation suite and report metrics."""
     print("=" * 70)
-    print("  SOP CHATBOT — ACCURACY EVALUATION")
+    print("  SOP CHATBOT V5 — ACCURACY EVALUATION")
     print("=" * 70)
 
     # Load pipeline
     pipeline = SOPPipeline()
 
-    # Disable LLM rewrite during evaluation — we're testing retrieval accuracy, not rewriting
+    # Disable LLM rewrite during evaluation
     original_rewrite = config.USE_LLM_REWRITE
     config.USE_LLM_REWRITE = False
 
@@ -56,7 +57,14 @@ def run_evaluation():
 
     print(f"\n📊 Ground truth: {len(sop_data)} Q&A pairs")
     print(f"📊 Out-of-scope test: {len(OUT_OF_SCOPE_QUESTIONS)} questions")
-    print(f"📊 Threshold: {config.SIMILARITY_THRESHOLD}")
+    print(f"📊 Threshold: {pipeline.calibrator.threshold:.3f}")
+    print(f"📊 Calibrator: {'Trained' if pipeline.calibrator.is_trained else 'Default sigmoid'}")
+    print(f"📊 Fusion: {'Trained' if pipeline.fusion.is_trained else 'Default weights'}")
+
+    # Collect all scores and labels for ROC/confusion matrix
+    all_scores = []
+    all_labels = []    # 1 = should match, 0 = should reject
+    all_preds = []     # 1 = matched, 0 = rejected
 
     # ── Test 1: Exact Match ─────────────────────────────
     print("\n" + "─" * 70)
@@ -69,15 +77,21 @@ def run_evaluation():
 
     for entry in sop_data:
         result = pipeline.query(entry["question"])
-
+        score = result["score"]
+        
+        all_scores.append(score)
+        all_labels.append(1)  # Should match
+        
         if not result["rejected"] and result["source_id"] == entry["id"]:
             exact_correct += 1
+            all_preds.append(1)
         else:
+            all_preds.append(0)
             exact_failures.append({
                 "question": entry["question"],
                 "expected_id": entry["id"],
                 "got_id": result["source_id"],
-                "score": result["score"],
+                "score": score,
                 "rejected": result["rejected"],
             })
 
@@ -87,7 +101,7 @@ def run_evaluation():
 
     if exact_failures:
         print(f"\n  ❌ Failures ({len(exact_failures)}):")
-        for f in exact_failures[:5]:  # Show first 5
+        for f in exact_failures[:5]:
             print(f"     Q: {f['question']}")
             print(f"     Expected ID: {f['expected_id']}, Got: {f['got_id']}, Score: {f['score']:.4f}, Rejected: {f['rejected']}")
 
@@ -96,11 +110,9 @@ def run_evaluation():
     print("  TEST 2: PARAPHRASED QUESTIONS")
     print("─" * 70)
 
-    # Generate simple paraphrases for testing
     paraphrase_tests = []
     for entry in sop_data:
         q = entry["question"]
-        # Simple paraphrases
         if q.startswith("What is"):
             paraphrase_tests.append({
                 "question": q.replace("What is", "Tell me"),
@@ -126,24 +138,31 @@ def run_evaluation():
 
     for test in paraphrase_tests:
         result = pipeline.query(test["question"])
+        score = result["score"]
+        
+        all_scores.append(score)
+        all_labels.append(1)  # Should match
 
         if not result["rejected"] and result["source_id"] == test["expected_id"]:
             para_correct += 1
+            all_preds.append(1)
         elif not result["rejected"]:
+            all_preds.append(1)  # Predicted match (but wrong ID)
             para_failures.append({
                 "paraphrase": test["question"],
                 "original": test["original"],
                 "expected_id": test["expected_id"],
                 "got_id": result["source_id"],
-                "score": result["score"],
+                "score": score,
             })
         else:
+            all_preds.append(0)
             para_failures.append({
                 "paraphrase": test["question"],
                 "original": test["original"],
                 "expected_id": test["expected_id"],
                 "got_id": None,
-                "score": result["score"],
+                "score": score,
                 "rejected": True,
             })
 
@@ -173,15 +192,21 @@ def run_evaluation():
 
     for q in OUT_OF_SCOPE_QUESTIONS:
         result = pipeline.query(q)
+        score = result["score"]
+        
+        all_scores.append(score)
+        all_labels.append(0)  # Should reject
 
         if result["rejected"]:
             rejected_correct += 1
+            all_preds.append(0)
         else:
+            all_preds.append(1)
             rejection_failures.append({
                 "question": q,
                 "matched": result["matched_question"],
                 "answer": result["answer"],
-                "score": result["score"],
+                "score": score,
             })
 
     rejection_rate = (rejected_correct / rejection_total) * 100
@@ -195,11 +220,28 @@ def run_evaluation():
             print(f"     Matched: {f['matched']}")
             print(f"     Score: {f['score']:.4f}")
 
+    # ── Generate ROC Curve ──────────────────────────────
+    print("\n" + "─" * 70)
+    print("  EVALUATION EXPORTS")
+    print("─" * 70)
+
+    try:
+        from eval.roc_curve import plot_roc_curve
+        plot_roc_curve(all_scores, all_labels)
+    except Exception as e:
+        print(f"  ⚠️  ROC curve generation failed: {e}")
+
+    try:
+        from eval.confusion_matrix import plot_confusion_matrix
+        plot_confusion_matrix(all_labels, all_preds)
+    except Exception as e:
+        print(f"  ⚠️  Confusion matrix generation failed: {e}")
+
     # ── Summary Report ──────────────────────────────────
-    hallucination_rate = 0.0  # By design: no hallucination possible (verbatim retrieval)
+    hallucination_rate = 0.0  # By design: no hallucination possible
 
     print("\n" + "=" * 70)
-    print("  FINAL REPORT")
+    print("  FINAL REPORT (V5)")
     print("=" * 70)
     print(f"""
   ┌─────────────────────────────────────────────┐
@@ -208,9 +250,12 @@ def run_evaluation():
   │  Rejection Accuracy:      {rejection_rate:6.1f}%           │
   │  Hallucination Rate:      {hallucination_rate:6.1f}%           │
   │                                             │
-  │  Threshold:               {config.SIMILARITY_THRESHOLD:.2f}             │
+  │  Threshold:               {pipeline.calibrator.threshold:.3f}            │
   │  Embedding Model:         {config.EMBEDDING_MODEL:<20s}│
+  │  Retrieval Top-K:         {config.TOP_K_RETRIEVAL:<20d}│
   │  Total SOP Entries:       {len(sop_data):<20d}│
+  │  Calibrator:              {'Trained' if pipeline.calibrator.is_trained else 'Default':<20s}│
+  │  Fusion:                  {'Trained' if pipeline.fusion.is_trained else 'Default':<20s}│
   └─────────────────────────────────────────────┘
 """)
 

@@ -1,5 +1,5 @@
 """
-Build script — parses data and builds the FAISS index in one step.
+Build script (V5) — parses data and builds FAISS + BM25 indices.
 
 Usage:
     python build.py
@@ -15,20 +15,20 @@ from core.pipeline import SOPPipeline
 
 def main():
     print("=" * 60)
-    print("  SOP Chatbot — Full Build")
+    print("  SOP Chatbot V5 — Full Build")
     print("=" * 60)
 
     # Step 1: Parse data
     print("\n📋 STEP 1: Parse & augment SOP data\n")
     parse_data()
 
-    # Step 2: Build index
-    print("\n\n📋 STEP 2: Build FAISS index\n")
+    # Step 2: Build indices (FAISS + BM25)
+    print("\n\n📋 STEP 2: Build FAISS + BM25 indices\n")
     pipeline = SOPPipeline()
     pipeline.build()
 
     print("\n" + "=" * 60)
-    print("  ✅ BUILD COMPLETE")
+    print("  ✅ V5 BUILD COMPLETE")
     print("=" * 60)
     print("\nNext steps:")
     print("  1. Run evaluation:  python evaluate.py")

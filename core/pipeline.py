@@ -1,14 +1,15 @@
 """
-Full SOP retrieval pipeline (v4 SOTA).
-Handles: Hybrid Search (Dual Encoder) → Rerank → Threshold.
+Full SOP retrieval pipeline (V5 — Accuracy-First).
+Handles: BGE-M3 → FAISS + BM25 → Learned Fusion → Rerank → Calibrate.
 
 Architecture:
 1. Normalize Query
-2. Embed (bge) & Embed (e5)
-3. Parallel FAISS Search
-4. Weighted Score Fusion
-5. Cross-Encoder Reranking (Top-K)
-6. Calibrated Threshold
+2. Embed with BGE-M3 (dense + sparse)
+3. Parallel FAISS (dense) + BM25 (lexical) retrieval
+4. Learned Fusion (query-adaptive score combination)
+5. Cross-Encoder Reranking (Top-K → Top-1)
+6. Confidence Calibration (Platt scaling)
+7. Adaptive Threshold → Accept / Reject
 """
 import json
 import os
@@ -20,35 +21,40 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
 
 from core.normalizer import normalize
-from core.embedder import Embedder
+from core.bge_m3_embed import BGEM3Embedder
 from core.index import FAISSIndex
+from core.bm25_index import BM25Index
+from core.fusion import ScoreFusion
 from core.rewriter import rewrite_answer
 from core.reranker import Reranker
+from core.calibrate import ConfidenceCalibrator
+
 
 class SOPPipeline:
     """
-    State-of-the-Art SOP retrieval pipeline.
-    Combines two embedding models and a cross-encoder reranker.
+    V5 Accuracy-First SOP retrieval pipeline.
+    Single BGE-M3 encoder + BM25 + learned fusion + calibrated reranking.
     """
     def __init__(self):
-        # Dual Encoders
-        self.embedder_a = Embedder(config.EMBEDDING_MODEL)
-        self.embedder_b = Embedder(config.MODEL_B_NAME)
+        # Single strong encoder
+        self.embedder = BGEM3Embedder(config.EMBEDDING_MODEL)
         
-        # Dual Indices
-        self.index_a = FAISSIndex()
-        self.index_b = FAISSIndex()
+        # Dual retrieval: vector + lexical
+        self.faiss_index = FAISSIndex()
+        self.bm25_index = BM25Index()
         
-        # Reranker
+        # Fusion & Reranking
+        self.fusion = ScoreFusion()
         self.reranker = Reranker()
+        self.calibrator = ConfidenceCalibrator()
         
         self.sop_data: list[dict] = []
         self.is_loaded = False
 
     def build(self):
-        """Build both indices from SOP data."""
+        """Build all indices from SOP data."""
         print("=" * 60)
-        print("  Building SOTA Pipeline (Dual Encoder)")
+        print("  Building V5 Pipeline (BGE-M3 + BM25)")
         print("=" * 60)
 
         # Load data
@@ -67,151 +73,190 @@ class SOPPipeline:
         
         questions = [entry["question"] for entry in self.sop_data]
         
-        # --- Build Index A (BGE) ---
-        print(f"\n🔄 [Model A] Embedding with {self.embedder_a.model_name}...")
-        self.embedder_a.load()
-        vecs_a = self.embedder_a.embed_batch(questions, is_query=False)
-        self.index_a.build(vecs_a, self.sop_data)
-        self.index_a.save(index_path=config.FAISS_INDEX_FILE)
-
-        # --- Build Index B (E5) ---
-        print(f"\n🔄 [Model B] Embedding with {self.embedder_b.model_name}...")
-        self.embedder_b.load()
-        vecs_b = self.embedder_b.embed_batch(questions, is_query=False)
-        self.index_b.build(vecs_b, self.sop_data)
-        self.index_b.save(index_path=config.FAISS_INDEX_FILE_B)
+        # --- Build Dense + Sparse Index (BGE-M3) ---
+        print(f"\n🔄 Embedding with {self.embedder.model_name}...")
+        self.embedder.load()
+        embeddings = self.embedder.embed_batch(questions, is_query=False)
+        
+        # Build FAISS index (dense)
+        dense_vecs = embeddings["dense"]
+        # Normalize dense vectors for cosine similarity
+        norms = np.linalg.norm(dense_vecs, axis=1, keepdims=True)
+        norms[norms == 0] = 1
+        dense_vecs = (dense_vecs / norms).astype(np.float32)
+        
+        self.faiss_index.build(dense_vecs, self.sop_data)
+        self.faiss_index.save(index_path=config.FAISS_INDEX_FILE)
+        
+        # --- Build BM25 Index ---
+        print(f"\n🔄 Building BM25 lexical index...")
+        self.bm25_index.build(self.sop_data)
+        self.bm25_index.save()
+        
+        # --- Load fusion & calibrator (if pre-trained) ---
+        self.fusion.load()
+        self.calibrator.load()
 
         self.is_loaded = True
-        print(f"\n✅ Dual Pipeline built and saved!")
+        print(f"\n✅ V5 Pipeline built and saved!")
         return self
 
     def load(self):
         """Load all models and indices."""
-        print("🔄 Loading SOTA Pipeline...")
+        print("🔄 Loading V5 Pipeline...")
         
-        # Load indices (Model loading is lazy/on-demand usually, but we can pre-load)
-        # We only really need to load indices eagerly.
-        self.index_a.load(index_path=config.FAISS_INDEX_FILE)
-        if hasattr(config, "FAISS_INDEX_FILE_B") and os.path.exists(config.FAISS_INDEX_FILE_B):
-            self.index_b.load(index_path=config.FAISS_INDEX_FILE_B)
-        else:
-            print("⚠️ Index B not found. Dual encoder features disabled.")
-
-        # Load ID map (same for both)
-        self.sop_data = self.index_a.id_map
+        # Load FAISS index
+        self.faiss_index.load(index_path=config.FAISS_INDEX_FILE)
+        
+        # Load BM25 index
+        try:
+            self.bm25_index.load()
+        except FileNotFoundError:
+            print("⚠️  BM25 index not found. Lexical retrieval disabled.")
+        
+        # Load SOP data from id_map
+        self.sop_data = self.faiss_index.id_map
+        
+        # Load fusion model (optional trained)
+        self.fusion.load()
+        
+        # Load calibrator (optional trained)
+        self.calibrator.load()
         
         self.is_loaded = True
-        print("✅ Pipeline loaded!")
+        print("✅ V5 Pipeline loaded!")
         return self
 
     def query(self, user_question: str) -> dict:
         """
-        Hybrid retrieval + Reranking.
+        V5 retrieval pipeline:
+        Normalize → Embed → FAISS + BM25 → Fusion → Rerank → Calibrate → Decide
         """
         if not self.is_loaded:
             raise RuntimeError("Pipeline not loaded.")
 
         normalized = normalize(user_question)
         
-        # --- Stage 1: Hybrid Retrieval ---
-        # Search Index A
-        vec_a = self.embedder_a.embed(normalized)
-        results_a = self.index_a.search(vec_a, top_k=config.TOP_K_RETRIEVAL)
+        # --- Stage 1: Embed query with BGE-M3 ---
+        query_emb = self.embedder.embed(normalized)
+        query_dense = query_emb["dense"]
         
-        # Search Index B
-        vec_b = self.embedder_b.embed(normalized)
-        results_b = self.index_b.search(vec_b, top_k=config.TOP_K_RETRIEVAL)
-
-        # Fusion
-        combined_scores = {}
-        entries = {}
+        # Normalize for cosine similarity
+        norm = np.linalg.norm(query_dense)
+        if norm > 0:
+            query_dense = query_dense / norm
         
-        # Helper to process results
-        def process_results(results, weight):
-            for r in results:
-                eid = r["entry"].get("source_id", r["entry"].get("id")) # Use source ID to identify unique q
-                # Use question content as unique key if IDs overlap for different paraphrases
-                # Actually, our ID map stores each paraphrase as separate entry.
-                # We want to retrieve specific paraphrases.
-                key = r["entry"]["question"] 
-                entries[key] = r["entry"]
-                combined_scores[key] = combined_scores.get(key, 0.0) + (r["score"] * weight)
-
-        process_results(results_a, config.HYBRID_WEIGHT_A)
-        process_results(results_b, config.HYBRID_WEIGHT_B)
+        # --- Stage 2: Parallel Retrieval ---
+        top_k = config.TOP_K_RETRIEVAL  # 20
         
-        # Sort candidates
-        candidates = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)
-        top_candidates = candidates[:config.TOP_K_RETRIEVAL] # e.g. Top 5
+        # Dense retrieval (FAISS)
+        faiss_results = self.faiss_index.search(query_dense, top_k=top_k)
         
-        if not top_candidates:
-             return self._reject(user_question, normalized, 0.0)
-
-        # --- Stage 2: Reranking ---
-        # Construct candidate texts: Just Answer? Or Q+A?
-        # Using Q+A works best generally.
+        # BM25 lexical retrieval
+        bm25_results = []
+        if self.bm25_index.bm25 is not None:
+            bm25_results = self.bm25_index.search(normalized, top_k=top_k)
+        
+        # --- Stage 3: Learned Fusion ---
+        # Collect all unique candidates
+        candidates = {}  # key: question text → {entry, dense_score, bm25_score}
+        
+        # Normalize BM25 scores to [0, 1]
+        bm25_max = max((r["score"] for r in bm25_results), default=1.0) if bm25_results else 1.0
+        if bm25_max <= 0:
+            bm25_max = 1.0
+        
+        for r in faiss_results:
+            key = r["entry"]["question"]
+            if key not in candidates:
+                candidates[key] = {
+                    "entry": r["entry"],
+                    "dense_score": r["score"],
+                    "sparse_score": 0.0,
+                    "bm25_score": 0.0,
+                }
+            else:
+                candidates[key]["dense_score"] = max(candidates[key]["dense_score"], r["score"])
+        
+        for r in bm25_results:
+            key = r["entry"]["question"]
+            normalized_bm25 = r["score"] / bm25_max
+            if key not in candidates:
+                candidates[key] = {
+                    "entry": r["entry"],
+                    "dense_score": 0.0,
+                    "sparse_score": 0.0,
+                    "bm25_score": normalized_bm25,
+                }
+            else:
+                candidates[key]["bm25_score"] = max(candidates[key]["bm25_score"], normalized_bm25)
+        
+        if not candidates:
+            return self._reject(user_question, normalized, 0.0)
+        
+        # Fuse scores
+        candidate_list = list(candidates.values())
+        for c in candidate_list:
+            c["fused_score"] = self.fusion.fuse(
+                c["dense_score"], c["sparse_score"], c["bm25_score"]
+            )
+        
+        # Sort by fused score and take top candidates for reranking
+        candidate_list.sort(key=lambda x: x["fused_score"], reverse=True)
+        top_candidates = candidate_list[:min(len(candidate_list), config.TOP_K_RETRIEVAL)]
+        
+        # --- Stage 4: Cross-Encoder Reranking ---
         candidate_texts = []
-        for q_text, score in top_candidates:
-            entry = entries[q_text]
-            combined_text = f"{entry['question']} {entry['answer']}"
+        for c in top_candidates:
+            combined_text = f"{c['entry']['question']} {c['entry']['answer']}"
             candidate_texts.append(combined_text)
-            
+        
         rerank_scores = self.reranker.compute_scores(normalized, candidate_texts)
         
-        final_candidates = []
-        for i, (q_text, old_score) in enumerate(top_candidates):
-            r_score = rerank_scores[i]
-            # Ensemble Score: 50% Hybrid (Recall) + 50% Reranker (Precision)
-            # This handles cases where Reranker is incorrectly confident (0.001)
-            # while Hybrid is confident (0.8). Result ~0.4.
-            ensemble_score = 0.5 * old_score + 0.5 * r_score
-            
-            final_candidates.append({
-                "entry": entries[q_text],
-                "score": ensemble_score,
-                "initial_score": old_score,
-                "rerank_score": r_score
-            })
-            
-        # Resort by ENSEMBLE score
-        final_candidates.sort(key=lambda x: x["score"], reverse=True)
-        best_match = final_candidates[0]
+        for i, c in enumerate(top_candidates):
+            c["rerank_score"] = rerank_scores[i]
         
-        # --- Stage 3: Threshold ---
-        threshold = config.SIMILARITY_THRESHOLD
+        # Re-sort by reranker score (reranker is precision-focused)
+        top_candidates.sort(key=lambda x: x["rerank_score"], reverse=True)
+        best = top_candidates[0]
         
-        if best_match["score"] < threshold:
-             return self._reject(user_question, normalized, best_match["score"])
+        # --- Stage 5: Confidence Calibration ---
+        calibrated_confidence = self.calibrator.calibrate(best["rerank_score"])
+        
+        # --- Stage 6: Threshold Decision ---
+        if not self.calibrator.should_accept(calibrated_confidence):
+            return self._reject(user_question, normalized, calibrated_confidence)
 
-        # --- Stage 4: Output ---
-        answer = best_match["entry"]["answer"]
+        # --- Stage 7: Output ---
+        answer = best["entry"]["answer"]
         if config.USE_LLM_REWRITE:
             answer = rewrite_answer(answer)
             
         return {
             "question": user_question,
             "normalized": normalized,
-            "matched_question": best_match["entry"]["question"],
+            "matched_question": best["entry"]["question"],
             "answer": answer,
-            "score": best_match["score"],
-            "source_id": best_match["entry"].get("source_id"),
+            "score": calibrated_confidence,
+            "source_id": best["entry"].get("source_id"),
             "rejected": False,
-            "threshold": threshold,
+            "threshold": self.calibrator.threshold,
             "top_k_results": [
                 {
                     "question": c["entry"]["question"],
                     "answer": c["entry"]["answer"],
-                    "score": c["score"],
-                    "initial_score": c["initial_score"],
-                    "source_id": c["entry"].get("source_id")
+                    "score": c.get("rerank_score", c.get("fused_score", 0.0)),
+                    "dense_score": c.get("dense_score", 0.0),
+                    "bm25_score": c.get("bm25_score", 0.0),
+                    "fused_score": c.get("fused_score", 0.0),
+                    "source_id": c["entry"].get("source_id"),
                 }
-                for c in final_candidates
-            ]
+                for c in top_candidates[:10]  # Return top 10 for debug
+            ],
         }
 
     def query_detailed(self, user_question: str, top_k: int = 5) -> dict:
         """Alias for query to maintain compatibility with app.py."""
-        # Note: top_k argument is currently ignored as config.TOP_K_RETRIEVAL is used
         return self.query(user_question)
 
     def _reject(self, question, normalized, score):
@@ -223,6 +268,6 @@ class SOPPipeline:
             "score": score,
             "source_id": None,
             "rejected": True,
-            "threshold": config.SIMILARITY_THRESHOLD,
-            "top_k_results": []
+            "threshold": self.calibrator.threshold,
+            "top_k_results": [],
         }

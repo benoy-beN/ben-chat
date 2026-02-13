@@ -1,5 +1,5 @@
 """
-SOP Chatbot — Gradio Web Interface.
+SOP Chatbot — Gradio Web Interface (V5).
 Professional dark-themed UI for querying SOP knowledge base.
 
 Usage:
@@ -66,10 +66,10 @@ def answer_question(question: str, use_rewrite: bool = False) -> tuple:
     # Format answer
     if result["rejected"]:
         answer = f"❌ {result['answer']}"
-        status = f"🔴 REJECTED — Below threshold ({result['score']:.4f} < {result['threshold']})"
+        status = f"🔴 REJECTED — Below threshold ({result['score']:.4f} < {result['threshold']:.3f})"
     else:
         answer = f"✅ {result['answer']}"
-        status = f"🟢 MATCHED — Confidence: {result['score']:.4f} (threshold: {result['threshold']})"
+        status = f"🟢 MATCHED — Confidence: {result['score']:.4f} (threshold: {result['threshold']:.3f})"
 
     matched = result["matched_question"] or "No match found"
     score = f"{result['score']:.4f}" if result["score"] > 0 else "N/A"
@@ -79,8 +79,11 @@ def answer_question(question: str, use_rewrite: bool = False) -> tuple:
     debug_lines.append("Top matches:")
     for i, r in enumerate(result.get("top_k_results", []), 1):
         marker = "→" if i == 1 else " "
+        rerank = f" | R: {r.get('score', 0):.3f}"
+        dense = f" | D: {r.get('dense_score', 0):.3f}"
+        bm25 = f" | BM25: {r.get('bm25_score', 0):.3f}"
         debug_lines.append(
-            f"  {marker} [{i}] Score: {r['score']:.4f} | Q: {r['question']}"
+            f"  {marker} [{i}]{rerank}{dense}{bm25} | Q: {r['question'][:80]}"
         )
     debug_info = "\n".join(debug_lines)
 
@@ -90,10 +93,14 @@ def answer_question(question: str, use_rewrite: bool = False) -> tuple:
 def get_system_status() -> str:
     """Get system status information."""
     status_lines = [
-        f"📦 Embedding Model: {config.EMBEDDING_MODEL}",
-        f"📊 Threshold: {config.SIMILARITY_THRESHOLD}",
-        f"📂 SOP Entries (A): {pipeline.index_a.index.ntotal if pipeline and pipeline.index_a.index else 'N/A'}",
-        f"🔍 SOP Entries (B): {pipeline.index_b.index.ntotal if pipeline and pipeline.index_b.index else 'N/A'}",
+        "── V5 Pipeline (Accuracy-First) ──",
+        f"📦 Embedding: {config.EMBEDDING_MODEL}",
+        f"🔍 Reranker: {config.RERANKER_NAME}",
+        f"📊 Threshold: {pipeline.calibrator.threshold:.3f}" if pipeline else "N/A",
+        f"📂 FAISS Entries: {pipeline.faiss_index.index.ntotal if pipeline and pipeline.faiss_index.index else 'N/A'}",
+        f"📖 BM25 Entries: {len(pipeline.bm25_index.entries) if pipeline and pipeline.bm25_index.entries else 'N/A'}",
+        f"🎯 Fusion: {'Trained' if pipeline and pipeline.fusion.is_trained else 'Default weights'}",
+        f"📐 Calibrator: {'Trained' if pipeline and pipeline.calibrator.is_trained else 'Default sigmoid'}",
     ]
 
     # Check Ollama
@@ -176,14 +183,14 @@ def create_app():
     """Create and configure the Gradio app."""
 
     with gr.Blocks(
-        title="SOP Chatbot — Zero Hallucination",
+        title="SOP Chatbot V5 — Zero Hallucination",
     ) as app:
 
         # ── Header ──────────────────────────────
         gr.HTML("""
         <div class="main-header">
-            <h1>🛡️ SOP Chatbot</h1>
-            <p>Deterministic retrieval • Zero hallucination • Auditable answers</p>
+            <h1>🛡️ SOP Chatbot V5</h1>
+            <p>BGE-M3 + BM25 • Cross-Encoder Reranking • Calibrated Confidence • Zero Hallucination</p>
         </div>
         """)
 
@@ -240,14 +247,14 @@ def create_app():
                     interactive=False,
                 )
                 score_output = gr.Textbox(
-                    label="Similarity Score",
+                    label="Calibrated Confidence",
                     lines=1,
                     interactive=False,
                 )
 
                 # ── Debug ────────────────────────
                 debug_output = gr.Textbox(
-                    label="Debug Info",
+                    label="Debug Info (Rerank / Dense / BM25)",
                     lines=8,
                     interactive=False,
                     elem_classes=["debug-box"],
@@ -257,7 +264,7 @@ def create_app():
                 with gr.Accordion("⚙️ System Status", open=False):
                     system_status = gr.Textbox(
                         label="",
-                        lines=5,
+                        lines=9,
                         interactive=False,
                         value=lambda: get_system_status(),
                     )
@@ -304,7 +311,7 @@ def create_app():
 # ── Main ─────────────────────────────────────────────
 if __name__ == "__main__":
     print("=" * 60)
-    print("  SOP Chatbot — Starting Web Interface")
+    print("  SOP Chatbot V5 — Starting Web Interface")
     print("=" * 60)
 
     # Initialize pipeline

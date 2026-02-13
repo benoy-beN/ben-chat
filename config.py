@@ -1,5 +1,5 @@
 """
-Central configuration for SOP Chatbot.
+Central configuration for SOP Chatbot (V5 — Accuracy-First).
 All tunable parameters in one place.
 """
 import os
@@ -10,27 +10,32 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 SOP_DATA_FILE = os.path.join(DATA_DIR, "sop_data.json")
 RAW_DATA_FILE = os.path.join(DATA_DIR, "data.txt")
 FAISS_INDEX_FILE = os.path.join(DATA_DIR, "sop_index.faiss")
-FAISS_INDEX_FILE_B = os.path.join(DATA_DIR, "sop_index_b.faiss")
 ID_MAP_FILE = os.path.join(DATA_DIR, "id_map.json")
+
+# V5 new index/model files
+BM25_INDEX_FILE = os.path.join(DATA_DIR, "bm25_index.pkl")
+FUSION_MODEL_FILE = os.path.join(DATA_DIR, "fusion_model.pkl")
+CALIBRATOR_FILE = os.path.join(DATA_DIR, "calibrator.pkl")
 
 # ── Hardware Settings ──────────────────────────────────
 DEVICE = "cpu"  # Force CPU for stability
 
-# ── Embedding Model ───────────────────────────────────
-# Apache 2.0 license — corporate-safe
-EMBEDDING_MODEL = "BAAI/bge-base-en-v1.5"
-MODEL_B_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+# ── Embedding Model (V5: Single Strong Retriever) ─────
+# BGE-M3: dense + sparse in one model
+EMBEDDING_MODEL = "BAAI/bge-m3"
 RERANKER_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
-EMBEDDING_DIM = 768
-# Prefix required by bge models for queries
+EMBEDDING_DIM = 1024  # BGE-M3 dense dimension
+
+# Prefix for BGE queries (used by fallback mode)
 QUERY_PREFIX = "Represent this sentence for searching relevant passages: "
 
-# ── Retrieval ─────────────────────────────────────────
-SIMILARITY_THRESHOLD = 0.40  # Calibrated for Ensemble (Hybrid + Reranker)
-HYBRID_WEIGHT_A = 0.7       # BGE Weight
-HYBRID_WEIGHT_B = 0.3       # E5 Weight
-TOP_K_RETRIEVAL = 5         # Candidates for reranking
-TOP_K_FINAL = 1             # Final output
+# ── Retrieval (V5) ────────────────────────────────────
+SIMILARITY_THRESHOLD = 0.45   # Adaptive fallback (calibrator overrides when trained)
+TOP_K_RETRIEVAL = 20          # Candidates for reranking (was 5 in V4)
+TOP_K_FINAL = 1               # Final output
+
+# Fusion default weights: [dense, sparse, bm25]
+FUSION_WEIGHTS = [0.5, 0.2, 0.3]
 
 # ── LLM Rewrite (Optional) ───────────────────────────
 USE_LLM_REWRITE = True
