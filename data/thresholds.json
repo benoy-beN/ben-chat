@@ -1,0 +1,13 @@
+{
+    "version": "v6.2",
+    "thresh_high": 0.42,
+    "thresh_low": 0.20,
+    "lex_min": 0.20,
+    "gap_min": 0.02,
+    "calibrator_a": 1.624,
+    "calibrator_b": -0.332,
+    "optimal_f1_threshold": 0.420,
+    "far": 0.25,
+    "frr": 0.029,
+    "roc_auc": 1.0
+}

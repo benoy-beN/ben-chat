@@ -109,7 +109,10 @@ def train_calibrator():
         # Create fresh calibrator isolated from pipeline's
         trainer = ConfidenceCalibrator()
         trainer.train(raw_scores, labels)
-        trainer.save()
+        # Save to V6.3 path
+        save_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models", "calibrator_v6.3.pkl")
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        trainer.save(save_path)
         
     print("\n✅ Training Complete.")
 

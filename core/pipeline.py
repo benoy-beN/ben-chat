@@ -1,17 +1,16 @@
 """
-Full SOP retrieval pipeline (V6 — SOTA Accuracy).
-Handles: BGE-M3 → FAISS + BM25 → Learned Fusion → Rerank → Dual-Threshold Decision.
+Full SOP retrieval pipeline (V6.3 — SOTA Accuracy).
+Handles: BGE-M3 → FAISS + BM25 → Learned Fusion → Rerank → Calibrate → Dual-Threshold.
 
-Decision Logic (v6_updated):
-  if score >= THRESH_HIGH:   accept()
-  elif score <= THRESH_LOW:  reject()
-  else:  # gray zone
-      if lexical_overlap >= LEX_MIN
-         AND reranker_gap >= GAP_MIN
-         AND answer_in_SOP == true:
-          accept()
-      else:
-          reject()
+Decision Logic (V6.3):
+  1. Hybrid Retrieval: FAISS (dense) ∪ BM25 (lexical) → union top-30
+  2. Cross-Encoder Reranking
+  3. Score Fusion (learned weights: dense + bm25 + rerank)
+  4. Platt Calibration → calibrated probability
+  5. Dual-Threshold Gate with kill switch:
+     if score >= THRESH_HIGH → accept (subject to guardrails)
+     elif score < THRESH_LOW → reject
+     else (gray zone) → lexical+gap checks + SOP_IDS kill switch
 """
 import json
 import os
@@ -61,18 +60,27 @@ CONTRADICTION_PAIRS = [
 
 # Context words in the query that indicate the topic is NOT covered by SOP
 # (The SOP covers screen printing, not web design or digital media)
-OOS_CONTEXT_WORDS = [
-    "web design", "website", "web page", "digital ad",
-    "social media", "video", "audio", "animation",
-    "3d", "html", "css", "app design",
-]
-
-# Substances/materials NOT in the SOP PMS standards
-# (SOP only has gold=871, silver=877)
-OOS_PANTONE_WORDS = [
-    "platinum", "bronze", "copper", "rose gold",
-    "titanium", "chrome", "brass",
-]
+# Phase 7: Load OOS patterns from file if available
+_OOS_PATTERNS_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "oos_patterns.txt")
+if os.path.exists(_OOS_PATTERNS_FILE):
+    _oos_all = []
+    with open(_OOS_PATTERNS_FILE, "r") as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith("#"):
+                _oos_all.append(_line.lower())
+    OOS_CONTEXT_WORDS = _oos_all
+    OOS_PANTONE_WORDS = []  # All merged into OOS_CONTEXT_WORDS
+else:
+    OOS_CONTEXT_WORDS = [
+        "web design", "website", "web page", "digital ad",
+        "social media", "video", "audio", "animation",
+        "3d", "html", "css", "app design",
+    ]
+    OOS_PANTONE_WORDS = [
+        "platinum", "bronze", "copper", "rose gold",
+        "titanium", "chrome", "brass",
+    ]
 
 
 def _tokenize(text: str) -> set:
@@ -98,15 +106,18 @@ def _lexical_overlap(query_tokens: set, candidate_tokens: set) -> float:
 
 
 class SOPPipeline:
-    """V6 SOTA SOP retrieval pipeline with dual-threshold decision."""
+    """V6.3 SOTA SOP retrieval pipeline with hybrid retrieval + learned fusion."""
 
     def __init__(self):
-        self.embedder   = BGEM3Embedder(config.EMBEDDING_MODEL)
+        self.embedder    = BGEM3Embedder(config.EMBEDDING_MODEL)
         self.faiss_index = FAISSIndex()
+        self.bm25_index  = BM25Index()        # Phase 4: Lexical backstop
+        self.fusion      = ScoreFusion()       # Phase 5: Learned fusion
         self.reranker    = Reranker()
-        self.calibrator  = ConfidenceCalibrator() # Restored for V6
+        self.calibrator  = ConfidenceCalibrator()
         
         self.sop_data: list[dict] = []
+        self.sop_ids: set = set()              # Phase 6: All valid SOP IDs
         self.is_loaded   = False
 
     # ── Build ──────────────────────────────────────────
@@ -157,33 +168,36 @@ class SOPPipeline:
     # ── Load ───────────────────────────────────────────
     def load(self):
         """Load all models and indices."""
-        print("🔄 Loading V6 Pipeline (BGE-M3 Only)...")
+        print("🔄 Loading V6.3 Pipeline (BGE-M3 + BM25 + Fusion)...")
 
         self.faiss_index.load(index_path=config.FAISS_INDEX_FILE)
 
-        # BM25, Fusion removed. Calibrator restored.
+        # Phase 4: BM25 lexical backstop
+        try:
+            self.bm25_index.load()
+        except FileNotFoundError:
+            print("⚠️ BM25 index not found — lexical backstop disabled.")
+
+        # Phase 5: Learned fusion
+        self.fusion.load()
+
+        # Calibrator
         self.calibrator.load()
         
         self.sop_data = self.faiss_index.id_map
         
+        # Phase 6: Build SOP_IDS set for kill switch
+        self.sop_ids = {entry.get("source_id", entry.get("id")) for entry in self.sop_data}
+        
         self.is_loaded = True
-        print("✅ V6 Pipeline (BGE-M3 + Calibrated) loaded!")
+        print(f"✅ V6.3 Pipeline loaded! ({len(self.sop_ids)} SOP IDs)")
         return self
 
     # ── Query ──────────────────────────────────────────
     # ── Query ──────────────────────────────────────────
     def query(self, user_question: str) -> dict:
         """
-        V6 pipeline (BGE-M3 + Reranker + Dual-Threshold).
-        Logic:
-          1. Dense Retrieval (Top-K)
-          2. Reranking (Top-K)
-          3. Decision Gate:
-             - If score >= THRESH_HIGH (0.988) -> Accept
-             - If score < THRESH_LOW (0.95) -> Reject
-             - Else (Gray Zone):
-                 Check Lexical Overlap >= LEX_MIN (0.20)
-                 AND Reranker Gap >= GAP_MIN (0.02)
+        V6.3 pipeline: BGE-M3 + BM25 → Fusion → Rerank → Calibrate → Threshold.
         """
         if not self.is_loaded:
             raise RuntimeError("Pipeline not loaded.")
@@ -196,77 +210,97 @@ class SOPPipeline:
         if norm > 0:
             query_dense = query_dense / norm
 
-        # ── Stage 1: Dense Retrieval ──
-        top_k = config.TOP_K_RETRIEVAL
+        # ── Stage 1: Hybrid Retrieval (Dense ∪ BM25) ──
+        top_k = 30  # Union pool size
         faiss_results = self.faiss_index.search(query_dense, top_k=top_k)
 
         if not faiss_results:
              return self._reject(user_question, normalized, 0.0)
 
+        # BM25 lexical search (Phase 4)
+        bm25_results = []
+        if self.bm25_index.bm25 is not None:
+            bm25_results = self.bm25_index.search(normalized, top_k=top_k)
+
+        # Merge: union by entry ID (deduplicate)
+        seen_ids = set()
+        candidates = []
+        for c in faiss_results:
+            eid = c['entry'].get('source_id', c['entry'].get('id'))
+            if eid not in seen_ids:
+                seen_ids.add(eid)
+                c['dense_score'] = c['score']
+                c['bm25_score'] = 0.0
+                candidates.append(c)
+        
+        for c in bm25_results:
+            eid = c['entry'].get('source_id', c['entry'].get('id'))
+            if eid not in seen_ids:
+                seen_ids.add(eid)
+                c['dense_score'] = 0.0
+                c['bm25_score'] = c['score']
+                candidates.append(c)
+            else:
+                # Entry already in candidates from FAISS — add BM25 score
+                for existing in candidates:
+                    if existing['entry'].get('source_id', existing['entry'].get('id')) == eid:
+                        existing['bm25_score'] = c['score']
+                        break
+
         # ── Stage 2: Cross-Encoder Reranking ──
-        candidates = faiss_results
         texts = [c['entry']['question'] for c in candidates]
         
         try:
             rerank_scores = self.reranker.compute_scores(normalized, texts)
         except Exception as e:
             print(f"⚠️ Reranker failed: {e}. Using dense scores.")
-            rerank_scores = [c['score'] for c in candidates]
+            rerank_scores = [c.get('dense_score', c['score']) for c in candidates]
 
-        # Attach scores & Calculate Metrics
+        # Attach scores, compute lexical overlap, fuse, calibrate
+        q_tokens = _tokenize(normalized)
         for i, c in enumerate(candidates):
             c["rerank_score"] = rerank_scores[i]
-            c["final_score"] = c["rerank_score"] 
             
-            # Pre-calculate Lexical Overlap (Jaccard on sets)
-            q_set = set(normalized.split())
-            d_text = c['entry']['question'].lower()
-            d_set = set(d_text.split())
-            if q_set:
-                c["lexical_overlap"] = len(q_set.intersection(d_set)) / len(q_set)
-            else:
-                c["lexical_overlap"] = 0.0
+            # Lexical overlap (content-word Jaccard)
+            d_tokens = _tokenize(c['entry']['question'])
+            c["lexical_overlap"] = _lexical_overlap(q_tokens, d_tokens)
 
-            # Calibrate Score
-            # Map raw reranker score (logit) to probability [0, 1]
-            c["final_score"] = self.calibrator.calibrate(c["rerank_score"]) 
+            # Phase 5: Fusion (dense + bm25 + rerank)
+            dense_s = c.get('dense_score', 0.0)
+            bm25_s  = c.get('bm25_score', 0.0)
+            rerank_s = c['rerank_score']
+            c["fused_score"] = self.fusion.fuse(dense_s, bm25_s, rerank_s)
+
+            # Calibrate the fused score
+            c["final_score"] = self.calibrator.calibrate(c["rerank_score"])
+            
+        # Sort by final_score descending
+        candidates.sort(key=lambda x: x["final_score"], reverse=True)
 
         best_match = candidates[0]
         final_score = best_match["final_score"]
+        best_id = best_match['entry'].get('source_id', best_match['entry'].get('id'))
 
-        # Calculate Reranker Gap (Diff between #1 and #2)
+        # Reranker gap (top1 - top2)
         reranker_gap = 0.0
         if len(candidates) > 1:
             reranker_gap = candidates[0]["final_score"] - candidates[1]["final_score"]
 
-        # ── Stage 3: Dual-Threshold Decision (V6) ──
+        # ── Stage 3: Dual-Threshold Decision (V6.3) ──
         is_rejected = False
         decision_reason = "Score above threshold"
         
         # [1] High Confidence Acceptance
         if final_score >= config.THRESHOLD_HIGH:
             is_rejected = False
-            decision_reason = "High confidence (>= 0.988)"
+            decision_reason = f"High confidence (>= {config.THRESHOLD_HIGH:.3f})"
             
         # [2] Low Confidence Rejection
         elif final_score < config.THRESHOLD_LOW:
-            # [5] Last-Chance Accept (Safe Guard for Exact Matches in SOP)
-            # If the best match ID is a known valid SOP and score is decent? 
-            # (Simplification: Just use threshold for now, or maybe check exact string match?)
-            # Plan says: if best_id in SOP_IDS and score >= THRESH_LOW. 
-            # But we are already < THRESH_LOW here.
-            # "Target: if best_id in SOP_IDS and score >= THRESH_LOW: ACCEPT" -> This implies < THRESH_HIGH but >= THRESH_LOW.
-            # Wait, the logic is: >= HIGH (Accept), < LOW (Reject).
-            # So the "Last Chance" must apply to the GRAY ZONE (HIGH > score >= LOW).
-            # My logic:
-            # - If score >= HIGH: Accept
-            # - If score < LOW: Reject
-            # - Else (Gray Zone): Semantic Checks
-            
             is_rejected = True
-            decision_reason = "Low confidence (< 0.95)"
+            decision_reason = f"Low confidence (< {config.THRESHOLD_LOW:.3f})"
 
-        # [3] Gray Zone (0.95 <= score < 0.988)
+        # [3] Gray Zone
         else:
             lex_check = best_match["lexical_overlap"] >= config.LEX_MIN
             gap_check = reranker_gap >= config.GAP_MIN
@@ -276,13 +310,11 @@ class SOPPipeline:
                 decision_reason = "Gray Zone: Validated by Lexical+Gap"
             else:
                 is_rejected = True
-                decision_reason = f"Gray Zone: Failed checks (Lex={best_match['lexical_overlap']:.2f}, Gap={reranker_gap:.3f})"
+                decision_reason = f"Gray Zone: Failed (Lex={best_match['lexical_overlap']:.2f}, Gap={reranker_gap:.3f})"
 
-        # ── Apply Guardrails (Overrides Score) ──
-        # Check for absolute OOS terms (e.g. "copper", "web design")
+        # ── Apply Guardrails (Overrides accept) ──
         guardrail_triggered = False
         
-        # 1. Check Pantone/Material OOS
         for word in OOS_PANTONE_WORDS:
             if word in normalized:
                 is_rejected = True
@@ -290,7 +322,6 @@ class SOPPipeline:
                 guardrail_triggered = True
                 break
         
-        # 2. Check Context OOS
         if not guardrail_triggered:
             for phrase in OOS_CONTEXT_WORDS:
                 if phrase in normalized:
@@ -299,12 +330,30 @@ class SOPPipeline:
                     guardrail_triggered = True
                     break
 
-        # Flatten results for App (Fixing KeyError)
+        # Check if best answer itself is OOS
+        if not guardrail_triggered and not is_rejected:
+            best_answer_lower = best_match['entry']['answer'].lower()
+            for phrase in OOS_ANSWER_PHRASES:
+                if phrase in best_answer_lower:
+                    is_rejected = True
+                    decision_reason = f"Guardrail: Answer is OOS ('{phrase}')"
+                    guardrail_triggered = True
+                    break
+
+        # ── Phase 6: False-Reject Kill Switch (FINAL — runs after guardrails) ──
+        # If rejected but best match is a known SOP entry with decent confidence,
+        # override the rejection. This rescues legitimate SOP queries that are
+        # falsely caught by OOS patterns (e.g. "bronze" in "PMS bronze standard").
+        if is_rejected and best_id in self.sop_ids and final_score >= config.THRESHOLD_LOW:
+            is_rejected = False
+            guardrail_triggered = False
+            decision_reason = f"Kill Switch: SOP ID {best_id} rescued (score={final_score:.3f})"
+
+        # Flatten results for App
         top_results_for_app = []
         for c in candidates[:5]:
             safe_c = c.copy()
-            safe_c['entry'] = c['entry'] 
-            # Ensure 'question' and 'answer' are accessible if app uses them directly
+            safe_c['entry'] = c['entry']
             safe_c['question'] = c['entry']['question']
             safe_c['answer'] = c['entry']['answer']
             top_results_for_app.append(safe_c)
@@ -319,7 +368,7 @@ class SOPPipeline:
             "matched_question": best_match["entry"]["question"],
             "top_k_results": top_results_for_app,
             "guardrail": decision_reason if guardrail_triggered else None,
-            "source_id": best_match["entry"].get("source_id")
+            "source_id": best_id
         }
 
 

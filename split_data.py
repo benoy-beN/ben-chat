@@ -32,7 +32,7 @@ def split_data():
     random.seed(42) # Deterministic split
     random.shuffle(blocks)
     
-    split_idx = int(len(blocks) * 0.5) # 50/50 split for robust calibration
+    split_idx = int(len(blocks) * 0.7) # 70/30 split for V6.3 (more calibration data)
     calib_data = blocks[:split_idx]
     test_data = blocks[split_idx:]
     

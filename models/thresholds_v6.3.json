@@ -1,0 +1,13 @@
+{
+  "thresh_high": 0.79,
+  "thresh_low": 0.3201,
+  "lex_min": 0.2,
+  "gap_min": 0.02,
+  "optimization": {
+    "metric": "f1",
+    "constraint": "far<=0.01",
+    "best_f1": 0.9375,
+    "far": 0.0,
+    "frr": 0.1176
+  }
+}

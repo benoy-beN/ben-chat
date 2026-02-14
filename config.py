@@ -12,10 +12,11 @@ RAW_DATA_FILE = os.path.join(DATA_DIR, "data.txt")
 FAISS_INDEX_FILE = os.path.join(DATA_DIR, "sop_index.faiss")
 ID_MAP_FILE = os.path.join(DATA_DIR, "id_map.json")
 
-# V5 new index/model files
+# V6.3 model/index files
+MODELS_DIR = os.path.join(BASE_DIR, "models")
 BM25_INDEX_FILE = os.path.join(DATA_DIR, "bm25_index.pkl")
-FUSION_MODEL_FILE = os.path.join(DATA_DIR, "fusion_model.pkl")
-CALIBRATOR_FILE = os.path.join(DATA_DIR, "calibrator.pkl")
+FUSION_MODEL_FILE = os.path.join(MODELS_DIR, "fusion_v6.3.json")
+CALIBRATOR_FILE = os.path.join(MODELS_DIR, "calibrator_v6.3.pkl")
 
 # ── Hardware Settings ──────────────────────────────────
 # ── Hardware Settings ──────────────────────────────────
@@ -38,11 +39,21 @@ EMBEDDING_DIM = 1024  # BGE-M3 dense dimension
 # Prefix for BGE queries (used by fallback mode)
 QUERY_PREFIX = "Represent this sentence for searching relevant passages: "
 
-# ── Retrieval (V6) ────────────────────────────────────
-THRESHOLD_HIGH = 0.42         # Set to calibrated optimal (F1 max)
-THRESHOLD_LOW  = 0.20         # Wide gray zone for safety
-LEX_MIN = 0.20                # Minimum token overlap for gray zone
-GAP_MIN = 0.02                # Minimum reranker score gap for gray zone
+# ── Retrieval (V6.3 — Learned Thresholds) ─────────────
+_THRESH_FILE = os.path.join(MODELS_DIR, "thresholds_v6.3.json")
+if os.path.exists(_THRESH_FILE):
+    import json as _json
+    with open(_THRESH_FILE, "r") as _f:
+        _t = _json.load(_f)
+    THRESHOLD_HIGH = _t.get("thresh_high", 0.42)
+    THRESHOLD_LOW  = _t.get("thresh_low", 0.20)
+    LEX_MIN = _t.get("lex_min", 0.20)
+    GAP_MIN = _t.get("gap_min", 0.02)
+else:
+    THRESHOLD_HIGH = 0.42         # Fallback: V6.2 calibrated optimal
+    THRESHOLD_LOW  = 0.20
+    LEX_MIN = 0.20
+    GAP_MIN = 0.02
 
 SIMILARITY_THRESHOLD = 0.45   # Legacy fallback
 TOP_K_RETRIEVAL = 20          # Candidates for reranking

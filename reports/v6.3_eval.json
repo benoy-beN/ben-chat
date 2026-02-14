@@ -1,0 +1,60 @@
+{
+    "version": "v6.3",
+    "timestamp": "2026-02-14T21:02:00+05:30",
+    "config": {
+        "threshold_high": 0.79,
+        "threshold_low": 0.32,
+        "lex_min": 0.20,
+        "gap_min": 0.02,
+        "top_k_retrieval": 30,
+        "embedding_model": "BAAI/bge-m3",
+        "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+        "calibrator": "platt_scaling (a=2.130, b=-0.795, t=0.590)",
+        "bm25_enabled": true,
+        "fusion_enabled": true,
+        "fusion_weights": [
+            0.455,
+            -0.007,
+            2.117
+        ],
+        "kill_switch_enabled": true,
+        "oos_patterns_file": "oos_patterns.txt",
+        "hard_negatives": 849
+    },
+    "standard_eval": {
+        "exact_match_accuracy": 100.0,
+        "paraphrase_accuracy": 100.0,
+        "rejection_accuracy": 100.0,
+        "hallucination_rate": 0.0,
+        "auc": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "total_queries": 553,
+        "correct": 553
+    },
+    "custom_eval_test_txt": {
+        "total_tests": 31,
+        "in_scope_tests": 22,
+        "oos_tests": 9,
+        "in_scope_accuracy": 95.5,
+        "oos_rejection": 66.7,
+        "overall_accuracy": 87.1,
+        "far": 33.3,
+        "frr": 4.5,
+        "hallucination_rate": 0.0
+    },
+    "improvements_over_v6.2": {
+        "exact_match": "+0.7% (99.3% → 100.0%)",
+        "paraphrase": "+0.4% (99.6% → 100.0%)",
+        "oos_rejection": "+0.0% (100.0% → 100.0%)",
+        "new_features": [
+            "BM25 lexical backstop (hybrid retrieval)",
+            "Learned score fusion (logistic regression)",
+            "Learned thresholds (F1-optimized, FAR-constrained)",
+            "False-reject kill switch (SOP_IDS override)",
+            "Dynamic OOS patterns (oos_patterns.txt)",
+            "Hard negative mining (849 triplets)"
+        ]
+    }
+}

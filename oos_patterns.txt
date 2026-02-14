@@ -1,0 +1,48 @@
+# V6.3 OOS Patterns — Extended Guardrail Pattern List
+# Lines starting with # are comments. Each non-empty line is a pattern phrase.
+# These patterns override score-based acceptance when found in the user query.
+
+# --- Context OOS (Topics not covered by SOP) ---
+web design
+website
+web page
+digital ad
+social media
+video
+audio
+animation
+3d
+html
+css
+app design
+mobile design
+ux design
+ui design
+logo design
+packaging design
+
+# --- Material OOS (Substances not in PMS standards) ---
+# NOTE: bronze is a valid PMS standard (PMS 876) — do NOT include here
+platinum
+copper
+rose gold
+titanium
+chrome
+brass
+nickel
+aluminum
+steel
+iron
+
+# --- General Off-Topic ---
+salary
+vacation
+holiday
+insurance
+benefits
+payroll
+promotion
+termination
+interview
+resume
+hiring
